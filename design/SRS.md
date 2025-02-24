@@ -10,13 +10,13 @@ This document will catalog the user, system, and hardware requirements for the P
 
 ### 1.2. Definitions, Acronyms, Abbreviations
 
-**PGS**: Parking Garage System
-**TCP/IP**: Transmission Control Protocol/Internet Protocol
-**Employee**: a person working for a company holding a license of the PGS software
-**Customer**: a person who parks in a garage that utilizes the PGS system
-**OO**: Object-Oriented (Programming)
-**JSON**: JavaScript Object Notation **(irrelevant to application)**
-**XML**: Extensible Markup Language **(irrelevant to application)**
+- **PGS**: Parking Garage System
+- **TCP/IP**: Transmission Control Protocol/Internet Protocol
+- **Employee**: a person working for a company holding a license of the PGS software
+- **Customer**: a person who parks in a garage that utilizes the PGS system
+- **OO**: Object-Oriented (Programming)
+- **JSON**: JavaScript Object Notation **(irrelevant to application)**
+- **XML**: Extensible Markup Language **(irrelevant to application)**
 
 ### 1.3. References
 
