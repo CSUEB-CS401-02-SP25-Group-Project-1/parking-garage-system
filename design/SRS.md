@@ -104,7 +104,7 @@ It is assumed that the companies using the PGS system will manage more than one 
 
 ## 3.3. Internal Interface Requirements
 
-- **3.3.1.** The internal internal shall use TCP/IP for communication and data exchange between each garages and the centralized system (which the user has access to).
+- **3.3.1.** The internal interface shall use TCP/IP for communication and data exchange between each garages and the centralized system (which the user has access to).
 - **3.3.2.** When an employee requests to view their garage's usage report, the interface must retrieve those metrics from that garage and send it over to the employee's dashboard across the network.
 - **3.3.3.** For non-repudiation purposes, the interface shall log all parking activity (tickets generated, receipts printed, timestamps of when a car enters and exits the garage, employee logins) in a log file for each garage.
 
