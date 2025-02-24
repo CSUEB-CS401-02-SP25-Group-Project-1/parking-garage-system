@@ -49,7 +49,7 @@ The high-level features of the system are as follows (see section 3 of this docu
 - **Reliable & Intuitive Interface:** Graphical interface is easy to understand for both customers and employees alike and is responsive.
 - **Automatic Fee Calculation:** Calculates parking fees based on how long a car stays in a garage using its entry and exit timestamps.
 - **Manual Fee Override:** Allows employees to manually override the system's calculated fee by setting a fixed value in case of an error or rebate.
-- **Ticket & Receipt Generation:** Issues a unique ticket to a customer upon entry and prints a receipt containing their final fee and time spent when exiting.
+- **Ticket & Receipt Generation:** Issues a unique ticket to a customer upon entry and prints a receipt while exiting containing their final fee and time spent in garage.
 - **Garage Usage Reports:** Provides employees with reports on total revenue earned, cars parked, and peak usage times of a particular garage.
 - **Error Handling & Notification System:** System is able to detect issues such as invalid tickets or network failures and alerts the relevant party.
 
