@@ -78,15 +78,15 @@ It is assumed that the companies using the PGS system will manage more than one 
 - **3.1.2.1.** The User module shall contain an enumeration value of the type of user (either customer or employee) and be able to manage child objects (customer or employee alike) in an array such as when the system needs to keep track of every user that is currently using the system.
 - **3.1.2.2.** The User module shall contain the user's garage ID (in order for the system to know which garage the customer's car is parked in as well as what employee can access their garage's metrics).
 
-##### 3.1.2.1. Customer Submodule Requirements:
+##### 3.1.2.3. Customer Submodule Requirements:
 
-- **3.1.2.1.1.** The Customer submodule shall contain the customer's ticket number and timestamps for garage entry and exit and represent the car being parked.
-- **3.1.2.1.2.** The Customer submodule shall provide methods for the customer's actions such as entering and leaving the garage as well as the ability to self-park.
+- **3.1.2.3.1.** The Customer submodule shall contain the customer's ticket number and timestamps for garage entry and exit and represent the car being parked.
+- **3.1.2.3.2.** The Customer submodule shall provide methods for the customer's actions such as entering and leaving the garage as well as the ability to self-park.
 
-##### 3.1.2.2. Employee Submodule Requirements:
+##### 3.1.2.4. Employee Submodule Requirements:
 
-- **3.1.2.2.1.** The Employee submodule shall store the employee's credentials (username and password) in plaintext.
-- **3.1.2.2.2.** The Employee submodule shall provide methods for the employee's actions such as viewing usage reports of their garage, overriding a customer's fee, changing their garage's rate, and generating the customer's ticket and receipt.
+- **3.1.2.4.1.** The Employee submodule shall store the employee's credentials (username and password) in plaintext.
+- **3.1.2.4.2.** The Employee submodule shall provide methods for the employee's actions such as viewing usage reports of their garage, overriding a customer's fee, changing their garage's rate, and generating the customer's ticket and receipt.
 
 ### 3.1.3. Garage Module Requirements:
 
