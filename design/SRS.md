@@ -112,12 +112,18 @@ It is assumed that the companies using the PGS system will manage more than one 
 
 ### 4.1. Security and Privacy Requirements
 
-*TODO*
+- **4.1.1** When a employee creates a unique password it must include special characters like ‘/’, ‘*’, etc so it doesn’t become a weak password
+- **4.1.2** A gate that will allow vehicles to head to the designated parking area. 
+- **4.1.3** Surveillance cameras to monitor the parking garage.
 
 ### 4.2. Environmental Requirements
 
-*TODO*
+- **4.2.1** A garbage/recycling/organic bin in order to toss anything that corresponds to the right bin.
+- **4.2.2** Air Control so that it can control the right amount of air needed. 
+- **4.2.3** Electrical energy to keep the garage’s power to be powered on.
 
 ### 4.3. Performance Requirements
 
-*TODO*
+- **4.3.1** The number of parking spaces being available in each level.
+- **4.3.2** Once the payment is done processing, the gate will slowly open.
+- **4.3.3** A vehicle being parked for the amount of hours it can stay in that spot but staying for too long will be charged with a fee and it will increase every hour.
