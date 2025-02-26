@@ -59,7 +59,7 @@ The PGS system shall not use any additional databases, libraries, frameworks, an
 
 ### 2.5. Assumptions and Dependencies
 
-It is assumed that the companies using the PGS system will manage more than one garage and consist of multiple employees that will be interacting with this software from different locations at the same time. It is also assumed that there will be multiple customers attempting to self-park in different garages in different locations at the same time.
+It is assumed that the companies using the PGS system will manage more than one garage and consist of multiple employees that will be interacting with this software from different locations at the same time. It is also assumed that there will be multiple customers attempting to self-park in different garages in different locations at the same time. Depending on the size of the company as well as how many customers would be interacting with the system across all garages, it is expected that the amount of people who will be using this program simulatenously would range from hundreds to thousands.
 
 ## 3\. Specific Requirements
 
