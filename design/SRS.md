@@ -67,52 +67,63 @@ It is assumed that the companies using the PGS system will manage more than one 
 
 #### 3.1.1. Common Requirements:
 
-- **3.1.1.1.** The system shall provide TCP/IP networking to allow real-time communication between multiple garages.
-- **3.1.1.2.** The system shall support error detection and notify the relevant party (customers or employees) in case of issues (e.g. invalid tickets, network errors).
-- **3.1.1.3.** The system shall assign a unique ticket number to every car entering a garage and log their timestamps of when they are entering and leaving that garage.
-- **3.1.1.4.** The system shall print a receipt after the customer has paid their final fee so that an employee or terminal can give it to them when they are about to leave the garage.
-- **3.1.1.5.** The system shall calculate each customers' parking fees based on time spent (in minutes) using the logged timestamps of their car in a garage and multiplied by that garage's fixed rate.
+- **3.1.1.1.** The system shall provide real-time communication between multiple garages using TCP/IP networking.
+- **3.1.1.2.** The system shall detect and notify the relevant user (customer or employee) when an error occurs such as an invalid ticket or network failure.
+- **3.1.1.3.** The system shall assign a unique ticket number to every vehicle entering a garage.
+- **3.1.1.4.** The system shall log each vehicle's entry and exit timestamps for tracking and fee calculation.
+- **3.1.1.5.** The system shall generate a printed receipt when a customer completes their payment.
+- **3.1.1.6.** The system shall calculate each customer's parking fee based on the duration of their stay and the garage's fixed hourly rate.
 
 #### 3.1.2. User Module Requirements:
 
-- **3.1.2.1.** The User module shall contain an enumeration value of the type of user (either customer or employee) and be able to manage child objects (customer or employee alike) in an array such as when the system needs to keep track of every user that is currently using the system.
-- **3.1.2.2.** The User module shall contain the user's garage ID (in order for the system to know which garage the customer's car is parked in as well as what employee can access their garage's metrics).
+- **3.1.2.1.** The system shall support two types of users: customers and employees.
+- **3.1.2.2.** Each user shall be associated with a specific garage.
 
 ##### 3.1.2.3. Customer Submodule Requirements:
 
-- **3.1.2.3.1.** The Customer submodule shall contain the customer's ticket number and timestamps for garage entry and exit and represent the car being parked.
-- **3.1.2.3.2.** The Customer submodule shall provide methods for the customer's actions such as entering and leaving the garage as well as the ability to self-park.
+- **3.1.2.3.1.** Customers shall receive a ticket with a unique number upon entering a garage.
+- **3.1.2.3.2.** Customers shall be able to view the number of available spaces in a garage.
+- **3.1.2.3.3.** Customers shall pay their calculated parking fee before exiting the garage.
+- **3.1.2.3.4.** The system shall verify the customer's ticket before processing payment.
+- **3.1.2.3.5.** The system shall provide customers the ability to self-park.
+- **3.1.2.3.6.** The system shall automatically open the exit gate after the customer has completed payment.
 
 ##### 3.1.2.4. Employee Submodule Requirements:
 
-- **3.1.2.4.1.** The Employee submodule shall store the employee's credentials (username and password) in plaintext.
-- **3.1.2.4.2.** The Employee submodule shall provide methods for the employee's actions such as viewing usage reports of their garage, overriding a customer's fee, changing their garage's rate, and generating the customer's ticket and receipt.
+- **3.1.2.4.1.** Employees shall log in using a username and password.
+- **3.1.2.4.2.** Employees shall be able to override a customer's parking fee when necessary.
+- **3.1.2.4.3.** Employees shall be able to generate a new parking ticket for customers when needed.
+- **3.1.2.4.4.** Employees shall be able to print a receipt for a customer upon payment completion.
+- **3.1.2.4.5.** Employees shall be able to view their assigned garage's total vehicle count in real time.
+- **3.1.2.4.6.** Employees shall be able to access and view their garage's usage reports.
+- **3.1.2.4.7.** Employees shall be able to modify their garage's parking fee rate.
 
 ### 3.1.3. Garage Module Requirements:
 
-- **3.1.3.1.** The Garage module shall store the garage's ID, its total capacity, current count of parked vehicles, and parking fee rate.
-- **3.1.3.2.** The Garage module shall keep track of all vehicles parked in-real time and update its parked vehicle count accordingly.
-- **3.1.3.3.** The Garage shall be able to provide the system its total revenue collected, total cars parked, and peak hours in a fixed time frame (e.g. weekly, monthly, annually).
+- **3.1.3.1.** Each garage shall have a unique ID, a total parking capacity, a current vehicle count, and a parking fee rate.
+- **3.1.3.2.** The system shall update the vehicle count in real time as cars enter and exit the garage.
+- **3.1.3.3.** The system shall track and store data on total revenue, total cars parked, and peak usage hours.
+- **3.1.3.4.** The system shall generate garage usage reports for employees on a daily, weekly, monthly, or yearly basis.
 
 ## 3.2. External Interface Requirements
 
-- **3.2.1.** The external interface shall manage both the customers' and employee's distinct graphical interfaces and assign one to them based on their user type.
-- **3.2.2.** The interface shall be responsive and intuitive enough for users to understand almost immediately and not get confused or wait a significant amount of time while it handles its internal tasks.
-- **3.2.3.** The customer's interface shall provide a menu giving them the ability to obtain a ticket upon entry, pay their final fee before exiting the garage and get their receipt, and view the number of available spaces in that garage.
-- **3.2.4.** Once the employee signs in to the system using their username and password, the interface shall provide them a dashboard giving them the ability to view their garage's current capacity and view its usage reports, be able to print tickets and receipts for them to hand over to the customer, and override the customer's final fee when necessary.
-- **3.2.5.** The interface shall display relevant notifications for the user such as when an error occurs (like, for the customer, when a garage is full or they have an invalid ticket; or, for all users, when a network error occurs).
+- **3.2.1.** The system shall provide distinct graphical interfaces for customers and employees, assigning the appropriate interface based on user type.
+- **3.2.2.** Each graphical interface shall be responsive and intuitive, requiring minimal user effort to understand.
+- **3.2.3.** The customer's interface shall provide a menu with available actions such as obtaining a parking ticket, viewing available spaces, and making payments.
+- **3.2.4.** After successful login, the employee's interface shall provide a dashboard with available commands such as viewing garage metrics, processing customer payments, and managing garage settings.
+- **3.2.5.** The interface shall display relevant notifications for the user such as when an error occurs.
 
 ## 3.3. Internal Interface Requirements
 
-- **3.3.1.** The internal interface shall use TCP/IP for communication and data exchange between each garages and the centralized system (which the user has access to).
-- **3.3.2.** When an employee requests to view their garage's usage report, the interface must retrieve those metrics from that garage and send it over to the employee's dashboard across the network.
-- **3.3.3.** For non-repudiation purposes, the interface shall log all parking activity (tickets generated, receipts printed, timestamps of when a car enters and exits the garage, employee logins) in a log file for each garage.
+- **3.3.1.** The internal interface shall use TCP/IP for communication and data exchange between each garage and the centralized system.
+- **3.3.2.** When an employee requests their garage's usage report, the system shall retrieve and send the relevant data over to the employee's dashboard.
+- **3.3.3.** For non-repudiation purposes, the system shall log all parking-related activities, tickets generated, payment processes, and employee logins.
 
 ## 4\. Non-Functional Requirements
 
 ### 4.1. Security and Privacy Requirements
 
-- **4.1.1** When a employee creates a unique password it must include special characters like ‘/’, ‘*’, etc so it doesn’t become a weak password
+- **4.1.1** When a employee creates a unique password it must include special characters like '/', '*', etc so it doesn't become a weak password
 - **4.1.2** A gate that will allow vehicles to head to the designated parking area. 
 - **4.1.3** Surveillance cameras to monitor the parking garage.
 
@@ -120,7 +131,7 @@ It is assumed that the companies using the PGS system will manage more than one 
 
 - **4.2.1** A garbage/recycling/organic bin in order to toss anything that corresponds to the right bin.
 - **4.2.2** Air Control so that it can control the right amount of air needed. 
-- **4.2.3** Electrical energy to keep the garage’s power to be powered on.
+- **4.2.3** Electrical energy to keep the garage's power to be powered on.
 
 ### 4.3. Performance Requirements
 
