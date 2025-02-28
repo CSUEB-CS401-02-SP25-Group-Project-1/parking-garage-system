@@ -129,15 +129,9 @@ It is assumed that the companies using the PGS system will manage more than one 
 
 ### 4.2. Environmental Requirements
 
-<<<<<<< HEAD
 - **4.2.1** Lighting to guide the driver's to the parking lane when it gets too dark and they can't see. The system can provide that so it would be easier for the drivers to park in the lanes. 
 - **4.2.2** A cooling sensor that will prevent the system from overheating. Especially, for those who are running the system over a long period of time. 
 - **4.2.3** Electrical energy to keep the garage’s power to be powered on.
-=======
-- **4.2.1** A garbage/recycling/organic bin in order to toss anything that corresponds to the right bin.
-- **4.2.2** Air Control so that it can control the right amount of air needed. 
-- **4.2.3** Electrical energy to keep the garage's power to be powered on.
->>>>>>> a7d94bb7f82468d87f0be213a0732d6afed0632d
 
 ### 4.3. Performance Requirements
 
