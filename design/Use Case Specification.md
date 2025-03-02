@@ -1,11 +1,7 @@
 # Use Case Specification
-
 ## Use Case 1: Obtain Parking Ticket
-
 ### Use Case ID: UC-01
-
 ### Use Case Name: Obtain Parking Ticket
-
 ### Relevant Requirements:
 
 - 3.1.1.3: The system shall assign a unique ticket number to every vehicle entering a garage.
@@ -86,106 +82,111 @@
 ### Related Use Cases:
 - UC-001: Obtain Parking Ticket (Customer may request a ticket after viewing available spaces.)
 
-Use Case 3: Pay Parking Fee
-Use Case ID: UC-003
-Use Case Name: Pay Parking Fee
-Relevant Requirements:
-3.1.1.5: The system shall generate a printed receipt when a customer completes their payment.
+## Use Case 3: Pay Parking Fee
 
-3.1.1.6: The system shall calculate each customer's parking fee based on the duration of their stay and the garage's fixed hourly rate.
+### Use Case ID: UC-03
 
-3.1.2.3.3: Customers shall pay their calculated parking fee before exiting the garage.
+### Use Case Name: Pay Parking Fee
 
-3.1.2.3.4: The system shall verify the customer's ticket before processing payment.
+### Relevant Requirements:
 
-3.1.2.3.6: The system shall automatically open the exit gate after the customer has completed payment.
+- 3.1.1.5: The system shall generate a printed receipt when a customer completes their payment.
 
-Primary Actor: Customer
-Pre-conditions:
-The customer has a valid parking ticket.
+- 3.1.1.6: The system shall calculate each customer's parking fee based on the duration of their stay and the garage's fixed hourly rate.
 
-The customer is ready to exit the garage.
+- 3.1.2.3.3: Customers shall pay their calculated parking fee before exiting the garage.
 
-Post-conditions:
-The customer's payment is successfully processed.
+- 3.1.2.3.4: The system shall verify the customer's ticket before processing payment.
 
-A receipt is generated and printed.
+- 3.1.2.3.6: The system shall automatically open the exit gate after the customer has completed payment.
 
-The exit gate opens, and the customer leaves the garage.
+### Primary Actor: Customer
 
-The garage's vehicle count is decremented by one.
+### Pre-conditions:
+- The customer has a valid parking ticket.
 
-Basic Flow or Main Scenario:
-The customer inserts their ticket into the payment terminal.
+- The customer is ready to exit the garage.
 
-The system retrieves the entry timestamp and calculates the fee.
+### Post-conditions:
+- The customer's payment is successfully processed.
 
-The system displays the fee to the customer.
+- A receipt is generated and printed.
 
-The customer completes the payment.
+- The exit gate opens, and the customer leaves the garage.
 
-The system generates and prints a receipt.
+- The garage's vehicle count is decremented by one.
 
-The system opens the exit gate.
+### Basic Flow or Main Scenario:
+1. The customer inserts their ticket into the payment terminal.
 
-The customer takes the receipt and exits the garage.
+2. The system retrieves the entry timestamp and calculates the fee.
 
-The system updates the garage's vehicle count.
+3. The system displays the fee to the customer.
 
-Extensions or Alternate Flows:
-Alternate Flow 1: Payment Failure
+4. The customer completes the payment.
 
-If payment fails, the system displays an error message and prompts the customer to retry.
+5. The system generates and prints a receipt.
 
-Alternate Flow 2: Invalid Ticket
+6. The system opens the exit gate.
 
-If the ticket is invalid, the system displays an error message and directs the customer to seek assistance.
+7. The customer takes the receipt and exits the garage.
 
-Exceptions:
-Printer Failure: If the receipt printer fails, the system notifies the customer and logs the issue.
+8. The system updates the garage's vehicle count.
 
-Gate Malfunction: If the exit gate fails to open, the system alerts the customer and notifies maintenance staff.
+### Extensions or Alternate Flows:
+- Alternate Flow 1: Payment Failure
 
-Related Use Cases:
-UC-001: Obtain Parking Ticket (Customer must have a valid ticket to pay.)
+  - If payment fails, the system displays an error message and prompts the customer to retry.
 
-UC-005: Override Customer Fee (Employee may override the fee if there is an issue.)
+- Alternate Flow 2: Invalid Ticket
 
-Use Case 4: Employee Login
-Use Case ID: UC-004
-Use Case Name: Employee Login
-Relevant Requirements:
-3.1.2.4.1: Employees shall log in using a username and password.
+  - If the ticket is invalid, the system displays an error message and directs the customer to seek assistance.
 
-Primary Actor: Employee
-Pre-conditions:
-The employee has valid login credentials.
+### Exceptions:
+- Printer Failure: If the receipt printer fails, the system notifies the customer and logs the issue.
 
-Post-conditions:
-The employee gains access to the employee dashboard.
+- Gate Malfunction: If the exit gate fails to open, the system alerts the customer and notifies maintenance staff.
 
-Basic Flow or Main Scenario:
-The employee enters their username and password.
+### Related Use Cases:
+- UC-001: Obtain Parking Ticket (Customer must have a valid ticket to pay.)
 
-The system verifies the credentials.
+- UC-005: Override Customer Fee (Employee may override the fee if there is an issue.)
 
-If valid, the system grants access to the employee dashboard.
+## Use Case 4: Employee Login
+### Use Case ID: UC-04
+### Use Case Name: Employee Login
+### Relevant Requirements:
+- 3.1.2.4.1: Employees shall log in using a username and password.
 
-Extensions or Alternate Flows:
-Alternate Flow 1: Invalid Credentials
+### Primary Actor: Employee
+### Pre-conditions:
+- The employee has valid login credentials.
 
-If the credentials are invalid, the system displays an error message and prompts the employee to retry.
+### Post-conditions:
+- The employee gains access to the employee dashboard.
 
-Exceptions:
-Network Failure: If the system cannot communicate with the central server, it displays an error message.
+### Basic Flow or Main Scenario:
+1. The employee enters their username and password.
 
-Related Use Cases:
-UC-005: Override Customer Fee (Employee must log in to access this feature.)
+2. The system verifies the credentials.
 
-UC-007: View Garage Usage Report (Employee must log in to access this feature.)
+3. If valid, the system grants access to the employee dashboard.
+
+### Extensions or Alternate Flows:
+- Alternate Flow 1: Invalid Credentials
+
+- If the credentials are invalid, the system displays an error message and prompts the employee to retry.
+
+### Exceptions:
+- Network Failure: If the system cannot communicate with the central server, it displays an error message.
+
+### Related Use Cases:
+- UC-005: Override Customer Fee (Employee must log in to access this feature.)
+
+- UC-007: View Garage Usage Report (Employee must log in to access this feature.)
 
 Use Case 5: Override Customer Fee
-Use Case ID: UC-005
+Use Case ID: UC-05
 Use Case Name: Override Customer Fee
 Relevant Requirements:
 3.1.2.4.2: Employees shall be able to override a customer's parking fee when necessary.
