@@ -1,6 +1,6 @@
 # Use Case 1: Obtain Parking Ticket
 
-**##Use Case ID**: UC-01
+Use Case ID: UC-01
 
 **##Use Case Name**: Obtain Parking Ticket
 
