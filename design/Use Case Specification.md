@@ -12,9 +12,9 @@
 
 - 3.1.3.2: The system shall update the vehicle count in real time as cars enter and exit the garage.
 
-**##Primary Actor**: Customer
+**Primary Actor**: Customer
 
-**##Pre-conditions**:
+**Pre-conditions**:
 - The garage has available parking spaces.
 
 - The entry gate system is operational.
