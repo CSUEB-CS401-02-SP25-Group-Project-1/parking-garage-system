@@ -219,3 +219,216 @@
 ### Related Use Cases:
 - UC-003: Pay Parking Fee (Employee may override the fee during payment processing.)
 
+## Use Case 6: Generate Parking Ticket
+### Use Case ID: UC-006
+### Use Case Name: Generate Parking Ticket
+### Relevant Requirements:
+- 3.1.2.4.3: Employees shall be able to generate a new parking ticket for customers when needed.
+
+Primary Actor: Employee
+Pre-conditions:
+The employee is logged in.
+
+The garage has available parking spaces.
+
+Post-conditions:
+The customer receives a valid parking ticket.
+
+The garage's vehicle count is incremented by one.
+
+Basic Flow or Main Scenario:
+The employee selects "Generate Ticket" on the dashboard.
+
+The system generates a unique ticket with an entry timestamp.
+
+The system prints the ticket.
+
+The employee hands the ticket to the customer.
+
+The system updates the garage's vehicle count.
+
+Extensions or Alternate Flows: None.
+Exceptions:
+Printer Failure: If the ticket printer fails, the system notifies the employee and logs the issue.
+
+Network Failure: If the system cannot communicate with the central server, it displays an error message.
+
+Related Use Cases:
+UC-001: Obtain Parking Ticket (Similar functionality for self-parking customers.)
+
+## Use Case 7: View Garage Usage Report
+### Use Case ID: UC-007
+### Use Case Name: View Garage Usage Report
+### Relevant Requirements:
+3.1.2.4.6: Employees shall be able to access and view their garage's usage reports.
+
+3.1.3.4: The system shall generate garage usage reports for employees on a daily, weekly, monthly, or yearly basis.
+
+Primary Actor: Employee
+Pre-conditions:
+The employee is logged in.
+
+Post-conditions:
+The employee views the requested usage report.
+
+Basic Flow or Main Scenario:
+The employee selects "View Usage Report" on the dashboard.
+
+The employee selects the report type (daily, weekly, monthly, yearly).
+
+The system retrieves the relevant data (total revenue, cars parked, peak hours).
+
+The system displays the report to the employee.
+
+Extensions or Alternate Flows: None.
+Exceptions:
+Network Failure: If the system cannot communicate with the central server, it displays an error message.
+
+Related Use Cases:
+UC-004: Employee Login (Employee must log in to access this feature.)
+
+## Use Case 8: Modify Garage Fee Rate
+### Use Case ID: UC-008
+### Use Case Name: Modify Garage Fee Rate
+### Relevant Requirements:
+3.1.2.4.7: Employees shall be able to modify their garage's parking fee rate.
+
+Primary Actor: Employee
+Pre-conditions:
+The employee is logged in.
+
+Post-conditions:
+The garage's parking fee rate is updated.
+
+Basic Flow or Main Scenario:
+The employee selects "Modify Fee Rate" on the dashboard.
+
+The employee enters the new fee rate.
+
+The system updates the garage's fee rate.
+
+The system logs the change.
+
+Extensions or Alternate Flows: None.
+Exceptions:
+Invalid Input: If the employee enters an invalid fee rate, the system displays an error message.
+
+Related Use Cases:
+UC-004: Employee Login (Employee must log in to access this feature.)
+
+## Use Case 9: Track Vehicle Entry/Exit
+### Use Case ID: UC-009
+### Use Case Name: Track Vehicle Entry/Exit
+### Relevant Requirements:
+3.1.1.4: The system shall log each vehicle's entry and exit timestamps for tracking and fee calculation.
+
+3.1.3.2: The system shall update the vehicle count in real time as cars enter and exit the garage.
+
+Primary Actor: System
+Pre-conditions:
+The garage is operational.
+
+Post-conditions:
+The vehicle count and timestamps are updated.
+
+Basic Flow or Main Scenario:
+A vehicle enters or exits the garage.
+
+The system detects the action via sensors.
+
+The system updates the garage's vehicle count.
+
+The system logs the entry/exit timestamp.
+
+Extensions or Alternate Flows: None.
+Exceptions:
+Sensor Failure: If the sensors fail, the system notifies maintenance staff and logs the issue.
+
+Related Use Cases:
+UC-001: Obtain Parking Ticket (Entry tracking is tied to ticket generation.)
+
+UC-003: Pay Parking Fee (Exit tracking is tied to payment processing.)
+
+## Use Case 10: Handle Errors
+### Use Case ID: UC-010
+### Use Case Name: Handle Errors
+### Relevant Requirements:
+3.1.1.2: The system shall detect and notify the relevant user (customer or employee) when an error occurs such as an invalid ticket or network failure.
+
+Primary Actor: System
+Pre-conditions:
+An error condition occurs (e.g., invalid ticket, network failure).
+
+Post-conditions:
+The relevant user is notified of the error.
+
+Basic Flow or Main Scenario:
+The system detects an error (e.g., invalid ticket, network failure).
+
+The system identifies the affected user (customer or employee).
+
+The system displays an error message on the user's interface.
+
+The system logs the error for further review.
+
+Extensions or Alternate Flows: None.
+Exceptions: None.
+Related Use Cases:
+UC-003: Pay Parking Fee (Errors may occur during payment processing.)
+
+UC-005: Override Customer Fee (Errors may occur during fee override.)
+
+## Use Case 11: Ensure System Security
+### Use Case ID: UC-011
+### Use Case Name: Ensure System Security
+### Relevant Requirements:
+4.1.1: When an employee creates a unique password, it must include special characters like '/', '*', etc., so it doesn't become a weak password.
+
+Primary Actor: System
+Pre-conditions:
+The employee is creating or updating their password.
+
+Post-conditions:
+The password meets security requirements.
+
+Basic Flow or Main Scenario:
+The employee enters a new password.
+
+The system checks if the password includes special characters and meets complexity requirements.
+
+If valid, the system updates the password.
+
+If invalid, the system prompts the employee to create a stronger password.
+
+Extensions or Alternate Flows: None.
+Exceptions: None.
+Related Use Cases:
+UC-004: Employee Login (Password security is tied to employee login.)
+
+## Use Case 12: Monitor Garage Environment
+### Use Case ID: UC-012
+### Use Case Name: Monitor Garage Environment
+### Relevant Requirements:
+4.2.1: Lighting to guide drivers to the parking lane when it gets too dark.
+
+4.2.2: A cooling sensor to prevent the system from overheating.
+
+Primary Actor: System
+Pre-conditions:
+The garage is operational.
+
+Post-conditions:
+Environmental conditions are maintained within acceptable limits.
+
+Basic Flow or Main Scenario:
+The system detects low lighting or high temperature.
+
+The system activates lighting or cooling mechanisms.
+
+The system logs the environmental adjustment.
+
+Extensions or Alternate Flows: None.
+Exceptions:
+Sensor Failure: If the sensors fail, the system notifies maintenance staff and logs the issue.
+
+Related Use Cases: None.
