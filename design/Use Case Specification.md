@@ -1,6 +1,9 @@
 Use Case 1: Obtain Parking Ticket
+
 Use Case ID: UC-001
+
 Use Case Name: Obtain Parking Ticket
+
 Relevant Requirements:
 3.1.1.3: The system shall assign a unique ticket number to every vehicle entering a garage.
 
@@ -9,6 +12,7 @@ Relevant Requirements:
 3.1.3.2: The system shall update the vehicle count in real time as cars enter and exit the garage.
 
 Primary Actor: Customer
+
 Pre-conditions:
 The garage has available parking spaces.
 
