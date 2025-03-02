@@ -14,19 +14,19 @@
 
 - 3.1.3.2: The system shall update the vehicle count in real time as cars enter and exit the garage.
 
-**Primary Actor**: Customer
+###**Primary Actor**: Customer
 
-**Pre-conditions**:
+### **Pre-conditions**:
 - The garage has available parking spaces.
 
 - The entry gate system is operational.
 
-**Post-conditions**:
+### **Post-conditions**:
 - The customer receives a valid parking ticket.
 
 - The garage's vehicle count is incremented by one.
 
-**Basic Flow or Main Scenario**:
+### **Basic Flow or Main Scenario**:
 
 1. The customer approaches the entry gate.
 
@@ -40,21 +40,21 @@
 
 6. The system updates the garage's vehicle count in real time.
 
-**Extensions or Alternate Flows**:
+### **Extensions or Alternate Flows**:
 - Alternate Flow 1: Garage Full
   - If the garage is full, the system displays a "No Available Spaces" message.
 
   - The entry gate remains closed, and the customer is directed to another garage.
 
-**Exceptions**:
+### **Exceptions**:
 - Printer Failure: If the ticket printer fails, the system notifies maintenance staff and displays an error message to the customer.
 
 - Network Failure: If the system cannot communicate with the central server, it displays an error message and prevents ticket generation.
 
-**Related Use Cases**:
+### **Related Use Cases**:
 - UC-003: Pay Parking Fee (Customer must have a valid ticket to pay upon exit.)
 
-#Use Case 2: View Available Spaces
+## Use Case 2: View Available Spaces
 
 Use Case ID: UC-02
 Use Case Name: View Available Spaces
