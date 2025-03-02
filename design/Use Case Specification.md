@@ -19,12 +19,12 @@
 
 - The entry gate system is operational.
 
-**##Post-conditions**:
+**Post-conditions**:
 - The customer receives a valid parking ticket.
 
 - The garage's vehicle count is incremented by one.
 
-**##Basic Flow or Main Scenario**:
+**Basic Flow or Main Scenario**:
 
 1. The customer approaches the entry gate.
 
@@ -38,13 +38,13 @@
 
 6. The system updates the garage's vehicle count in real time.
 
-**##Extensions or Alternate Flows**:
+**Extensions or Alternate Flows**:
 - Alternate Flow 1: Garage Full
   - If the garage is full, the system displays a "No Available Spaces" message.
 
   - The entry gate remains closed, and the customer is directed to another garage.
 
-**##Exceptions**:
+**Exceptions**:
 - Printer Failure: If the ticket printer fails, the system notifies maintenance staff and displays an error message to the customer.
 
 - Network Failure: If the system cannot communicate with the central server, it displays an error message and prevents ticket generation.
