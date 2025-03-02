@@ -176,7 +176,7 @@
 ### Extensions or Alternate Flows:
 - Alternate Flow 1: Invalid Credentials
 
-- If the credentials are invalid, the system displays an error message and prompts the employee to retry.
+  - If the credentials are invalid, the system displays an error message and prompts the employee to retry.
 
 ### Exceptions:
 - Network Failure: If the system cannot communicate with the central server, it displays an error message.
