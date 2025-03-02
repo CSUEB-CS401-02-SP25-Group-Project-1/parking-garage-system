@@ -14,15 +14,15 @@
 
 **Primary Actor**: Customer
 
-- Pre-conditions:
-  - The garage has available parking spaces.
+**Pre-conditions**:
+- The garage has available parking spaces.
 
-  - The entry gate system is operational.
+- The entry gate system is operational.
 
-- Post-conditions:
-  - The customer receives a valid parking ticket.
+**Post-conditions**:
+- The customer receives a valid parking ticket.
 
-  - The garage's vehicle count is incremented by one.
+- The garage's vehicle count is incremented by one.
 
 **Basic Flow or Main Scenario**:
 
