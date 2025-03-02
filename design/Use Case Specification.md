@@ -10,7 +10,8 @@
 
 - 3.1.3.2: The system shall update the vehicle count in real time as cars enter and exit the garage.
 
-### Primary Actor: Customer
+### Primary Actor: 
+- Customer
 
 ### Pre-conditions:
 - The garage has available parking spaces.
@@ -58,7 +59,8 @@
 
 - 3.1.2.3.2: Customers shall be able to view the number of available spaces in a garage.
 
-### Primary Actor: Customer
+### Primary Actor: 
+- Customer
 ### Pre-conditions: 
 - None.
 
@@ -98,7 +100,8 @@
 
 - 3.1.2.3.6: The system shall automatically open the exit gate after the customer has completed payment.
 
-### Primary Actor: Customer
+### Primary Actor: 
+- Customer
 
 ### Pre-conditions:
 - The customer has a valid parking ticket.
@@ -189,7 +192,8 @@
 ### Relevant Requirements:
 - 3.1.2.4.2: Employees shall be able to override a customer's parking fee when necessary.
 
-### Primary Actor: Employee
+### Primary Actor: 
+- Employee
 ### Pre-conditions:
 - The employee is logged in.
 
@@ -209,7 +213,8 @@
 
 5. The system updates the fee and logs the override action.
 
-### Extensions or Alternate Flows: None.
+### Extensions or Alternate Flows: 
+- None.
 ### Exceptions:
 - Invalid Ticket: If the ticket is invalid, the system displays an error message.
 
@@ -222,7 +227,8 @@
 ### Relevant Requirements:
 - 3.1.2.4.3: Employees shall be able to generate a new parking ticket for customers when needed.
 
-### Primary Actor: Employee
+### Primary Actor: 
+- Employee
 ### Pre-conditions:
 - The employee is logged in.
 
@@ -244,7 +250,8 @@
 
 5. The system updates the garage's vehicle count.
 
-### Extensions or Alternate Flows: None.
+### Extensions or Alternate Flows: 
+- None.
 ### Exceptions:
 - Printer Failure: If the ticket printer fails, the system notifies the employee and logs the issue.
 
@@ -261,7 +268,8 @@ UC-01: Obtain Parking Ticket (Similar functionality for self-parking customers.)
 
 - 3.1.3.4: The system shall generate garage usage reports for employees on a daily, weekly, monthly, or yearly basis.
 
-### Primary Actor: Employee
+### Primary Actor: 
+- Employee
 ### Pre-conditions:
 - The employee is logged in.
 
@@ -277,7 +285,8 @@ UC-01: Obtain Parking Ticket (Similar functionality for self-parking customers.)
 
 4. The system displays the report to the employee.
 
-### Extensions or Alternate Flows: None.
+### Extensions or Alternate Flows: 
+- None.
 ### Exceptions:
 - Network Failure: If the system cannot communicate with the central server, it displays an error message.
 
@@ -290,7 +299,8 @@ UC-01: Obtain Parking Ticket (Similar functionality for self-parking customers.)
 ### Relevant Requirements:
 - 3.1.2.4.7: Employees shall be able to modify their garage's parking fee rate.
 
-### Primary Actor: Employee
+### Primary Actor: 
+- Employee
 ### Pre-conditions:
 - The employee is logged in.
 
@@ -306,7 +316,8 @@ UC-01: Obtain Parking Ticket (Similar functionality for self-parking customers.)
 
 4. The system logs the change.
 
-### Extensions or Alternate Flows: None.
+### Extensions or Alternate Flows: 
+- None.
 ### Exceptions:
 - Invalid Input: If the employee enters an invalid fee rate, the system displays an error message.
 
@@ -321,7 +332,8 @@ UC-01: Obtain Parking Ticket (Similar functionality for self-parking customers.)
 
 - 3.1.3.2: The system shall update the vehicle count in real time as cars enter and exit the garage.
 
-### Primary Actor: System
+### Primary Actor: 
+- System
 ### Pre-conditions:
 - The garage is operational.
 
@@ -353,7 +365,8 @@ UC-01: Obtain Parking Ticket (Similar functionality for self-parking customers.)
 ### Relevant Requirements:
 - 3.1.1.2: The system shall detect and notify the relevant user (customer or employee) when an error occurs such as an invalid ticket or network failure.
 
-### Primary Actor: System
+### Primary Actor: 
+- System
 ### Pre-conditions:
 - An error condition occurs (e.g., invalid ticket, network failure).
 
@@ -384,7 +397,8 @@ UC-01: Obtain Parking Ticket (Similar functionality for self-parking customers.)
 ### Relevant Requirements:
 - 4.1.1: When an employee creates a unique password, it must include special characters like '/', '*', etc., so it doesn't become a weak password.
 
-### Primary Actor: System
+### Primary Actor: 
+- System
 ### Pre-conditions:
 - The employee is creating or updating their password.
 
@@ -400,7 +414,8 @@ UC-01: Obtain Parking Ticket (Similar functionality for self-parking customers.)
 
 4. If invalid, the system prompts the employee to create a stronger password.
 
-### Extensions or Alternate Flows: None.
+### Extensions or Alternate Flows: 
+- None.
 ### Exceptions: 
 - None.
 ### Related Use Cases:
@@ -414,7 +429,8 @@ UC-01: Obtain Parking Ticket (Similar functionality for self-parking customers.)
 
 - 4.2.2: A cooling sensor to prevent the system from overheating.
 
-### Primary Actor: System
+### Primary Actor: 
+- System
 ### Pre-conditions:
 - The garage is operational.
 
@@ -428,7 +444,8 @@ UC-01: Obtain Parking Ticket (Similar functionality for self-parking customers.)
 
 3. The system logs the environmental adjustment.
 
-### Extensions or Alternate Flows: None.
+### Extensions or Alternate Flows: 
+- None.
 ### Exceptions:
 - Sensor Failure: If the sensors fail, the system notifies maintenance staff and logs the issue.
 
