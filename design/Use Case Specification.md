@@ -258,7 +258,7 @@
 - Network Failure: If the system cannot communicate with the central server, it displays an error message.
 
 ### Related Use Cases:
-UC-01: Obtain Parking Ticket (Similar functionality for self-parking customers.)
+- UC-01: Obtain Parking Ticket (Similar functionality for self-parking customers.)
 
 ## Use Case 7: View Garage Usage Report
 ### Use Case ID: UC-07
