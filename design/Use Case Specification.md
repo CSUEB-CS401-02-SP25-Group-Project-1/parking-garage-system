@@ -74,7 +74,8 @@
 
 4. The customer views the information.
 
-### Extensions or Alternate Flows: None.
+### Extensions or Alternate Flows: 
+- None.
    
 ### Exceptions:
 - Network Failure: If the system cannot communicate with the central server, it displays an error message.
