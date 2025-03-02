@@ -58,27 +58,33 @@
 
 ### Use Case ID: UC-02
 ### Use Case Name: View Available Spaces
-Relevant Requirements:
-3.1.2.3.2: Customers shall be able to view the number of available spaces in a garage.
+### Relevant Requirements:
 
-Primary Actor: Customer
-Pre-conditions: None.
-Post-conditions: The customer is informed of the garage's current availability.
-Basic Flow or Main Scenario:
-The customer selects "View Available Spaces" on the interface.
+- 3.1.2.3.2: Customers shall be able to view the number of available spaces in a garage.
 
-The system retrieves the garage's current vehicle count and capacity.
+### Primary Actor: Customer
+### Pre-conditions: 
+- None.
 
-The system calculates and displays the number of available spaces.
+### Post-conditions: 
+- The customer is informed of the garage's current availability.
+  
+### Basic Flow or Main Scenario:
+1. The customer selects "View Available Spaces" on the interface.
 
-The customer views the information.
+2. The system retrieves the garage's current vehicle count and capacity.
 
-Extensions or Alternate Flows: None.
-Exceptions:
-Network Failure: If the system cannot communicate with the central server, it displays an error message.
+3. The system calculates and displays the number of available spaces.
 
-Related Use Cases:
-UC-001: Obtain Parking Ticket (Customer may request a ticket after viewing available spaces.)
+4. The customer views the information.
+
+### Extensions or Alternate Flows: None.
+   
+### Exceptions:
+- Network Failure: If the system cannot communicate with the central server, it displays an error message.
+
+### Related Use Cases:
+- UC-001: Obtain Parking Ticket (Customer may request a ticket after viewing available spaces.)
 
 Use Case 3: Pay Parking Fee
 Use Case ID: UC-003
