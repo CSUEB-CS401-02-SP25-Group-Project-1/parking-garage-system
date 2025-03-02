@@ -56,8 +56,8 @@
 
 ## Use Case 2: View Available Spaces
 
-Use Case ID: UC-02
-Use Case Name: View Available Spaces
+### Use Case ID: UC-02
+### Use Case Name: View Available Spaces
 Relevant Requirements:
 3.1.2.3.2: Customers shall be able to view the number of available spaces in a garage.
 
