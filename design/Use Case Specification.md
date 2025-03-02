@@ -1,4 +1,4 @@
-Use Case 1: Obtain Parking Ticket
+#Use Case 1: Obtain Parking Ticket
 
 Use Case ID: UC-001
 
