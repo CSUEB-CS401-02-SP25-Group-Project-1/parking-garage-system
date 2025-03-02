@@ -49,7 +49,7 @@
 
 - Network Failure: If the system cannot communicate with the central server, it displays an error message and prevents ticket generation.
 
-**##Related Use Cases**:
+**Related Use Cases**:
 - UC-003: Pay Parking Fee (Customer must have a valid ticket to pay upon exit.)
 
 Use Case 2: View Available Spaces
