@@ -124,17 +124,17 @@ It is assumed that the companies using the PGS system will manage more than one 
 ### 4.1. Security and Privacy Requirements
 
 - **4.1.1** When a employee creates a unique password it must include special characters like '/', '*', etc so it doesn't become a weak password
-- **4.1.2** A gate that will allow vehicles to head to the designated parking area. 
-- **4.1.3** Surveillance cameras to monitor the parking garage.
+- **4.1.2** A gate that will allow vehicles to head to the designated parking area. This can only occur when the payment has finally been made. 
+- **4.1.3** Surveillance cameras to monitor the parking garage. This is for any suspicious activity that needs to taken action. We want to create a safe environment for everyone. 
 
 ### 4.2. Environmental Requirements
 
 - **4.2.1** Lighting to guide the driver's to the parking lane when it gets too dark and they can't see. The system can provide that so it would be easier for the drivers to park in the lanes. 
 - **4.2.2** A cooling sensor that will prevent the system from overheating. Especially, for those who are running the system over a long period of time. 
-- **4.2.3** Electrical energy to keep the garage’s power to be powered on.
+- **4.2.3** Electrical energy to keep the garage’s power to be powered on so obviously everything can run smoothly. 
 
 ### 4.3. Performance Requirements
 
-- **4.3.1** The number of parking spaces being available in each level.
-- **4.3.2** Once the payment is done processing, the gate will slowly open.
+- **4.3.1** The number of parking spaces being available in each level. This will show the capacity to everyone so they'll know how much spaces are available.
+- **4.3.2** Once the payment is done processing, the gate will slowly open. This will then lead them to the parking area in the garage. 
 - **4.3.3** A vehicle being parked for the amount of hours it can stay in that spot but staying for too long will be charged with a fee and it will increase every hour.
