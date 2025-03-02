@@ -1,4 +1,4 @@
-# Use Case 1: Obtain Parking Ticket
+##/1 Use Case 1: Obtain Parking Ticket
 
 **Use Case ID**: UC-01
 
@@ -52,7 +52,7 @@
 **Related Use Cases**:
 - UC-003: Pay Parking Fee (Customer must have a valid ticket to pay upon exit.)
 
-Use Case 2: View Available Spaces
+#Use Case 2: View Available Spaces
 
 Use Case ID: UC-02
 Use Case Name: View Available Spaces
