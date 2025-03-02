@@ -186,36 +186,36 @@
 
 - UC-007: View Garage Usage Report (Employee must log in to access this feature.)
 
-Use Case 5: Override Customer Fee
-Use Case ID: UC-05
-Use Case Name: Override Customer Fee
-Relevant Requirements:
-3.1.2.4.2: Employees shall be able to override a customer's parking fee when necessary.
+### Use Case 5: Override Customer Fee
+### Use Case ID: UC-05
+### Use Case Name: Override Customer Fee
+### Relevant Requirements:
+- 3.1.2.4.2: Employees shall be able to override a customer's parking fee when necessary.
 
-Primary Actor: Employee
-Pre-conditions:
-The employee is logged in.
+### Primary Actor: Employee
+### Pre-conditions:
+- The employee is logged in.
 
-The customer has a valid ticket.
+- The customer has a valid ticket.
 
-Post-conditions:
-The customer's fee is updated to the manually set value.
+### Post-conditions:
+- The customer's fee is updated to the manually set value.
 
-Basic Flow or Main Scenario:
-The employee selects "Override Fee" on the dashboard.
+### Basic Flow or Main Scenario:
+1. The employee selects "Override Fee" on the dashboard.
 
-The employee enters the customer's ticket number.
+2. The employee enters the customer's ticket number.
 
-The system retrieves the current fee.
+3. The system retrieves the current fee.
 
-The employee enters the new fee amount.
+4. The employee enters the new fee amount.
 
-The system updates the fee and logs the override action.
+5. The system updates the fee and logs the override action.
 
-Extensions or Alternate Flows: None.
-Exceptions:
-Invalid Ticket: If the ticket is invalid, the system displays an error message.
+### Extensions or Alternate Flows: None.
+### Exceptions:
+- Invalid Ticket: If the ticket is invalid, the system displays an error message.
 
-Related Use Cases:
-UC-003: Pay Parking Fee (Employee may override the fee during payment processing.)
+### Related Use Cases:
+- UC-003: Pay Parking Fee (Employee may override the fee during payment processing.)
 
