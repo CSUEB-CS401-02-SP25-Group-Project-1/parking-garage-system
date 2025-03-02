@@ -1,3 +1,5 @@
+# Use Case Specification
+
 ##/1 Use Case 1: Obtain Parking Ticket
 
 **Use Case ID**: UC-01
