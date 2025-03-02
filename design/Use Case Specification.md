@@ -186,7 +186,7 @@
 
 - UC-007: View Garage Usage Report (Employee must log in to access this feature.)
 
-### Use Case 5: Override Customer Fee
+## Use Case 5: Override Customer Fee
 ### Use Case ID: UC-05
 ### Use Case Name: Override Customer Fee
 ### Relevant Requirements:
