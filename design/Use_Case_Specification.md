@@ -369,16 +369,14 @@
 ### Basic Flow or Main Scenario:
 1. A vehicle enters or exits the garage.
 
-2. The system detects the action via sensors.
+2. The system updates the garage's vehicle count.
 
-3.  The system updates the garage's vehicle count.
-
-4. The system logs the entry/exit timestamp.
+3. The system logs the entry/exit timestamp.
 
 ### Extensions or Alternate Flows: 
 - None.
 ### Exceptions:
-- Sensor Failure: If the sensors fail, the system notifies maintenance staff and logs the issue.
+- None.
 
 ### Related Use Cases:
 - UC-01: Obtain Parking Ticket (Entry tracking is tied to ticket generation.)
@@ -446,34 +444,3 @@
 - None.
 ### Related Use Cases:
 - UC-04: Employee Login (Password security is tied to employee login.)
-
-## Use Case 12: Monitor Garage Environment
-### Use Case ID: UC-12
-### Use Case Name: Monitor Garage Environment
-### Relevant Requirements:
-- 4.2.1: Lighting to guide drivers to the parking lane when it gets too dark.
-
-- 4.2.2: A cooling sensor to prevent the system from overheating.
-
-### Primary Actor: 
-- System
-### Pre-conditions:
-- The garage is operational.
-
-### Post-conditions:
-- Environmental conditions are maintained within acceptable limits.
-
-### Basic Flow or Main Scenario:
-1. The system detects low lighting or high temperature.
-
-2. The system activates lighting or cooling mechanisms.
-
-3. The system logs the environmental adjustment.
-
-### Extensions or Alternate Flows: 
-- None.
-### Exceptions:
-- Sensor Failure: If the sensors fail, the system notifies maintenance staff and logs the issue.
-
-### Related Use Cases: 
-- None.
