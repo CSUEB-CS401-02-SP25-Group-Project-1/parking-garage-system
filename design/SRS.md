@@ -20,7 +20,10 @@ This document will catalog the user, system, and hardware requirements for the P
 
 ### 1.3. References
 
-*TODO*
+- [Use Case Specification Document](Use_Case_Specification.md)
+- [UML Use Case Diagrams Document](UseCaseDiagram.svg)
+- [Class Diagrams](ClassDiagram.svg)
+- [Sequence Diagrams](SequenceDiagram.svg)
 
 ### 1.4. Overview
 
@@ -34,7 +37,7 @@ The PGS system is a standalone and self-contained application. It is not designe
 
 ### 2.2. Product Architecture
 
-The system will be organized into 2 major modules: the User module and the Garage module. Additionally, the User module will have 2 submodules for each kind of user: Customer and Employee.
+The system will be organized into 3 major modules: the User module, the Garage module, and the Ticket module. Additionally, the User module will have 2 submodules for each kind of user: Customer and Employee.
 
 Note: System architecture should follow standard OO design practices.
 
@@ -49,7 +52,7 @@ The high-level features of the system are as follows (see section 3 of this docu
 - **Reliable & Intuitive Interface:** Graphical interface is easy to understand for both customers and employees alike and is responsive.
 - **Automatic Fee Calculation:** Calculates parking fees based on how long a car stays in a garage using its entry and exit timestamps.
 - **Manual Fee Override:** Allows employees to manually override the system's calculated fee by setting a fixed value in case of an error or rebate.
-- **Ticket & Receipt Generation:** Issues a unique ticket to a customer upon entry and prints a receipt while exiting containing their final fee and time spent in garage.
+- **Ticket & Receipt Generation:** Issues a unique ticket to a customer upon entry and prints a receipt while exiting containing their final fee and time spent in the garage.
 - **Garage Usage Reports:** Provides employees with reports on total revenue earned, cars parked, and peak usage times of a particular garage.
 - **Error Handling & Notification System:** System is able to detect issues such as invalid tickets or network failures and alerts the relevant party.
 
@@ -59,7 +62,7 @@ The PGS system shall not use any additional databases, libraries, frameworks, an
 
 ### 2.5. Assumptions and Dependencies
 
-It is assumed that the companies using the PGS system will manage more than one garage and consist of multiple employees that will be interacting with this software from different locations at the same time. It is also assumed that there will be multiple customers attempting to self-park in different garages in different locations at the same time. Depending on the size of the company as well as how many customers would be interacting with the system across all garages, it is expected that the amount of people who will be using this program simulatenously would range from hundreds to thousands.
+It is assumed that the companies using the PGS system will manage more than one garage and consist of multiple employees that will be interacting with this software from different locations at the same time. It is also assumed that there will be multiple customers attempting to self-park in different garages in different locations at the same time. Depending on the size of the company as well as how many customers would be interacting with the system across all garages, it is expected that the amount of people who will be using this program simultaneously would range from hundreds to thousands.
 
 ## 3\. Specific Requirements
 
@@ -105,6 +108,18 @@ It is assumed that the companies using the PGS system will manage more than one 
 - **3.1.3.3.** The system shall track and store data on total revenue, total cars parked, and peak usage hours.
 - **3.1.3.4.** The system shall generate garage usage reports for employees on a daily, weekly, monthly, or yearly basis.
 
+### 3.1.4. Ticket Module Requirements:
+
+- **3.1.4.1.** The system shall generate a unique ticket number for each vehicle entering the garage.
+- **3.1.4.2.** The system shall store the entry timestamp when a ticket is created.
+- **3.1.4.3.** The system shall update the exit timestamp when the customer leaves the garage.
+- **3.1.4.4.** The system shall calculate the parking fee based on the duration between the entry and exit timestamps and the garage's hourly rate.
+- **3.1.4.5.** The system shall allow employees to generate new tickets manually for customers.
+- **3.1.4.6.** The system shall validate a ticket before processing payment.
+- **3.1.4.7.** The system shall generate and print a receipt upon successful payment.
+- **3.1.4.8.** The system shall track and store all issued, paid, and expired tickets for auditing and reporting purposes.
+- **3.1.4.9.** The system shall notify the customer if a ticket is invalid or has already been used.
+
 ## 3.2. External Interface Requirements
 
 - **3.2.1.** The system shall provide distinct graphical interfaces for customers and employees, assigning the appropriate interface based on user type.
@@ -125,7 +140,7 @@ It is assumed that the companies using the PGS system will manage more than one 
 
 - **4.1.1** When a employee creates a unique password it must include special characters like '/', '*', etc so it doesn't become a weak password
 - **4.1.2** A gate that will allow vehicles to head to the designated parking area. This can only occur when the payment has finally been made. 
-- **4.1.3** Surveillance cameras to monitor the parking garage. This is for any suspicious activity that needs to taken action. We want to create a safe environment for everyone. 
+- **4.1.3** Surveillance cameras to monitor the parking garage. This is for any suspicious activity that needs to taken action. 
 
 ### 4.2. Environmental Requirements
 

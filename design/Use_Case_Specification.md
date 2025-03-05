@@ -10,6 +10,10 @@
 
 - 3.1.3.2: The system shall update the vehicle count in real time as cars enter and exit the garage.
 
+- 3.1.4.1: The system shall generate a unique ticket number for each vehicle entering the garage.
+
+- 3.1.4.2: The system shall store the entry timestamp when a ticket is created.
+
 ### Primary Actor: 
 - Customer
 
@@ -99,6 +103,16 @@
 - 3.1.2.3.4: The system shall verify the customer's ticket before processing payment.
 
 - 3.1.2.3.6: The system shall automatically open the exit gate after the customer has completed payment.
+
+- 3.1.4.3: The system shall update the exit timestamp when the customer leaves the garage.
+
+- 3.1.4.4: The system shall calculate the parking fee based on the duration between the entry and exit timestamps and the garage's hourly rate.
+
+- 3.1.4.6: The system shall validate a ticket before processing payment.
+
+- 3.1.4.7: The system shall generate and print a receipt upon successful payment.
+
+- 3.1.4.9: The system shall notify the customer if a ticket is invalid or has already been used.
 
 ### Primary Actor: 
 - Customer
@@ -192,6 +206,8 @@
 ### Relevant Requirements:
 - 3.1.2.4.2: Employees shall be able to override a customer's parking fee when necessary.
 
+- 3.1.4.5: The system shall allow employees to generate new tickets manually for customers.
+
 ### Primary Actor: 
 - Employee
 ### Pre-conditions:
@@ -226,6 +242,12 @@
 ### Use Case Name: Generate Parking Ticket
 ### Relevant Requirements:
 - 3.1.2.4.3: Employees shall be able to generate a new parking ticket for customers when needed.
+
+- 3.1.4.1: The system shall generate a unique ticket number for each vehicle entering the garage.
+
+- 3.1.4.2: The system shall store the entry timestamp when a ticket is created.
+
+- 3.1.4.5: The system shall allow employees to generate new tickets manually for customers.
 
 ### Primary Actor: 
 - Employee
@@ -331,6 +353,10 @@
 - 3.1.1.4: The system shall log each vehicle's entry and exit timestamps for tracking and fee calculation.
 
 - 3.1.3.2: The system shall update the vehicle count in real time as cars enter and exit the garage.
+
+- 3.1.4.3: The system shall update the exit timestamp when the customer leaves the garage.
+
+- 3.1.4.8: The system shall track and store all issued, paid, and expired tickets for auditing and reporting purposes.
 
 ### Primary Actor: 
 - System
