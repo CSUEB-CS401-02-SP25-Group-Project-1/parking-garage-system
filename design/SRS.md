@@ -20,7 +20,7 @@ This document will catalog the user, system, and hardware requirements for the P
 
 ### 1.3. References
 
-- [Use Case Specification Document](Use Case Specification.md)
+- [Use Case Specification Document]("Use Case Specification.md")
 - [UML Use Case Diagrams Document](UseCaseDiagram.svg)
 - [Class Diagrams](ClassDiagram.svg)
 - [Sequence Diagrams](SequenceDiagram.svg)
