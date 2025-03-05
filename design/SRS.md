@@ -20,7 +20,10 @@ This document will catalog the user, system, and hardware requirements for the P
 
 ### 1.3. References
 
-*TODO*
+- [Use Case Specification Document](Use Case Specification.md)
+- [UML Use Case Diagrams Document](UseCaseDiagram.svg)
+- [Class Diagrams](ClassDiagram.svg)
+- [Sequence Diagrams](SequenceDiagram.svg)
 
 ### 1.4. Overview
 
@@ -49,7 +52,7 @@ The high-level features of the system are as follows (see section 3 of this docu
 - **Reliable & Intuitive Interface:** Graphical interface is easy to understand for both customers and employees alike and is responsive.
 - **Automatic Fee Calculation:** Calculates parking fees based on how long a car stays in a garage using its entry and exit timestamps.
 - **Manual Fee Override:** Allows employees to manually override the system's calculated fee by setting a fixed value in case of an error or rebate.
-- **Ticket & Receipt Generation:** Issues a unique ticket to a customer upon entry and prints a receipt while exiting containing their final fee and time spent in garage.
+- **Ticket & Receipt Generation:** Issues a unique ticket to a customer upon entry and prints a receipt while exiting containing their final fee and time spent in the garage.
 - **Garage Usage Reports:** Provides employees with reports on total revenue earned, cars parked, and peak usage times of a particular garage.
 - **Error Handling & Notification System:** System is able to detect issues such as invalid tickets or network failures and alerts the relevant party.
 
@@ -59,7 +62,7 @@ The PGS system shall not use any additional databases, libraries, frameworks, an
 
 ### 2.5. Assumptions and Dependencies
 
-It is assumed that the companies using the PGS system will manage more than one garage and consist of multiple employees that will be interacting with this software from different locations at the same time. It is also assumed that there will be multiple customers attempting to self-park in different garages in different locations at the same time. Depending on the size of the company as well as how many customers would be interacting with the system across all garages, it is expected that the amount of people who will be using this program simulatenously would range from hundreds to thousands.
+It is assumed that the companies using the PGS system will manage more than one garage and consist of multiple employees that will be interacting with this software from different locations at the same time. It is also assumed that there will be multiple customers attempting to self-park in different garages in different locations at the same time. Depending on the size of the company as well as how many customers would be interacting with the system across all garages, it is expected that the amount of people who will be using this program simultaneously would range from hundreds to thousands.
 
 ## 3\. Specific Requirements
 
@@ -137,16 +140,14 @@ It is assumed that the companies using the PGS system will manage more than one 
 
 - **4.1.1** When a employee creates a unique password it must include special characters like '/', '*', etc so it doesn't become a weak password
 - **4.1.2** A gate that will allow vehicles to head to the designated parking area. This can only occur when the payment has finally been made. 
-- **4.1.3** Surveillance cameras to monitor the parking garage. This is for any suspicious activity that needs to taken action. We want to create a safe environment for everyone. 
+- **4.1.3** Surveillance cameras to monitor the parking garage. This is for any suspicious activity that needs to taken action. 
 
 ### 4.2. Environmental Requirements
 
-- **4.2.1** Lighting to guide the driver's to the parking lane when it gets too dark and they can't see. The system can provide that so it would be easier for the drivers to park in the lanes. 
-- **4.2.2** A cooling sensor that will prevent the system from overheating. Especially, for those who are running the system over a long period of time. 
-- **4.2.3** Electrical energy to keep the garage’s power to be powered on so obviously everything can run smoothly. 
+- **4.2.1** Electrical energy to keep the garage’s power to be powered on so obviously everything can run smoothly. 
 
 ### 4.3. Performance Requirements
 
-- **4.3.1** The number of parking spaces being available in each level. This will show the capacity to everyone so they'll know how much spaces are available.
+- **4.3.1** The number of parking spaces being available in each level. This will show the capacity to everyone so they'll know how many spaces are available.
 - **4.3.2** Once the payment is done processing, the gate will slowly open. This will then lead them to the parking area in the garage. 
 - **4.3.3** A vehicle being parked for the amount of hours it can stay in that spot but staying for too long will be charged with a fee and it will increase every hour.
