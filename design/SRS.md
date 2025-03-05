@@ -144,10 +144,11 @@ It is assumed that the companies using the PGS system will manage more than one 
 
 ### 4.2. Environmental Requirements
 
-- **4.2.1** Electrical energy to keep the garage’s power to be powered on so obviously everything can run smoothly. 
+- **4.2.1** The system needs to be safeguarded and must be stored in a safe place in order to be avoid being tampered with. 
+- **4.2.2** Electrical energy to keep the garage’s power to be powered on so obviously everything can run smoothly. 
 
 ### 4.3. Performance Requirements
 
-- **4.3.1** The number of parking spaces being available in each level. This will show the capacity to everyone so they'll know how many spaces are available.
+- **4.3.1** Networking enables real time monitoring of parking spaces available in each level which will show everyone how much are left. 
 - **4.3.2** Once the payment is done processing, the gate will slowly open. This will then lead them to the parking area in the garage. 
 - **4.3.3** A vehicle being parked for the amount of hours it can stay in that spot but staying for too long will be charged with a fee and it will increase every hour.
