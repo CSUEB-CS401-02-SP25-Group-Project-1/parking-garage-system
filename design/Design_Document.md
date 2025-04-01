@@ -13,7 +13,7 @@
     - [**Use Case Diagram**](#use-case-diagram)
 - [**Milestones / Timeline**](#milestones--timeline)
 ## Overview
-This design document aims to eliminate any ambiguity surrounding the implementation of the Parking Garage System (PGS). It reiterates the original problem description, outlines the system’s goals and non-goals based on the requirements and scope defined by the [Software Requirements Specification (SRS) document](design/SRS.md), and provides a clear breakdown of how each class and module should be implemented in Java. To support this, the document includes detailed design diagrams for visual reference and a project timeline with milestones to ensure a smooth and organized implementation cycle.
+This design document aims to eliminate any ambiguity surrounding the implementation of the Parking Garage System (PGS). It reiterates the original problem description, outlines the system’s goals and non-goals based on the requirements and scope defined by the [Software Requirements Specification (SRS) document](SRS.md), and provides a clear breakdown of how each class and module should be implemented in Java. To support this, the document includes detailed design diagrams for visual reference and a project timeline with milestones to ensure a smooth and organized implementation cycle.
 ## Context
 We are developing a graphical parking garage management system in Java that enables employees to monitor garage metrics, such as the current vehicle count, generate usage reports, and print tickets and receipts for customers. Customers also have the option to self-park via a separate graphical user interface (GUI) integrated into the system.
 
@@ -50,13 +50,13 @@ Manually override a customer's final parking fee when necessary.
 **TODO**
 ## Design Diagrams
 ### UML Class Diagram
-<img src="design/ClassDiagram.svg" alt="UML Class Diagram" width="600"/>
+<img src="ClassDiagram.svg" alt="UML Class Diagram" width="600"/>
 
 ### Sequence Diagram
-<img src="design/SequenceDiagram.svg" alt="Sequence Diagram" width="600"/>
+<img src="SequenceDiagram.svg" alt="Sequence Diagram" width="600"/>
 
 ### Use Case Diagram
-<img src="design/UseCaseDiagram.svg" alt="Use Case Diagram" width="600"/>
+<img src="UseCaseDiagram.svg" alt="Use Case Diagram" width="600"/>
 
 ## Milestones / Timeline
 **TODO**
