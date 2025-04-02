@@ -17,7 +17,7 @@ This design document aims to eliminate any ambiguity surrounding the implementat
 ## Context
 We are developing a graphical parking garage management system in Java that enables employees to monitor garage metrics, such as the current vehicle count, generate usage reports, and print tickets and receipts for customers. Customers also have the option to self-park via a separate graphical user interface (GUI) integrated into the system.
 
-The system allows employees to configure fixed rate fees (by the hour) for individual garages and manually override a customer's final fee for when they are exiting the garage. Each customer is represented by the vehicle they park in the garage. Employees access their interface by logging in with a valid username and password.
+The system allows employees to configure fixed rate fees (by the hour) for individual garages and manually override a customer's final fee for when they are exiting the garage. Each customer's ticket is represented by the vehicle they park in the garage. Employees access their interface by logging in with a valid username and password.
 
 The system handles network communication between the user (customers and employees alike) and their garage via TCP/IP through a threaded server capable of handling multiple client connections simultaneously.
 
@@ -86,7 +86,7 @@ Represents a customer's parking ticket, used to track their entry and exit times
 #### Methods
 - `public Ticket(Customer customer, Garage garage)`: Initializes a new ticket with a unique ID based on current ticket count, sets `entryTime` to current time, sets `status` to `TicketStatus.Parking`, and associates the ticket with a customer and garage
 - `public void setExitTime(Date exitTime)`: Sets the `exitTime` to current time and updates `status` to `TicketStatus.Leaving`
-- `public void calculateFee()`: Calculates the fee as (`exitTime` - `entryTime`) in hours * garage's rate. Will not recalculate if `fee` has been manually overridden
+- `public void calculateFee()`: Calculates the fee as (`exitTime` - `entryTime`) in hours * garage's rate, will not recalculate if `fee` has been manually overridden
 - `public void overrideFee(double newFee)`: Sets `isOverridden` to `true` and sets `fee` to the manually specified value
 - `public void markAsPaid()`: Finalizes the ticket by setting `status` to `TicketStatus.Paid`
 - `public double getFee()`: Returns the final fee
