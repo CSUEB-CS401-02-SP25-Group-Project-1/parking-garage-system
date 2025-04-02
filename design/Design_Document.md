@@ -47,7 +47,26 @@ Manually override a customer's final parking fee when necessary.
 - The system will not use standard data serialization formats like JSON or XML. Instead, a custom, human-readable format will be implemented for saving data to file.
 - The system will not use any third-party databases, libraries, or frameworks. Only Java's built-in standard libraries will be used and all core functionality must be implemented from scratch by us (the development team).
 ## Implementation Details
-**TODO**
+### User Class
+#### Description
+Represents a user interacting with the system. This class is not intended to be instantiated directly. Instead, the system will create `Customer` or `Employee` objects, which inherit from `User` and make use of its shared attributes and methods.
+#### Relationships
+- Inherited by: `Customer`, `Employee`
+- Associated with: `Garage`
+#### Attributes
+- `protected UserType userType`: Indicates the user's role (`Customer`, `Employee`, or `Undefined`)
+- `protected Garage garage`: The garage the user is currently associated with
+#### Methods
+- `User()`: Constructor that initializes `userType` to `UserType.Undefined`
+- `void setGarage(Garage garage)`: Assigns the user to a specific garage
+- `UserType getUserType()`: Returns the user's type
+### UserType Enum
+#### Description
+Defines the possible user roles in the system. Used by the `User`, `Customer`, and `Employee` classes.
+#### Values
+- `Customer`
+- `Employee`
+- `Undefined`: Default value before the user role is specified
 ## Design Diagrams
 ### UML Class Diagram
 <img src="ClassDiagram.svg" alt="UML Class Diagram" width="600"/>
