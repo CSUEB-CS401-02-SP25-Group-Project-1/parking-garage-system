@@ -59,6 +59,7 @@ Represents a user interacting with the system. This class is not intended to be 
 #### Methods
 - `User()`: Constructor that initializes `userType` to `UserType.Undefined`
 - `void setGarage(Garage garage)`: Assigns the user to a specific garage
+- `Garage getGarage()`: Returns the user's garage
 - `UserType getUserType()`: Returns the user's type
 ### UserType Enum
 #### Description
