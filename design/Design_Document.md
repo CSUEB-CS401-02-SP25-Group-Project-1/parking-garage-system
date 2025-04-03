@@ -61,6 +61,19 @@ Represents a user interacting with the system. This class is not intended to be 
 - `public void setGarage(Garage garage)`: Assigns the user to a specific garage
 - `public Garage getGarage()`: Returns the user's garage
 - `public UserType getUserType()`: Returns the user's type
+### Customer Class
+#### Description
+Represents a customer user interacting with the system. The `Customer` object lives on the server-side and handles logic triggered by messages from the Customer GUI (client-side). It supports core customer features like requesting parking, checking space availability, retrieving a previous ticket, and making a payment.
+#### Relationships
+- Inherits from: `User`
+- Associated with: `Ticket`, `Garage` (via inherited attribute)
+#### Attributes
+- `private Ticket ticket`: The ticket currently associated with the customer
+#### Methods
+- `public boolean requestParking()`: Requests a new parking ticket from the garage. If the garage is full, returns false; otherwise assigns the new ticket and returns true.
+- `public boolean findTicket(String ticketID)`: Finds and assigns an existing ticket (e.g., based on ID lookup from garage), used for returning customers who need to retrieve their ticket before payment
+- `public int viewAvailableSpaces()`: Returns the number of currently available parking spots in the customer's assigned garage, server uses this to reply with a message to the customer GUI
+- `public boolean payFee()`: Processes the payment for the customer's ticket. If the ticket has already been paid, returns false. Otherwise, calculates fee, marks as paid, and logs revenue.
 ### UserType Enum
 #### Description
 Defines the possible user roles in the system. Used by the `User`, `Customer`, and `Employee` classes.
