@@ -70,7 +70,7 @@ Defines the possible user roles in the system. Used by the `User`, `Customer`, a
 - `Undefined`: Default value before the user role is specified
 ### Ticket Class
 #### Description
-Represents a customer's parking ticket, used to track their entry and exit timestamps, associated garage, and the final parking fee. Tickets are created upon entry and processed at exit. This class also supports fee calculation, manual fee overrides by employees, and status transitions (e.g., from `Parking` → `Leaving` → `Paid`).
+Represents a customer's parking ticket (and, by extension, the customer's parked vehicle), used to track their entry and exit timestamps, associated garage, and the final parking fee. Tickets are created upon entry and processed at exit. This class also supports fee calculation, manual fee overrides by employees, and status transitions (e.g., from `Parking` → `Leaving` → `Paid`).
 #### Relationships
 - Associated with: `Customer`, `Garage`
 #### Attributes
