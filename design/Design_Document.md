@@ -126,6 +126,7 @@ Represents a physical parking garage. Each garage tracks its capacity, hourly pa
 - `public void setFeeRate(double newRate)`: Updates the garage's hourly rate
 - `public void renameGarage(String newName)`: Renames the garage
 - `public String getID()`: Returns the unique garage ID
+- `public String getName()`: Returns the garage's name
 - `public int getCapacity()`: Returns the maximum capacity of the garage
 - `public int getCurrentVehicleCount()`: Returns the number of currently parked vehicles in the garage (`carsParked.size()`)
 - `public double getTotalRevenue()`: Returns total revenue collected by the garage
