@@ -47,24 +47,44 @@ Manually override a customer's final parking fee when necessary.
 - The system will not use standard data serialization formats like JSON or XML. Instead, a custom, human-readable format will be implemented for saving data to file.
 - The system will not use any third-party databases, libraries, or frameworks. Only Java's built-in standard libraries will be used and all core functionality must be implemented from scratch by us (the development team).
 ## Implementation Details
-### Ticket
+### Ticket Class
 - Represents both the customer's physical parking ticket and their currently-parked vehicle in the garage
 - Is associated with a garage upon creation
 - A ticket is created when a customer successfully parks their vehicle, either through self-parking or when an employee provides a ticket
 - Tickets are not created if their associated garage is full
 - Upon creation, `entryTime` is set to the current time
 - When the customer is checking out, `exitTime` is set to the current time
-- The system calculates the parking fee by multiplying the garage's fixed hourly rate by the total duration (`exitTime - entryTime`)
+- The system calculates the parking fee by multiplying the garage's fixed hourly rate by the total parking duration (`exitTime - entryTime`)
 - If an employee manually overrides the fee, the `isOverridden` flag is set to `true`, which prevents the system from recalculating the fee automatically afterward
 - Each ticket has a status that reflects its current phase in the parking lifecycle:
     - `Parking`: The vehicle has entered and is parked
     - `Leaving`: The vehicle is about to leave, payment is being processed
     - `Paid`: The payment has been completed
 - Once a ticket reaches the `Paid` status, it becomes invalid (unable to be reused or modified)
-- Each ticket has a unique string ID (e.g., “TI0”, “TI1”), generated from a system-wide counter
+- Each ticket has a unique string ID (e.g., “TI0”, “TI1”), generated from a system-wide counter (`count`)
 - Tickets can be searched by ID within a garage's record, useful for:
     - Returning customers attempting to leave
     - Employees needing to look up and manage specific tickets
+### Garage Class
+- Represents a physical parking garage in the system
+- Aggregates all tickets associated with the garage (vehicles currently parked)
+- Maintains a list of active tickets, which allows the system to:
+    - Track current occupancy
+    - Look up tickets by their string ID (e.g., for returning customers or employees)
+- A new ticket cannot be created if the garage is full (e.g., the number of active tickets equals the garage's capacity)
+- The garage can report its number of available spaces using the formula: `capacity - ticketList.size()`
+- Provides a method to check if the garage is currently full, returning a boolean value of the condition (`capacity == ticketList.size()`)
+- Each garage has a unique string ID (e.g., "GA0", "GA1") generated at creation
+- Garage instances are initialized with a fixed capacity, hourly rate, and garage name (separate from their ID)
+- A garage's name can be renamed after initialization
+- Stores a configurable hourly parking rate, which can be updated by an employee
+- Tracks total revenue earned by the garage across all paid tickets
+- When a new ticket is generated (and space is available), it is added to the garage's ticket list
+- When a ticket is paid:
+    - It gets removed from the garage's ticket list
+    - Its fee gets added to the garage's total revenue
+- Garage keeps track of its total revenue earned over the last hour, day, week, month, and year
+- Garage stores its peak hour of usage (based on the highest revenue earned during any given hour)
 ## Design Diagrams
 ### UML Class Diagram
 <img src="ClassDiagram.svg" alt="UML Class Diagram" width="600"/>
