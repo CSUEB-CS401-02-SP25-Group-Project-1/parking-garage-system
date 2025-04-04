@@ -7,6 +7,20 @@
     - [**Goals**](#goals)
     - [**Non-goals**](#non-goals)
 - [**Implementation Details**](#implementation-details)
+    - [**User Class**](#user-class)
+    - [**UserType Enum**](#usertype-enum)
+    - [**Customer Class**](#customer-class)
+    - [**Employee Class**](#employee-class)
+    - [**Ticket Class**](#ticket-class)
+    - [**TicketStatus Enum**](#ticketstatus-enum)
+    - [**Garage Class**](#garage-class)
+    - [**Reciept Class**](#reciept-class)
+    - [**Report Class**](#report-class)
+    - [**Message Class**](#message-class)
+    - [**MessageType Enum**](#messagetype-enum)
+    - [**Server Class**](#server-class)
+    - [**CustomerGUI Class**](#customergui-class)
+    - [**EmployeeGUI Class**](#employeegui-class)
 - [**Design Diagrams**](#design-diagrams)
     - [**UML Class Diagram**](#uml-class-diagram)
     - [**Sequence Diagram**](#sequence-diagram)
@@ -83,7 +97,7 @@ Manually override a customer's final parking fee when necessary.
 - Includes a method to generate a new ticket for a customer; returns the ticket ID if successful (fails if the garage is full)
 - Provides a method to generate and return a `Receipt` for a paid ticket, which is formatted into a `Message` for the `EmployeeGUI`
 - Supports generating a usage report (`Report`) for the employee's assigned garage, including:
-    - Total revenue earned across time intervals (hour/day/week/month)
+    - Total revenue earned across time intervals (hour/day/week/month/year)
     - Peak revenue hours
     - Currently parked vehicles (active tickets)
 - Has a method to modify the associated garage's hourly rate
@@ -140,8 +154,22 @@ Manually override a customer's final parking fee when necessary.
 - The `Receipt` class is strictly a data container, it does not perform any calculations or network communication
 - The class constructor has all of the class attributes as its arguments to ensure it can be reconstructed reliably from the server's message payload
 ### Report Class
-**TODO**
+- Used by both the `Server` and `EmployeeGUI` to provide a real-time summary of garage performance
+- Like the `Receipt` class, `Report` is a simply data container that does not perform any calculations or network communication
+- Contains the following attributes, representing key operational metrics of the garage:
+    - Revenue generated this hour
+    - Revenue generated this today
+    - Revenue generated this week
+    - Revenue generated this month
+    - Revenue generated this year
+    - Total revenue earned since system start
+    - Peak hour (hour with highest revenue)
+    - Number of curently parked vehicles
+- Includes a `toString()` method used by the `Server` to format the report into a string `Message` payload
+- Depending on how the GUI is implemented, the `EmployeeGUI` either parses the string back into a `Report` object or directly displays the formatted string
 ### Message Class
+**TODO**
+### MessageType Enum
 **TODO**
 ### Server Class
 **TODO**
