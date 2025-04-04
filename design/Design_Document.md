@@ -48,12 +48,21 @@ Manually override a customer's final parking fee when necessary.
 - The system will not use any third-party databases, libraries, or frameworks. Only Java's built-in standard libraries will be used and all core functionality must be implemented from scratch by us (the development team).
 ## Implementation Details
 ### User Class
-**TODO**
+- Serves as the base class for both `Customer` and `Employee`, providing common attributes and methods used in both of those classes
+- Defines common attributes such as the user's associated `Garage` and their `userType`
+- All attributes and methods in this class are marked as `protected` as they are meant to be used in the child classes
+- Upon instantiation, the `User` class sets its `userType` to `UserType.Undefined`; this value is later updated by the subclass (`Customer` or `Employee`)
+- The `userType` is used by the `Server` to determine which kind of user is currently interacting with the system
+- Has a method to assign a garage to the user
+- Has a method to get the associated garage
+- Has a method to get the user type
 ### UserType Enum
-**TODO**
+- `Customer`
+- `Employee`
+- `Undefined`: Default value before the user role is specified
 ### Customer Class
-- Not to be confused with the Customer GUI, this class does not handle input directly, but instead processes authenticated actions sent over the network via `Message` packets
-- The `Customer` class does not handle outgoing messages directly; instead, the `Server` calls its methods and returns the result to the Customer GUI as a `Message` packet over the network
+- Not to be confused with the `CustomerGUI`, this class does not handle input directly, but instead processes authenticated actions sent over the network via `Message` packets
+- The `Customer` class does not handle outgoing messages directly; instead, the `Server` calls its methods and returns the result to the `CustomerGUI` as a `Message` packet over the network
 - Inherits from the `User` class and, thus, becomes associated with a specific `Garage` upon initialization
 - Customers do not have a unique user ID; the system uses ticket-based identification since actions like valet parking or shared ticket use are possible
 - The `Customer` class is designed to facilitate and validate customer actions, such as parking, paying, and checking space availability
@@ -61,16 +70,18 @@ Manually override a customer's final parking fee when necessary.
 - Has a method to request a new ticket, which returns the ticket's string ID if the garage has space available
 - Provides a method to check the number of available spaces in the customer's assigned garage (returns an integer)
 - Handles the payment process for the customer when exiting the garage, validating the ticket and updating its status and fee if appropriate
-- Includes a method to generate a `Receipt` once a ticket is paid, which is returned to the Customer GUI as a `Message`
+- Includes a method to generate a `Receipt` once a ticket is paid, which is returned to the `CustomerGUI` as a `Message`
 ### Employee Class
-- Represents an employee's actions on the server side, separate from the Employee GUI which sends commands over the network via `Message` packets
-- Similar to the `Customer` class, the `Employee` class does not handle outgoing messages directly; instead, the `Server` calls its methods and returns the result to the Employee GUI as a `Message` packet over the network
-- Authenticates employee actions based on their plaintext credentials (`username` and `password`)
+- Represents an employee's actions on the server side, separate from the `EmployeeGUI` which sends commands over the network via `Message` packets
+- Similar to the `Customer` class, the `Employee` class does not handle outgoing messages directly; instead, the `Server` calls its methods and returns the result to the `EmployeeGUI` as a `Message` packet over the network
+- Authenticates employee logins based on their plaintext credentials (`username` and `password`)
+- Once an employee successfully logs in, the `isOnline` flag gets set to `true`, preventing multiple logins of the same user account at the same time
+- After an employee logs out, `isOnline` gets set to `false`, reallowing logins from that user account
 - Each employee has a unique string ID (e.g., "EM0", "EM1") generated on initialization
 - Inherits from the `User` class and, thus, becomes associated with a specific `Garage` upon initialization
 - Provides a method to override a ticket's fee, based on a given ticket ID and new fee amount
 - Includes a method to generate a new ticket for a customer; returns the ticket ID if successful (fails if the garage is full)
-- Provides a method to generate and return a `Receipt` for a paid ticket, which is formatted into a `Message` for the Employee GUI
+- Provides a method to generate and return a `Receipt` for a paid ticket, which is formatted into a `Message` for the `EmployeeGUI`
 - Supports generating a usage report (`Report`) for the employee's assigned garage, including:
     - Total revenue earned across time intervals (hour/day/week/month)
     - Peak revenue hours
