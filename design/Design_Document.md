@@ -47,6 +47,7 @@ Manually override a customer's final parking fee when necessary.
 - The system will not use standard data serialization formats like JSON or XML. Instead, a custom, human-readable format will be implemented for saving data to file.
 - The system will not use any third-party databases, libraries, or frameworks. Only Java's built-in standard libraries will be used and all core functionality must be implemented from scratch by us (the development team).
 ## Implementation Details
+**TODO: Rewrite this as bulletin-point summaries rather than snippits of code since this is getting too rigid**
 ### User Class
 #### Description
 Represents a user interacting with the system. This class is not intended to be instantiated directly. Instead, the system will create `Customer` or `Employee` objects, which inherit from `User` and make use of its shared attributes and methods.
@@ -74,6 +75,26 @@ Represents a customer user interacting with the system. The `Customer` object li
 - `public boolean findTicket(String ticketID)`: Finds and assigns an existing ticket (e.g., based on ID lookup from garage), used for returning customers who need to retrieve their ticket before payment
 - `public int viewAvailableSpaces()`: Returns the number of currently available parking spots in the customer's assigned garage, server uses this to reply with a message to the customer GUI
 - `public boolean payFee()`: Processes the payment for the customer's ticket. If the ticket has already been paid, returns false. Otherwise, calculates fee, marks as paid, and logs revenue.
+### Employee Class
+#### Description
+Represents an employee user interacting with the system from the server-side. Employees perform administrative functions such as managing tickets, overriding fees, generating receipts, and viewing garage usage reports. This class responds to commands triggered by messages from the Employee GUI.
+#### Relationships
+- Inherits from: `User`
+- Associated with: `Garage` (via inherited attribute)
+#### Attributes
+- `private static int count`: Total number of employees ever registered
+- `private String id`: Unique employee ID (e.g., "EM0")
+- `private String username`: Employee's login username
+- `private String password`: Plaintext password
+- `private boolean isOnline`: Flag indicating whether the employee is currently logged in
+#### Methods
+- `public boolean overrideFee(String ticketID, double newFee)`: Finds a ticket by ID and overrides its fee. Returns true if successful, false otherwise.
+- `public String generateNewTicket()`: Generates a new ticket manually for a customer (useful for handling non-"self parking" customers). Returns the ticket ID if successful, null if garage is full.
+- `public Receipt getReceipt(String ticketID)`: Returns a receipt object for a paid ticket. If the ticket is unpaid or not found, returns null.
+- `public Report getReport()`: Returns a usage report of the employee's assigned garage, including revenue, vehicle count, and peak usage times.
+- `public void modifyGarageFee(double newRate)`: Modifies the hourly fee of the employee's garage
+- `public void logIn()`: Marks the employee as currently using the system (`isOnline = true`)
+- `public void logOff()`: Marks the employee as offline (`isOnline = false`)
 ### UserType Enum
 #### Description
 Defines the possible user roles in the system. Used by the `User`, `Customer`, and `Employee` classes.
