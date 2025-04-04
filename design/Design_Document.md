@@ -57,7 +57,7 @@ Manually override a customer's final parking fee when necessary.
 - Inherits from the `User` class and, thus, becomes associated with a specific `Garage` upon initialization
 - Customers do not have a unique user ID; the system uses ticket-based identification since actions like valet parking or shared ticket use are possible
 - The `Customer` class is designed to facilitate and validate customer actions, such as parking, paying, and checking space availability
-- Upon receiving a valid ticket ID, the system binds the ticket to the current `Customer` object, allowing further actions like payment
+- Upon receiving a valid ticket ID, the system associates the ticket with the `Customer` object, allowing further actions like payment
 - Has a method to request a new ticket, which returns the ticket's string ID if the garage has space available
 - Provides a method to check the number of available spaces in the customer's assigned garage (returns an integer)
 - Handles the payment process for the customer when exiting the garage, validating the ticket and updating its status and fee if appropriate
