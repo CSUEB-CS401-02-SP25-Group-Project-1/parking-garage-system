@@ -61,7 +61,7 @@ Manually override a customer's final parking fee when necessary.
 - `Employee`
 - `Undefined`: Default value before the user role is specified
 ### Customer Class
-- Not to be confused with the `CustomerGUI`, this class does not handle input directly, but instead processes authenticated actions sent over the network via `Message` packets
+- Not to be confused with the `CustomerGUI`, this class is server side and does not handle input directly; it instead processes authenticated actions sent over the network via `Message` packets
 - The `Customer` class does not handle outgoing messages directly; instead, the `Server` calls its methods and returns the result to the `CustomerGUI` as a `Message` packet over the network
 - Inherits from the `User` class and, thus, becomes associated with a specific `Garage` upon initialization
 - Customers do not have a unique user ID; the system uses ticket-based identification since actions like valet parking or shared ticket use are possible
@@ -96,7 +96,7 @@ Manually override a customer's final parking fee when necessary.
 - When the customer is checking out, `exitTime` is set to the current time
 - The system calculates the parking fee by multiplying the garage's fixed hourly rate by the total parking duration (`exitTime - entryTime`)
 - If an employee manually overrides the fee, the `isOverridden` flag is set to `true`, which prevents the system from recalculating the fee automatically afterward
-- Each ticket has a status that reflects its current phase in the parking lifecycle [**(see "TicketStatus Enum")**](#ticketstatus-enum)
+- Each ticket has a status that reflects its current phase in the parking lifecycle [(see "TicketStatus Enum")](#ticketstatus-enum)
 - Once a ticket reaches the `Paid` status, it becomes invalid (unable to be reused or modified)
 - Each ticket has a unique string ID (e.g., "TI0", "TI1"), generated from a system-wide counter (`count`)
 - Tickets can be searched by ID within a garage's record, useful for:
@@ -127,7 +127,18 @@ Manually override a customer's final parking fee when necessary.
 - Garage keeps track of its total revenue earned over the last hour, day, week, month, and year
 - Garage stores its peak hour of usage (based on the highest revenue earned during any given hour)
 ### Reciept Class
-**TODO**
+- Represents a summary of a completed parking transaction, generated after a ticket is fully paid
+- The receipt includes the following attributes:
+    - The ticket ID
+    - The garage name
+    - The entry timestamp
+    - The exit timestamp
+    - The payment amount (final fee charged to the customer)
+- The `Server` creates a `Receipt` object using information from the paid ticket, then formats it into a string using the `toString()` method
+- This string is sent to the appropriate GUI (`CustomerGUI` or `EmployeeGUI`) via a `Message` object over the network
+- The GUI parses the message payload back into a `Receipt` object (or simply displays the formatted string, depending on implementation)
+- The `Receipt` class is strictly a data container, it does not perform any calculations or network communication
+- The class constructor has all of the class attributes as its arguments to ensure it can be reconstructed reliably from the server's message payload
 ### Report Class
 **TODO**
 ### Message Class
