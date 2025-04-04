@@ -47,6 +47,10 @@ Manually override a customer's final parking fee when necessary.
 - The system will not use standard data serialization formats like JSON or XML. Instead, a custom, human-readable format will be implemented for saving data to file.
 - The system will not use any third-party databases, libraries, or frameworks. Only Java's built-in standard libraries will be used and all core functionality must be implemented from scratch by us (the development team).
 ## Implementation Details
+### User Class
+**TODO**
+### UserType Enum
+**TODO**
 ### Customer Class
 - Not to be confused with the Customer GUI, this class does not handle input directly, but instead processes authenticated actions sent over the network via `Message` packets
 - The `Customer` class does not handle outgoing messages directly; instead, the `Server` calls its methods and returns the result to the Customer GUI as a `Message` packet over the network
@@ -57,8 +61,21 @@ Manually override a customer's final parking fee when necessary.
 - Has a method to request a new ticket, which returns the ticket's string ID if the garage has space available
 - Provides a method to check the number of available spaces in the customer's assigned garage (returns an integer)
 - Handles the payment process for the customer when exiting the garage, validating the ticket and updating its status and fee if appropriate
-- A `Customer` object can also be used indirectly by an employee to represent a customer during assisted check-in/checkout, particularly in non-self-service cases
-- Includes a method to generate a receipt summary once a ticket is paid, which is returned to the GUI as a message
+- Includes a method to generate a `Receipt` once a ticket is paid, which is returned to the Customer GUI as a `Message`
+### Employee Class
+- Represents an employee's actions on the server side, separate from the Employee GUI which sends commands over the network via `Message` packets
+- Similar to the `Customer` class, the `Employee` class does not handle outgoing messages directly; instead, the `Server` calls its methods and returns the result to the Employee GUI as a `Message` packet over the network
+- Authenticates employee actions based on their plaintext credentials (`username` and `password`)
+- Each employee has a unique string ID (e.g., "EM0", "EM1") generated on initialization
+- Inherits from the `User` class and, thus, becomes associated with a specific `Garage` upon initialization
+- Provides a method to override a ticket's fee, based on a given ticket ID and new fee amount
+- Includes a method to generate a new ticket for a customer; returns the ticket ID if successful (fails if the garage is full)
+- Provides a method to generate and return a `Receipt` for a paid ticket, which is formatted into a `Message` for the Employee GUI
+- Supports generating a usage report (`Report`) for the employee's assigned garage, including:
+    - Total revenue earned across time intervals (hour/day/week/month)
+    - Peak revenue hours
+    - Currently parked vehicles (active tickets)
+- Has a method to modify the associated garage's hourly rate
 ### Ticket Class
 - Represents both the customer's physical parking ticket and their currently-parked vehicle in the garage
 - Is associated with a garage upon creation
@@ -70,7 +87,7 @@ Manually override a customer's final parking fee when necessary.
 - If an employee manually overrides the fee, the `isOverridden` flag is set to `true`, which prevents the system from recalculating the fee automatically afterward
 - Each ticket has a status that reflects its current phase in the parking lifecycle [**(see "TicketStatus Enum")**](#ticketstatus-enum)
 - Once a ticket reaches the `Paid` status, it becomes invalid (unable to be reused or modified)
-- Each ticket has a unique string ID (e.g., “TI0”, “TI1”), generated from a system-wide counter (`count`)
+- Each ticket has a unique string ID (e.g., "TI0", "TI1"), generated from a system-wide counter (`count`)
 - Tickets can be searched by ID within a garage's record, useful for:
     - Returning customers attempting to leave
     - Employees needing to look up and manage specific tickets
@@ -98,6 +115,18 @@ Manually override a customer's final parking fee when necessary.
     - Its fee gets added to the garage's total revenue
 - Garage keeps track of its total revenue earned over the last hour, day, week, month, and year
 - Garage stores its peak hour of usage (based on the highest revenue earned during any given hour)
+### Reciept Class
+**TODO**
+### Report Class
+**TODO**
+### Message Class
+**TODO**
+### Server Class
+**TODO**
+### CustomerGUI Class
+**TODO**
+### EmployeeGUI Class
+**TODO**
 ## Design Diagrams
 ### UML Class Diagram
 <img src="ClassDiagram.svg" alt="UML Class Diagram" width="600"/>
