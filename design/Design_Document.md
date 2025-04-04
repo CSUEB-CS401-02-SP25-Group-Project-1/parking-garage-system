@@ -47,6 +47,18 @@ Manually override a customer's final parking fee when necessary.
 - The system will not use standard data serialization formats like JSON or XML. Instead, a custom, human-readable format will be implemented for saving data to file.
 - The system will not use any third-party databases, libraries, or frameworks. Only Java's built-in standard libraries will be used and all core functionality must be implemented from scratch by us (the development team).
 ## Implementation Details
+### Customer Class
+- Not to be confused with the Customer GUI, this class does not handle input directly, but instead processes authenticated actions sent over the network via `Message` packets
+- The `Customer` class does not handle outgoing messages directly; instead, the `Server` calls its methods and returns the result to the Customer GUI as a `Message` packet over the network
+- Inherits from the `User` class and, thus, becomes associated with a specific `Garage` upon initialization
+- Customers do not have a unique user ID; the system uses ticket-based identification since actions like valet parking or shared ticket use are possible
+- The `Customer` class is designed to facilitate and validate customer actions, such as parking, paying, and checking space availability
+- Upon receiving a valid ticket ID, the system binds the ticket to the current `Customer` object, allowing further actions like payment
+- Has a method to request a new ticket, which returns the ticket's string ID if the garage has space available
+- Provides a method to check the number of available spaces in the customer's assigned garage (returns an integer)
+- Handles the payment process for the customer when exiting the garage, validating the ticket and updating its status and fee if appropriate
+- A `Customer` object can also be used indirectly by an employee to represent a customer during assisted check-in/checkout, particularly in non-self-service cases
+- Includes a method to generate a receipt summary once a ticket is paid, which is returned to the GUI as a message
 ### Ticket Class
 - Represents both the customer's physical parking ticket and their currently-parked vehicle in the garage
 - Is associated with a garage upon creation
