@@ -182,6 +182,7 @@ Manually override a customer's final parking fee when necessary.
 - `Fail`: Indicates that the user's action could not be completed (e.g., garage full, invalid ticket ID)
 - `Log`: Used for system-level logging (intended for the `Server` and `EmployeeGUI` to display the message's text or write it to a log file)
 - `Data`: Represents a structured payload such as a `Receipt`, `Report`, or employee login credentials formatted as a string
+- `Request`: Requests a specific action from Server (meant for the GUIs)
 ### Server Class
 - Acts as the central controller of the system, receiving and processing all commands sent by the `CustomerGUI` and `EmployeeGUI`
 - Authenticates user input, delegates requests to the appropriate objects (e.g., `Customer`, `Employee`, `Garage`), and returns an appropriate `Message` in response
@@ -194,7 +195,24 @@ Manually override a customer's final parking fee when necessary.
 - Ensures thread safety and data integrity when modifying shared resources, such as garage capacity or ticket lists
 - Contains in-memory references to all active users, tickets, and garages, and manages them across sessions
 ### CustomerGUI Class
-**TODO**
+- Represents the customer-facing graphical interface used during self-parking and checkout
+- Provides a simplified, user-friendly interface for performing key actions without employee assistance
+- Has a "Request Ticket" button:
+    - Sends a `Request` message to the server requesting a new ticket
+    - The server replies with either a `Success` message containing the ticket ID or a `Fail` message if the garage is full
+    - The GUI then displays the ticked ID on-screen for the customer
+- Has a "View Garage Availability" button:
+    - Sends a `Request` message to the server requesting the number of available parking spaces
+    - The server replies with a `Data` message containing the number of open spots
+    - The GUI then displays the number of available parking spaces in that garage
+- Has a "Pay Ticket" button:
+    - Transitions the GUI to a new screen prompting the user to input their ticket ID
+    - Sends a `Request` message to the server requesting to look up the ticket
+    - If found, the server replies with a `Data` message containing ticket details (fee, time, etc.); otherwise, a `Fail` message is returned
+    - The GUI displays the ticket information and prompts the customer to confirm payment
+    - Upon confirmation, the GUI sends another `Request` message to the server to process payment
+    - If successful, the server returns a `Receipt` (formatted from recieved `Data` message), which is displayed on-screen for the customer
+- All server communication is handled using the `Message` class, and responses are parsed and interpreted by the GUI for user display
 ### EmployeeGUI Class
 **TODO**
 ## Design Diagrams
