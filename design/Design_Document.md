@@ -110,7 +110,7 @@ Manually override a customer's final parking fee when necessary.
 - When the customer is checking out, `exitTime` is set to the current time
 - The system calculates the parking fee by multiplying the garage's fixed hourly rate by the total parking duration (`exitTime - entryTime`)
 - If an employee manually overrides the fee, the `isOverridden` flag is set to `true`, which prevents the system from recalculating the fee automatically afterward
-- Each ticket has a status that reflects its current phase in the parking lifecycle [(see "TicketStatus Enum")](#ticketstatus-enum)
+- Each ticket has a status (from the `TicketStatus` enum) that reflects its current phase in the parking lifecycle
 - Once a ticket reaches the `Paid` status, it becomes invalid (unable to be reused or modified)
 - Each ticket has a unique string ID (e.g., "TI0", "TI1"), generated from a system-wide counter (`count`)
 - Tickets can be searched by ID within a garage's record, useful for:
@@ -214,7 +214,39 @@ Manually override a customer's final parking fee when necessary.
     - If successful, the server returns a `Receipt` (formatted from recieved `Data` message), which is displayed on-screen for the customer
 - All server communication is handled using the `Message` class, and responses are parsed and interpreted by the GUI for user display
 ### EmployeeGUI Class
-**TODO**
+#### Login Screen
+- Upon launching, displays a login screen with input fields for username and password
+- When the employee clicks "Submit", the GUI sends credentials to the server for authentication:
+    - If the credentials are valid, the server responds with a `Success` message and the GUI transitions to the dashboard screen
+    - If invalid, the server returns a `Fail` message and the GUI displays an error prompt
+#### Dashboard Screen
+- "Override Ticket Fee" button
+    - Opens a window to input a ticket ID and a new fee value
+    - Sends the override request to the server
+    - Displays confirmation or error message based on server response
+- "Generate New Ticket" button (same functionality as `CustomerGUI`)
+    - Sends a request to generate a ticket
+    - Displays ticket ID if successful; otherwise shows error if garage is full
+- "Checkout / Pay Ticket" button (same functionality as `CustomerGUI`)
+    - Allows the employee to assist a customer with checkout
+    - Sends a lookup request using a ticket ID, confirms payment, and displays the receipt
+- "View Usage Report" button
+    - Sends a report request to the server
+    - Server returns a report (encapsulated in a `Data` message)
+    - GUI displays the usage statistics on screen
+- "Modify Garage Hourly Rate" button
+    - Prompts for a new hourly rate input
+    - Sends the new value to the server
+    - Displays confirmation based on server response
+- "View Server Logs" button
+    - GUI receives real-time log updates via `Log`-type `Messages` sent from server
+    - Displays logs in an immutable text area panel
+- List of Parked Vehicles
+    - Displays a real-time list of ticket IDs for all currently parked vehicles
+    - The server broadcasts these periodically or upon change using `Data` messages
+- Vehicle Count Display
+    - GUI shows a live counter label of parked cars vs. garage capacity (e.g., "27/50")
+    - Updated by the server as tickets are added or removed
 ## Design Diagrams
 ### UML Class Diagram
 <img src="ClassDiagram.svg" alt="UML Class Diagram" width="600"/>
