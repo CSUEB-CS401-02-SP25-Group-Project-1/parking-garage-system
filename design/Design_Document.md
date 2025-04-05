@@ -21,6 +21,8 @@
     - [**Server Class**](#server-class)
     - [**CustomerGUI Class**](#customergui-class)
     - [**EmployeeGUI Class**](#employeegui-class)
+        - [**Login Screen**](#login-screen)
+        - [**Dashboard Screen**](#dashboard-screen)
 - [**Design Diagrams**](#design-diagrams)
     - [**UML Class Diagram**](#uml-class-diagram)
     - [**Sequence Diagram**](#sequence-diagram)
@@ -224,10 +226,10 @@ Manually override a customer's final parking fee when necessary.
     - Opens a window to input a ticket ID and a new fee value
     - Sends the override request to the server
     - Displays confirmation or error message based on server response
-- "Generate New Ticket" button (same functionality as `CustomerGUI`)
+- "Generate New Ticket" button (same functionality as in `CustomerGUI`)
     - Sends a request to generate a ticket
     - Displays ticket ID if successful; otherwise shows error if garage is full
-- "Checkout / Pay Ticket" button (same functionality as `CustomerGUI`)
+- "Checkout / Pay Ticket" button (same functionality as in `CustomerGUI`)
     - Allows the employee to assist a customer with checkout
     - Sends a lookup request using a ticket ID, confirms payment, and displays the receipt
 - "View Usage Report" button
