@@ -168,11 +168,31 @@ Manually override a customer's final parking fee when necessary.
 - Includes a `toString()` method used by the `Server` to format the report into a string `Message` payload
 - Depending on how the GUI is implemented, the `EmployeeGUI` either parses the string back into a `Report` object or directly displays the formatted string
 ### Message Class
-**TODO**
+- Enables communication between the `Server` and GUI clients (`CustomerGUI` and `EmployeeGUI`), used to send status updates, data payloads, and log messages
+- Contains a type attribute (from the `MessageType` enum) that indicates the purpose of the message
+- The message type helps both the `Server` and the GUI determine how to interpret and respond to the message (e.g., display a success confirmation or error prompt)
+- Includes a text attribute, which stores the actual human-readable message content or payload string (e.g., a receipt, report, or feedback message)
+- Includes a timestamp attribute that records when the message was created, set automatically at initialization
+- Common methods include:
+    - `getText()`: Returns the message content
+    - `getType()`: Returns the message type
+    - `getTimestamp()`: Returns the time the message was created
 ### MessageType Enum
-**TODO**
+- `Success`: Indicates that the user's action was successfully completed (e.g., payment processed, ticket generated)
+- `Fail`: Indicates that the user's action could not be completed (e.g., garage full, invalid ticket ID)
+- `Log`: Used for system-level logging (intended for the `Server` and `EmployeeGUI` to display the message's text or write it to a log file)
+- `Data`: Represents a structured payload such as a `Receipt`, `Report`, or employee login credentials formatted as a string
 ### Server Class
-**TODO**
+- Acts as the central controller of the system, receiving and processing all commands sent by the `CustomerGUI` and `EmployeeGUI`
+- Authenticates user input, delegates requests to the appropriate objects (e.g., `Customer`, `Employee`, `Garage`), and returns an appropriate `Message` in response
+- Maintains real-time multithreaded communication with all connected clients using individual threads for each socket connection
+- Logs all system activity to a persistent file for auditing and troubleshooting purposes
+- Sends real-time system logs to the `EmployeeGUI` through `Log`-type `Messages`, allowing employees to view internal events on their dashboard
+- Handles data persistence by saving all essential objects (Garages, Tickets, and Employees) to file in a custom plaintext format
+- Uses each of its objects' `toString()` methods for serialization, and loads data in a specific order to preserve ID consistency and object associations upon relaunch
+- Is responsible for creating, interpreting, and routing all `Message` objects, including status updates, data responses (e.g., receipts, reports), and error messages
+- Ensures thread safety and data integrity when modifying shared resources, such as garage capacity or ticket lists
+- Contains in-memory references to all active users, tickets, and garages, and manages them across sessions
 ### CustomerGUI Class
 **TODO**
 ### EmployeeGUI Class
