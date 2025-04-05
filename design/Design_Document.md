@@ -18,6 +18,7 @@
     - [**Report Class**](#report-class)
     - [**Message Class**](#message-class)
     - [**MessageType Enum**](#messagetype-enum)
+    - [**ClientType Enum**](#clienttype-enum)
     - [**Server Class**](#server-class)
     - [**CustomerGUI Class**](#customergui-class)
     - [**EmployeeGUI Class**](#employeegui-class)
@@ -172,6 +173,7 @@ Manually override a customer's final parking fee when necessary.
 ### Message Class
 - Enables communication between the `Server` and GUI clients (`CustomerGUI` and `EmployeeGUI`), used to send status updates, data payloads, and log messages
 - Contains a type attribute (from the `MessageType` enum) that indicates the purpose of the message
+- Contains attributes for sender `to` and reciever `from` which are specified by a `ClientType` enum for the server and GUI clients to know how to process the message for the original sender
 - The message type helps both the `Server` and the GUI determine how to interpret and respond to the message (e.g., display a success confirmation or error prompt)
 - Includes a text attribute, which stores the actual human-readable message content or payload string (e.g., a receipt, report, or feedback message)
 - Includes a timestamp attribute that records when the message was created, set automatically at initialization
@@ -179,12 +181,18 @@ Manually override a customer's final parking fee when necessary.
     - `getText()`: Returns the message content
     - `getType()`: Returns the message type
     - `getTimestamp()`: Returns the time the message was created
+    - `getSender()`: Returns the message sender
+    - `getReciever()`: Returns the message recipient
 ### MessageType Enum
 - `Success`: Indicates that the user's action was successfully completed (e.g., payment processed, ticket generated)
 - `Fail`: Indicates that the user's action could not be completed (e.g., garage full, invalid ticket ID)
 - `Log`: Used for system-level logging (intended for the `Server` and `EmployeeGUI` to display the message's text or write it to a log file)
 - `Data`: Represents a structured payload such as a `Receipt`, `Report`, or employee login credentials formatted as a string
 - `Request`: Requests a specific action from Server (meant for the GUIs)
+### ClientType Enum
+- `EmployeeGUI`
+- `CustomerGUI`
+- `Server`: While not a client by itself, the server is still able to send and recieve messages from other clients
 ### Server Class
 - Acts as the central controller of the system, receiving and processing all commands sent by the `CustomerGUI` and `EmployeeGUI`
 - Authenticates user input, delegates requests to the appropriate objects (e.g., `Customer`, `Employee`, `Garage`), and returns an appropriate `Message` in response
