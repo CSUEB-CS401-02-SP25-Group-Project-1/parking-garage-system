@@ -188,8 +188,6 @@ Manually override a customer's final parking fee when necessary.
 ### MessageType Enum
 - `Success`: Indicates that the user's action was successfully completed (e.g., payment processed, ticket generated)
 - `Fail`: Indicates that the user's action could not be completed (e.g., garage full, invalid ticket ID)
-- `Log`: Used for system-level logging (intended for the `Server` and `EmployeeGUI` to display the message's text or write it to a log file)
-- `Data`: Represents a structured payload such as a `Receipt`, `Report`, or employee login credentials formatted as a string
 - `Request`: Requests a specific action from Server (meant for the GUIs)
 ### ClientType Enum
 - `EmployeeGUI`
