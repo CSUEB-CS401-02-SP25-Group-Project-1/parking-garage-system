@@ -217,7 +217,7 @@ Manually override a customer's final parking fee when necessary.
 ### CleintHandler Class
 - To serve multi-threaded purposes, the server needs a `ClientHandler` class
 - All connections are immediately thrown onto a new thread
-- Has an attribute for the connected `socket`
+- Has an attribute for the connected `clientSocket`
 - `Message` receiving, processing, and sending are done within this class
 - The `text` and `from` attributes of the `Message` help determine how to process the input
 - Has method `processLogin()`
