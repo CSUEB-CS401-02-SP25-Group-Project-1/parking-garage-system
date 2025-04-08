@@ -116,9 +116,7 @@ Manually override a customer's final parking fee when necessary.
 - Upon creation, `entryTime` is set to the current time
 - When the customer is checking out, `exitTime` is set to the current time
 - The system calculates the parking fee by multiplying the garage's fixed hourly rate by the total parking duration (`exitTime - entryTime`)
-- If an employee manually overrides the fee, the `isOverridden` flag is set to `true`, which prevents the system from recalculating the fee automatically afterward
-- Each ticket has a status (from the `TicketStatus` enum) that reflects its current phase in the parking lifecycle
-- Once a ticket reaches the `Paid` status, it becomes invalid (unable to be reused or modified)
+- A paid parking ticket's status is recognized in the `isPaid` boolean
 - Each ticket has a unique string ID (e.g., "TI0", "TI1") generated on initialization
 - Tickets can be searched by ID within a garage's record, useful for:
     - Returning customers attempting to leave
