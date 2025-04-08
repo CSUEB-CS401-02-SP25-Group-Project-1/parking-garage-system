@@ -11,7 +11,6 @@
     - [**UserType Enum**](#usertype-enum)
     - [**Customer Class**](#customer-class)
     - [**Employee Class**](#employee-class)
-    - [**Employee Database Class**](#employee-database-class)
     - [**Ticket Class**](#ticket-class)
     - [**Garage Class**](#garage-class)
     - [**Receipt Class**](#receipt-class)
@@ -106,14 +105,6 @@ Manually override a customer's final parking fee when necessary.
     - Peak revenue hours
     - Currently parked vehicles (active tickets)
 - Has a method to modify the associated garage's hourly rate
-### Employee Database Class
-- Because our server will be multithreaded, and because each of those threads needs to examine and manipulate the same set of employees, we need the global database `EmployeeDB`
-- The global point of reference and the uniqueness of this list will be solved with the Singleton design pattern
-- When a thread receives a login message, it can compare the sent username and password to any or all of the employees on the list
-- Has an attribute for the list of employees, `employees`, of type `Employee[]`
-- Has attribute for the total number of employees, `numEmployees`
-- Has methods for getting one employee or a copy of the list of all employees (`getEmployee(int id)` and `getEmployees()`)
-- Has `getNumEmployees()`
 ### Ticket Class
 - Represents both the customer's physical parking ticket and their currently-parked vehicle in the garage
 - Is associated with a garage upon creation
