@@ -18,8 +18,8 @@
     - [**Report Class**](#report-class)
     - [**Message Class**](#message-class)
     - [**MessageType Enum**](#messagetype-enum)
-    - [**ClientType Enum**](#clienttype-enum)
     - [**Server Class**](#server-class)
+	- [**ClientHandler Class**] (#clienthandler-class)
     - [**CustomerGUI Class**](#customergui-class)
     - [**EmployeeGUI Class**](#employeegui-class)
         - [**Login Screen**](#login-screen)
@@ -215,6 +215,16 @@ Manually override a customer's final parking fee when necessary.
 - Is responsible for creating, interpreting, and routing all `Message` objects, including status updates, data responses (e.g., receipts, reports), and error messages
 - Ensures thread safety and data integrity when modifying shared resources, such as garage capacity or ticket lists
 - Contains in-memory references to all active users, tickets, and garages, and manages them across sessions
+### CleintHandler Class
+- To serve multi-threaded purposes, the server needs a `ClientHandler` class
+- All connections are immediately thrown onto a new thread
+- Has an attribute for the connected `socket`
+- `Message` receiving, processing, and sending are done within this class
+- The `text` and `from` attributes of the `Message` help determine how to process the input
+- Has method `processLogin()`
+- Has method `createTicket()`
+- Has method `processPayment()`
+- Has method `generateReport()`
 ### CustomerGUI Class
 - Represents the customer-facing graphical interface used during self-parking and checkout
 - Provides a simplified, user-friendly interface for performing key actions without employee assistance
