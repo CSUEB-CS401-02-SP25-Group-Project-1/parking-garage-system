@@ -107,7 +107,7 @@ Manually override a customer's final parking fee when necessary.
     - Currently parked vehicles (active tickets)
 - Has a method to modify the associated garage's hourly rate
 ### Employee Database Class
-- Because our server will be multithreaded, and because each of those threads needs to examine and manipulate the same set of employees, we need a global database
+- Because our server will be multithreaded, and because each of those threads needs to examine and manipulate the same set of employees, we need the global database `EmployeeDB`
 - The global point of reference and the uniqueness of this list will be solved with the Singleton design pattern
 - When a thread receives a login message, it can compare the sent username and password to any or all of the employees on the list
 - Has an attribute for the list of employees, `employees`, of type `Employee[]`
