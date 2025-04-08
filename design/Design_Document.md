@@ -12,7 +12,6 @@
     - [**Customer Class**](#customer-class)
     - [**Employee Class**](#employee-class)
     - [**Ticket Class**](#ticket-class)
-    - [**TicketStatus Enum**](#ticketstatus-enum)
     - [**Garage Class**](#garage-class)
     - [**Receipt Class**](#receipt-class)
     - [**Report Class**](#report-class)
