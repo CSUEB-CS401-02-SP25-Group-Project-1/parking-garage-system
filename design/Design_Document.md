@@ -11,6 +11,7 @@
     - [**UserType Enum**](#usertype-enum)
     - [**Customer Class**](#customer-class)
     - [**Employee Class**](#employee-class)
+	- [**Employee Database Class**] (#employee-database-class)
     - [**Ticket Class**](#ticket-class)
     - [**Garage Class**](#garage-class)
     - [**Receipt Class**](#receipt-class)
@@ -95,8 +96,6 @@ Manually override a customer's final parking fee when necessary.
 - Represents an employee's actions on the server side, separate from the `EmployeeGUI` which sends commands over the network via `Message` packets
 - Similar to the `Customer` class, the `Employee` class does not handle outgoing messages directly; instead, the `Server` calls its methods and returns the result to the `EmployeeGUI` as a `Message` packet over the network
 - Authenticates employee logins based on their plaintext credentials (`username` and `password`)
-- Once an employee successfully logs in, the `isOnline` flag gets set to `true`, preventing multiple logins of the same user account at the same time
-- After an employee logs out, `isOnline` gets set to `false`, reallowing logins from that user account
 - Each employee has a unique string ID (e.g., "EM0", "EM1") generated on initialization
 - Inherits from the `User` class and, thus, becomes associated with a specific `Garage` upon initialization
 - Provides a method to override a ticket's fee, based on a given ticket ID and new fee amount
@@ -107,6 +106,14 @@ Manually override a customer's final parking fee when necessary.
     - Peak revenue hours
     - Currently parked vehicles (active tickets)
 - Has a method to modify the associated garage's hourly rate
+### Employee Database Class
+- Because our server will be multithreaded, and because each of those threads needs to examine and manipulate the same set of employees, we need a global database
+- The global point of reference and the uniqueness of this list will be solved with the Singleton design pattern
+- When a thread receives a login message, it can compare the sent username and password to any or all of the employees on the list
+- Has an attribute for the list of employees, `employees`, of type `Employee[]`
+- Has attribute for the total number of employees, `numEmployees`
+- Has methods for getting one employee or a copy of the list of all employees (`getEmployee(int id)` and `getEmployees()`)
+- Has `getNumEmployees()`
 ### Ticket Class
 - Represents both the customer's physical parking ticket and their currently-parked vehicle in the garage
 - Is associated with a garage upon creation
