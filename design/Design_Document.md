@@ -121,10 +121,6 @@ Manually override a customer's final parking fee when necessary.
 - Tickets can be searched by ID within a garage's record, useful for:
     - Returning customers attempting to leave
     - Employees needing to look up and manage specific tickets
-### TicketStatus Enum
-- `Parking`: The vehicle has entered and is parked
-- `Leaving`: The vehicle is about to leave, payment is being processed
-- `Paid`: The payment has been completed
 ### Garage Class
 - Represents a physical parking garage in the system
 - Aggregates all tickets associated with the garage (vehicles currently parked)
