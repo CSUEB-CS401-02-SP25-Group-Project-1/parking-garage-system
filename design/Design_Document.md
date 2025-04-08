@@ -220,6 +220,7 @@ Manually override a customer's final parking fee when necessary.
     - The server replies with either a `Success` message containing the ticket ID or a `Fail` message if the garage is full
     - The GUI then displays the ticked ID on-screen for the customer
     - The client then sends a `Request` message to the server to open the garage's gate
+    - As the gate is opening, GUI displays a message for the user to pass through the gate
 - Has a "View Garage Availability" button:
     - Sends a `Request` message to the server requesting the number of available parking spaces
     - The server replies with a `Data` message containing the number of open spots
@@ -232,6 +233,7 @@ Manually override a customer's final parking fee when necessary.
     - Upon confirmation, the GUI sends another `Request` message to the server to process payment
     - If successful, the server returns a `Receipt` (formatted from recieved `Data` message), which is displayed on-screen for the customer
     - The client then sends a `Request` message to the server to open the garage's gate
+    - As the gate is opening, GUI displays a message for the user to pass through the gate
 - All server communication is handled using the `Message` class, and responses are parsed and interpreted by the GUI for user display
 ### EmployeeGUI Class
 #### Login Screen
