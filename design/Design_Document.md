@@ -14,7 +14,7 @@
     - [**Ticket Class**](#ticket-class)
     - [**TicketStatus Enum**](#ticketstatus-enum)
     - [**Garage Class**](#garage-class)
-    - [**Reciept Class**](#reciept-class)
+    - [**Receipt Class**](#receipt-class)
     - [**Report Class**](#report-class)
     - [**Message Class**](#message-class)
     - [**MessageType Enum**](#messagetype-enum)
@@ -24,13 +24,15 @@
     - [**EmployeeGUI Class**](#employeegui-class)
         - [**Login Screen**](#login-screen)
         - [**Dashboard Screen**](#dashboard-screen)
+    - [**Gate Class**](#gate-class)
+    - [**SecurityCamera Class**](#securitycamera-class)
 - [**Design Diagrams**](#design-diagrams)
     - [**UML Class Diagram**](#uml-class-diagram)
     - [**Sequence Diagram**](#sequence-diagram)
     - [**Use Case Diagram**](#use-case-diagram)
 - [**Milestones / Timeline**](#milestones--timeline)
 ## Overview
-This design document aims to eliminate any ambiguity surrounding the implementation of the Parking Garage System (PGS). It reiterates the original problem description, outlines the system's goals and non-goals based on the requirements and scope defined in the [Software Requirements Specification (SRS) document](SRS.md), and provides a clear breakdown of how each class and module should be implemented in Java. To support this, the document includes detailed design diagrams for visual reference and a project timeline with milestones to ensure a smooth and organized implementation cycle.
+This design document aims to eliminate any ambiguity surrounding the implementation of a simulated Parking Garage System (PGS). It reiterates the original problem description, outlines the system's goals and non-goals based on the requirements and scope defined in the [Software Requirements Specification (SRS) document](SRS.md), and provides a clear breakdown of how each class and module should be implemented in Java. To support this, the document includes detailed design diagrams for visual reference and a project timeline with milestones to ensure a smooth and organized implementation cycle.
 ## Context
 We are developing a graphical parking garage management system in Java that enables employees to monitor garage metrics, such as the current vehicle count, generate usage reports, and print tickets and receipts for customers. Customers also have the option to self-park via a separate graphical user interface (GUI) integrated into the system.
 
@@ -47,6 +49,9 @@ Upon successful implementation of the Parking Garage System (PGS), the following
     - Generate usage reports detailing metrics such as revenue earned, vehicle count, and peak usage times.
     - Manage garage settings including adjusting the garage's hourly rate fee.
     - Print parking tickets and payment receipts for customers.
+    - Open and close the parking garage gate.
+    - Access the garage's security cameras.
+    - Change their account password.
 Manually override a customer's final parking fee when necessary.
 - **Customers** will be able to:
     - Self-park using a user-friendly graphical interface.
@@ -58,7 +63,6 @@ Manually override a customer's final parking fee when necessary.
     - It will handle errors gracefully to minimize user disruption.
     - It will support concurrent interactions through multithreading, allowing multiple users to use the system simultaneously without delay.
 ### Non-goals
-- The system will not interact with or manage any external hardware or sensors such as air conditioning or surveillance systems.
 - The system will not use encryption to secure transmitted messages over the network as encryption is explicitly prohibited by the project constraints.
 - The system will not hash or encrypt user credentials; all credentials will be stored in plaintext.
 - The system will not use standard data serialization formats like JSON or XML. Instead, a custom, human-readable format will be implemented for saving data to file.
@@ -115,7 +119,7 @@ Manually override a customer's final parking fee when necessary.
 - If an employee manually overrides the fee, the `isOverridden` flag is set to `true`, which prevents the system from recalculating the fee automatically afterward
 - Each ticket has a status (from the `TicketStatus` enum) that reflects its current phase in the parking lifecycle
 - Once a ticket reaches the `Paid` status, it becomes invalid (unable to be reused or modified)
-- Each ticket has a unique string ID (e.g., "TI0", "TI1"), generated from a system-wide counter (`count`)
+- Each ticket has a unique string ID (e.g., "TI0", "TI1") generated on initialization
 - Tickets can be searched by ID within a garage's record, useful for:
     - Returning customers attempting to leave
     - Employees needing to look up and manage specific tickets
@@ -126,14 +130,18 @@ Manually override a customer's final parking fee when necessary.
 ### Garage Class
 - Represents a physical parking garage in the system
 - Aggregates all tickets associated with the garage (vehicles currently parked)
+- Aggregates all security cameras associated with the garage
 - Maintains a list of active tickets, which allows the system to:
     - Track current occupancy
     - Look up tickets by their string ID (e.g., for returning customers or employees)
+- Owns only one parking garage gate (`Gate`)
 - A new ticket cannot be created if the garage is full (e.g., the number of active tickets equals the garage's capacity)
 - The garage can report its number of available spaces using the formula: `capacity - ticketList.size()`
 - Provides a method to check if the garage is currently full, returning a boolean value of the condition `capacity == ticketList.size()`
 - Each garage has a unique string ID (e.g., "GA0", "GA1") generated at creation
 - Garage instances are initialized with a fixed capacity, hourly rate, and garage name (separate from their ID)
+- Has a method to add a new security camera to the garage (through aggregation)
+- Security cameras can also be removed from the garage based on their string ID
 - A garage's name can be renamed after initialization
 - Stores a configurable hourly parking rate, which can be updated by an employee
 - Tracks total revenue earned by the garage across all paid tickets
@@ -143,7 +151,7 @@ Manually override a customer's final parking fee when necessary.
     - Its fee gets added to the garage's total revenue
 - Garage keeps track of its total revenue earned over the last hour, day, week, month, and year
 - Garage stores its peak hour of usage (based on the highest revenue earned during any given hour)
-### Reciept Class
+### Receipt Class
 - Represents a summary of a completed parking transaction, generated after a ticket is fully paid
 - The receipt includes the following attributes:
     - The ticket ID
@@ -211,6 +219,7 @@ Manually override a customer's final parking fee when necessary.
     - Sends a `Request` message to the server requesting a new ticket
     - The server replies with either a `Success` message containing the ticket ID or a `Fail` message if the garage is full
     - The GUI then displays the ticked ID on-screen for the customer
+    - The client then sends a `Request` message to the server to open the garage's gate
 - Has a "View Garage Availability" button:
     - Sends a `Request` message to the server requesting the number of available parking spaces
     - The server replies with a `Data` message containing the number of open spots
@@ -222,6 +231,7 @@ Manually override a customer's final parking fee when necessary.
     - The GUI displays the ticket information and prompts the customer to confirm payment
     - Upon confirmation, the GUI sends another `Request` message to the server to process payment
     - If successful, the server returns a `Receipt` (formatted from recieved `Data` message), which is displayed on-screen for the customer
+    - The client then sends a `Request` message to the server to open the garage's gate
 - All server communication is handled using the `Message` class, and responses are parsed and interpreted by the GUI for user display
 ### EmployeeGUI Class
 #### Login Screen
@@ -230,33 +240,62 @@ Manually override a customer's final parking fee when necessary.
     - If the credentials are valid, the server responds with a `Success` message and the GUI transitions to the dashboard screen
     - If invalid, the server returns a `Fail` message and the GUI displays an error prompt
 #### Dashboard Screen
-- "Override Ticket Fee" button
+- "Change Password" button:
+    - Shows a prompt to allow the employee change their password
+    - Will throw an error message if the new password doesn't contain special characters
+    - After successful input validation, the client sends a `Data` message to the server containing the new password
+    - Server responds back with a `Success` message after it updates the employee's password
+    - Show a pop-up message saying the employee has successfully updated their password if the client recieves the server's response; otherwise, show an error message
+- "Toggle Gate" button:
+    - Toggles the parking garage gate on or off upon pressing it
+    - Does this by sending a `Request` message to the server to toggle the employee's associated garage
+- "Change Gate Open Time" button:
+    - Shows a prompt to allow the employee change how long the garage's gate remains open before automatically closing (in seconds)
+    - After successful input validation (no negative values), the client sends a `Data` message to the server containing the new value
+    - Server responds back with a `Success` message after it updates the gate's open time
+    - Show a pop-up message saying the employee has successfully changed the gate's open time if the client recieves the server's response; otherwise, show an error message
+- "Override Ticket Fee" button:
     - Opens a window to input a ticket ID and a new fee value
     - Sends the override request to the server
     - Displays confirmation or error message based on server response
-- "Generate New Ticket" button (same functionality as in `CustomerGUI`)
+- "Generate New Ticket" button:
+    - Similar functionality as the "Request Ticket" button in `CustomerGUI`
     - Sends a request to generate a ticket
     - Displays ticket ID if successful; otherwise shows error if garage is full
-- "Checkout / Pay Ticket" button (same functionality as in `CustomerGUI`)
+- "Checkout / Pay Ticket" button 
+    - Similar functionality as the "Pay Ticket" button in `CustomerGUI`
     - Allows the employee to assist a customer with checkout
     - Sends a lookup request using a ticket ID, confirms payment, and displays the receipt
-- "View Usage Report" button
+- "View Usage Report" button:
     - Sends a report request to the server
     - Server returns a report (encapsulated in a `Data` message)
     - GUI displays the usage statistics on screen
-- "Modify Garage Hourly Rate" button
+- "Modify Garage Hourly Rate" button:
     - Prompts for a new hourly rate input
     - Sends the new value to the server
     - Displays confirmation based on server response
-- "View Server Logs" button
+- "View Server Logs" button:
     - GUI receives real-time log updates via `Log`-type `Messages` sent from server
     - Displays logs in an immutable text area panel
-- List of Parked Vehicles
+- List of Parked Vehicles:
     - Displays a real-time list of ticket IDs for all currently parked vehicles
     - The server broadcasts these periodically or upon change using `Data` messages
-- Vehicle Count Display
+- List of Security Cameras:
+    - Displays each security camera's ID in a top-down list
+    - Upon clicking on one element from the list, a pop-up window opens showing the security camera's live feed (since this is just a simulation, have the window display a static image of a real-life parking garage)
+- Vehicle Count Display:
     - GUI shows a live counter label of parked cars vs. garage capacity (e.g., "27/50")
     - Updated by the server as tickets are added or removed
+#### Gate Class
+- Represents the physical entry/exit gate of a garage
+- Garage has sole ownership of this class (composition)
+- Has `open()` and `close()` methods
+- The gate remains open for a certain period of time before automatically closing (can be changed using `setOpenTime()`)
+#### SecurityCamera Class
+- Represents a garage's surveillance camera
+- Garage aggregates this class since new security cameras can be added to a garage by the system
+- Each ticket has a unique string ID (e.g., "SC0", "SC1") generated on initialization
+- Has a method to return its live security feed (since this is a simulation, have it return a static image of a real-life parking garage)
 ## Design Diagrams
 ### UML Class Diagram
 <img src="ClassDiagram.svg" alt="UML Class Diagram" width="600"/>
