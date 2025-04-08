@@ -145,6 +145,21 @@ Manually override a customer's final parking fee when necessary.
     - Its fee gets added to the garage's total revenue
 - Garage keeps track of its total revenue earned over the last hour, day, week, month, and year
 - Garage stores its peak hour of usage (based on the highest revenue earned during any given hour)
+### Revenue Class
+-Manage every revenue being created by a parking garage over unique time intervals
+-Helps the system create a report based on the data being used 
+-Storing revenue entries with timestamps
+-Updating totals per interval
+    - hour (1 hr)
+    - day  (24 hrs)
+    - week (7 days)
+    - month (30 days)
+    - year (365 days)
+-Make the time zone match to the region you're currently in
+-Calculating peak hour (an hour earned the most during the process)
+-For better performance, discard any old revenue entries
+-New revenue entries will be created inorder to keep up the date
+-Calls the Revenue Helper Class inside of the Garage class
 ### Receipt Class
 - Represents a summary of a completed parking transaction, generated after a ticket is fully paid
 - The receipt includes the following attributes:
