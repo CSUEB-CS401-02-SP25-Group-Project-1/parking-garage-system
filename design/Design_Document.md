@@ -242,10 +242,9 @@ Manually override a customer's final parking fee when necessary.
 #### Dashboard Screen
 - "Change Password" button:
     - Shows a prompt to allow the employee change their password
-    - Will throw an error message if the new password doesn't contain special characters
-    - After successful input validation, the client sends a `Data` message to the server containing the new password
-    - Server responds back with a `Success` message after it updates the employee's password
-    - Show a pop-up message saying the employee has successfully updated their password if the client recieves the server's response; otherwise, show an error message
+    - The client sends a `Data` message to the server containing the new password
+    - Server responds back with a `Success` message after it has checked the employee's password to see if it has special characters (a requirment) and has updated the employee's password, the GUI then shows a pop-up message saying the password has successfully been changed
+    - Otherwise, the server will respond back with a `Fail` message in which the GUI shows an error message saying the user needs to input a password containing special characters
 - "Toggle Gate" button:
     - Toggles the parking garage gate on or off upon pressing it
     - Does this by sending a `Request` message to the server to toggle the employee's associated garage
