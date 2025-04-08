@@ -290,11 +290,14 @@ Manually override a customer's final parking fee when necessary.
 - Vehicle Count Display:
     - GUI shows a live counter label of parked cars vs. garage capacity (e.g., "27/50")
     - Updated by the server as tickets are added or removed
+- Gate Status Label:
+    - Indicates whether or not the garage gate is currently open
 ### Gate Class
 - Represents the physical entry/exit gate of a garage
 - Garage has sole ownership of this class (composition)
 - Has `open()` and `close()` methods
 - The gate remains open for a certain period of time before automatically closing (can be changed using `setOpenTime()`)
+- Has a method to check if the gate is open or not (`isOpen()`)
 ### SecurityCamera Class
 - Represents a garage's surveillance camera
 - Garage aggregates this class since new security cameras can be added to a garage by the system
