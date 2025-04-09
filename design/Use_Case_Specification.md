@@ -455,3 +455,30 @@
 - None.
 ### Related Use Cases:
 - UC-04: Employee Login (Password security is tied to employee login.)
+
+## Use Case 12: Monitoring Security Camera 
+### Use Case ID: UC-12
+### Use Case Name: Monitoring Security Camera
+### Relevant Requirements:
+- 4.1.3 Surveillance cameras to monitor the parking garage. This is for any suspicious activity that needs to taken action.
+### Primary Actor: 
+- Administrator
+### Pre-conditions:
+- Camera is active and record footage
+- User is involved and prepare to watch everything happening in the parking garage
+### Post-conditions:
+- View live footage that occurred in the parking garage
+### Basic Flow or Main Scenario:
+1. Administrator can log in to the system
+2. Can look at Camera Monitoring in the system
+3. Can view live footage or previous footage
+4. Can alter which camera to view next
+### Extensions or Alternate Flows: 
+- Camera goes off:
+- Check the power connection to make sure everything is connected and powered
+- Any corrupted footage:
+- Check to see if there any backups so you can view the uncorrupted footage
+### Exceptions: 
+- None.
+### Related Use Cases:
+- UC-04: Employee Login (Password security is tied to employee login.)
