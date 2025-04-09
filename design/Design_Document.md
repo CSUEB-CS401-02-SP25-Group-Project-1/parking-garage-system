@@ -197,7 +197,7 @@ Manually override a customer's final parking fee when necessary.
 - Is responsible for creating, interpreting, and routing all `Message` objects, including status updates, data responses (e.g., receipts, reports), and error messages
 - Ensures thread safety and data integrity when modifying shared resources, such as garage capacity or ticket lists
 - Contains in-memory references to all active users, tickets, and garages, and manages them across sessions
-### CleintHandler Class
+### ClientHandler Class
 - To serve multi-threaded purposes, the server needs a `ClientHandler` class
 - All connections are immediately thrown onto a new thread
 - Has an attribute for the connected `clientSocket`
