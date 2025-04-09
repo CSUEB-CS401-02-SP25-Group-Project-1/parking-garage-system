@@ -324,10 +324,10 @@ Manually override a customer's final parking fee when necessary.
 - Has a method to return its live security feed (since this is a simulation, have it return a static image of a real-life parking garage)
 ## Design Diagrams
 ### Server Side Class Diagram
-<img src="diagrams/ServerSideFull.svg" alt="Server Side Class Diagram" width="600"/>
+<img src="Diagrams/ServerSideFull.svg" alt="Server Side Class Diagram" width="600"/>
 
 ### Client Side Class Diagram
-<img src="diagrams/ClientSideFull.svg" alt="Client Side Class Diagram" width="600"/>
+<img src="Diagrams/ClientSideFull.svg" alt="Client Side Class Diagram" width="600"/>
 
 ### Sequence Diagram
 <img src="Diagrams/SequenceDiagram.svg" alt="Sequence Diagram" width="600"/>
