@@ -83,6 +83,7 @@ Upon successful implementation of the Parking Garage System (PGS), the following
 - `Undefined`: Default value before the user role is specified
 ### Customer Class
 - Not to be confused with the `CustomerGUI`, this class is server side and does not handle input directly
+- `Customer` serves to encapsulate all feasible customer actions
 - The `Server` calls `Customer` methods, and returns the result to the `CustomerGUI` as a `Message` object over the network
 	- All `Message` handling is done by the `Server`
 - Inherits from the `User` class and, thus, becomes associated with a specific `Garage` upon initialization
@@ -95,9 +96,11 @@ Upon successful implementation of the Parking Garage System (PGS), the following
 - Includes a method to generate a `Receipt` once a ticket is paid, which is returned to the `CustomerGUI` as a `Message`
 ### Employee Class
 - Represents an employee's actions on the server side, separate from the `EmployeeGUI` which sends commands over the network via `Message` packets
-- Similar to the `Customer` class, the `Employee` class does not handle outgoing messages directly; instead, the `Server` calls its methods and returns the result to the `EmployeeGUI` as a `Message` packet over the network
+- `Employee` serves to encapsulate all feasible employee actions
+- `Server` calls `Employee` methods and returns the result to the `EmployeeGUI` as a `Message` object over the network
 	- All `Message` handling is done by the server
 - Has attributes to authenticate logins (`username` and `password`)
+	- `Server` seaches through a list of `Employees` for matching username and password 
 - Each employee has a unique string ID (e.g., "EM0", "EM1") generated on initialization
 - Inherits from the `User` class and, thus, becomes associated with a specific `Garage` upon initialization
 - Provides a method to override a ticket's fee, based on a given ticket ID and new fee amount
