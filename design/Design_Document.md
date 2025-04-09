@@ -26,7 +26,7 @@
     - [**Gate Class**](#gate-class)
     - [**SecurityCamera Class**](#securitycamera-class)
 - [**Design Diagrams**](#design-diagrams)
-    - [**Server Class Diagram**](#uml-class-diagram)
+    - [**Server Class Diagram**](#server-class-diagram)
 	- [**Client Class Diagram**](#client-class-diagram)
     - [**Sequence Diagram**](#sequence-diagram)
     - [**Use Case Diagram**](#use-case-diagram)
