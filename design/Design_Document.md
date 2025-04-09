@@ -83,13 +83,11 @@ Upon successful implementation of the Parking Garage System (PGS), the following
 - `Undefined`: Default value before the user role is specified
 ### Customer Class
 - Not to be confused with the `CustomerGUI`, this class is server side and does not handle input directly
-- `Customer` serves to encapsulate all feasible customer actions
+- `Customer` serves to encapsulate all feasible customer actions, such as parking, paying, and checking space availability
 - The `Server` calls `Customer` methods, and returns the result to the `CustomerGUI` as a `Message` object over the network
 	- All `Message` handling is done by the `Server`
 - Inherits from the `User` class and, thus, becomes associated with a specific `Garage` upon initialization
 - Customers do not have a unique user ID
-- The `Customer` class contains all feasible customer actions, such as parking, paying, and checking space availability
-- Upon receiving a valid ticket ID, the system associates the ticket with the `Customer` object, allowing further actions like payment
 - Has a method to request a new ticket, which returns the ticket's string ID if the garage has space available
 - Provides a method to check the number of available spaces in the customer's assigned garage (returns an integer)
 - Handles the payment process for the customer when exiting the garage, validating the ticket and updating its status and fee if appropriate
