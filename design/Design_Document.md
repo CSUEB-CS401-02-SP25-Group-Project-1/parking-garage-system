@@ -323,8 +323,11 @@ Manually override a customer's final parking fee when necessary.
 - Each ticket has a unique string ID (e.g., "SC0", "SC1") generated on initialization
 - Has a method to return its live security feed (since this is a simulation, have it return a static image of a real-life parking garage)
 ## Design Diagrams
-### UML Class Diagram
-<img src="Diagrams/ClassDiagram.svg" alt="UML Class Diagram" width="600"/>
+### Server Side Class Diagram
+<img src="diagrams/ServerSideFull.svg" alt="Server Side Class Diagram" width="600"/>
+
+### Client Side Class Diagram
+<img src="diagrams/ClientSideFull.svg" alt="Client Side Class Diagram" width="600"/>
 
 ### Sequence Diagram
 <img src="Diagrams/SequenceDiagram.svg" alt="Sequence Diagram" width="600"/>
