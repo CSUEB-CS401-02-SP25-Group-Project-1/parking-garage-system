@@ -212,66 +212,89 @@ Manually override a customer's final parking fee when necessary.
 - Provides a simplified, user-friendly interface for performing key actions without employee assistance
 - Has a "Request Ticket" button:
     - Sends a `Request` message to the server requesting a new ticket
+		- The specific command is stored in the `text` field of the `Message` object, usually two letters, followed by the relevent information
+		- Command code: `gt` (generate-ticket)
     - The server replies with either a `Success` message containing the ticket ID or a `Fail` message if the garage is full
     - The GUI then displays the ticked ID on-screen for the customer
     - The client then sends a `Request` message to the server to open the garage's gate
+		- Command code: `tg` (toggle-gate)
     - As the gate is opening, GUI displays a message for the user to pass through the gate
 - Has a "View Garage Availability" button:
     - Sends a `Request` message to the server requesting the number of available parking spaces
-    - The server replies with a `Data` message containing the number of open spots
+		- Command code: `vr` (view-report)
+    - The server replies with a `Success` message containing the number of open spots
+		- If any errors occur, the server replies with a `Fail` message, with the error specifics in the `text` field
     - The GUI then displays the number of available parking spaces in that garage
 - Has a "Pay Ticket" button:
     - Transitions the GUI to a new screen prompting the user to input their ticket ID
     - Sends a `Request` message to the server requesting to look up the ticket
-    - If found, the server replies with a `Data` message containing ticket details (fee, time, etc.); otherwise, a `Fail` message is returned
+		- Command code: `pt`
+    - If found, the server replies with a `Success` message containing ticket details (fee, time, etc.); otherwise, a `Fail` message is returned
     - The GUI displays the ticket information and prompts the customer to confirm payment
     - Upon confirmation, the GUI sends another `Request` message to the server to process payment
-    - If successful, the server returns a `Receipt` (formatted from recieved `Data` message), which is displayed on-screen for the customer
+		- No need for a command code here. Server is expected only one kind of message: payment
+    - If successful, the server returns a `Receipt` (formatted from recieved `Success` message), which is displayed on-screen for the customer
+		- If the amount is insufficient, the server sends a `Fail`
     - The client then sends a `Request` message to the server to open the garage's gate
+		- Command code: `tg` (toggle-gate)
     - As the gate is opening, GUI displays a message for the user to pass through the gate
 - All server communication is handled using the `Message` class, and responses are parsed and interpreted by the GUI for user display
 ### EmployeeGUI Class
 #### Login Screen
 - Upon launching, displays a login screen with input fields for username and password
 - When the employee clicks "Submit", the GUI sends credentials to the server for authentication:
+	- Command code: `li` (log-in)
     - If the credentials are valid, the server responds with a `Success` message and the GUI transitions to the dashboard screen
     - If invalid, the server returns a `Fail` message and the GUI displays an error prompt
 #### Dashboard Screen
 - "Change Password" button:
     - Shows a prompt to allow the employee change their password
-    - The client sends a `Data` message to the server containing the new password
+    - The client sends a `Request` message to the server 
+		- `Request` typing encompasses all request to and from the server
+		- The specific command is stored in the `text` field, usually one or two characters, followed by a deliminator. The text after the deliminator is the content of the message
+		- Command code: `mp` (modify-password)
+		- The new username follows the deliminator
     - Server responds back with a `Success` message after it has checked the employee's password to see if it has special characters (a requirment) and has updated the employee's password, the GUI then shows a pop-up message saying the password has successfully been changed
     - Otherwise, the server will respond back with a `Fail` message in which the GUI shows an error message saying the user needs to input a password containing special characters
 - "Toggle Gate" button:
     - Toggles the parking garage gate on or off upon pressing it
     - Does this by sending a `Request` message to the server to toggle the employee's associated garage
+		- Command code: `tg` (toggle-gate)
 - "Change Gate Open Time" button:
-    - Shows a prompt to allow the employee change how long the garage's gate remains open before automatically closing (in seconds)
-    - After successful input validation (no negative values), the client sends a `Data` message to the server containing the new value
+    - Shows a prompt to allow the employee to change how long the garage's gate remains open before automatically closing (in seconds)
+    - After successful input validation (no negative values), the client sends a `Request` message to the server containing the new value
+		- Command code: `mgt` (modify-gate-time)
     - Server responds back with a `Success` message after it updates the gate's open time
     - Show a pop-up message saying the employee has successfully changed the gate's open time if the client recieves the server's response; otherwise, show an error message
 - "Override Ticket Fee" button:
     - Opens a window to input a ticket ID and a new fee value
     - Sends the override request to the server
+		- Command code: `ot` (override-ticket)
     - Displays confirmation or error message based on server response
 - "Generate New Ticket" button:
     - Similar functionality as the "Request Ticket" button in `CustomerGUI`
     - Sends a request to generate a ticket
+		- `Message` of type `Request`
+		- Command code: `gt` (generate-ticket)
     - Displays ticket ID if successful; otherwise shows error if garage is full
 - "Checkout / Pay Ticket" button 
     - Similar functionality as the "Pay Ticket" button in `CustomerGUI`
     - Allows the employee to assist a customer with checkout
     - Sends a lookup request using a ticket ID, confirms payment, and displays the receipt
+		- Command code: `pt` (pay-ticket)
 - "View Usage Report" button:
     - Sends a report request to the server
+		- Command code: `vr` (view-report)
     - Server returns a report (encapsulated in a `Data` message)
     - GUI displays the usage statistics on screen
 - "Modify Garage Hourly Rate" button:
     - Prompts for a new hourly rate input
     - Sends the new value to the server
+		- Command Code: `mr` (modify-rate)
     - Displays confirmation based on server response
 - "View Server Logs" button:
-    - GUI receives real-time log updates via `Log`-type `Messages` sent from server
+    - GUI receives real-time log updates via `Messages` sent from server
+		- Command code: `vl` (view-log)
     - Displays logs in an immutable text area panel
 - List of Parked Vehicles:
     - Displays a real-time list of ticket IDs for all currently parked vehicles
