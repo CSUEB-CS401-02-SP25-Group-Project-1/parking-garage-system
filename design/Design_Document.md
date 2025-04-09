@@ -307,15 +307,19 @@ Manually override a customer's final parking fee when necessary.
 
 ## Milestones / Timeline
 **Start Date:** April 14, 2025
+
 **Milestone 1 — Core system classes + garage simulation logic complete:** April 22, 2025
 - Implement `Garage`, `Ticket`, `User`, `Customer`, `Employee`, `Receipt`, and `Report` classes
 - Test via console to simulate parking, paying, and generating receipts
+
 **Milestone 2 — Networking system operational with test clients:** April 27, 2025
 - Implement `Message`, `MessageType`, `Server`, and `ClientHandler`
 - Connect basic test clients and test real-time ticket requests, fee processing, and report generation
+
 **Milestone 3 — GUIs built and communicating with server:** May 4, 2025
 - Implement `CustomerGUI` with ticket request, pay flow, and live gate display
 - Implement `EmployeeGUI` with login, dashboard, ticket override, report generation, and basic logs
+
 **End Date — Feature complete: polish and final additions:** May 7, 2025
 - Implement `SecurityCamera`, `Gate`, and server data saving/loading
 - Final testing and polish
