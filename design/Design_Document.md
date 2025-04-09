@@ -263,7 +263,7 @@ Manually override a customer's final parking fee when necessary.
 - "Change Gate Open Time" button:
     - Shows a prompt to allow the employee to change how long the garage's gate remains open before automatically closing (in seconds)
     - After successful input validation (no negative values), the client sends a `Request` message to the server containing the new value
-		- Command code: `mgt` (modify-gate-time)
+		- Command code: `mg` (modify-gatetime)
     - Server responds back with a `Success` message after it updates the gate's open time
     - Show a pop-up message saying the employee has successfully changed the gate's open time if the client recieves the server's response; otherwise, show an error message
 - "Override Ticket Fee" button:
@@ -298,15 +298,19 @@ Manually override a customer's final parking fee when necessary.
     - Displays logs in an immutable text area panel
 - List of Parked Vehicles:
     - Displays a real-time list of ticket IDs for all currently parked vehicles
-    - The server broadcasts these periodically or upon change using `Data` messages
+		- Command code: `vv` (view-vehicles)
+    - The server broadcasts these periodically or upon change using `Request` messages
 - List of Security Cameras:
     - Displays each security camera's ID in a top-down list
+		- Command code: `vc` (view-cameras)
     - Upon clicking on one element from the list, a pop-up window opens showing the security camera's live feed (since this is just a simulation, have the window display a static image of a real-life parking garage)
 - Vehicle Count Display:
     - GUI shows a live counter label of parked cars vs. garage capacity (e.g., "27/50")
+		- Command code: `va` (vehicle-amount)
     - Updated by the server as tickets are added or removed
 - Gate Status Label:
     - Indicates whether or not the garage gate is currently open
+	- Changes after a successful `tg` command
 ### Gate Class
 - Represents the physical entry/exit gate of a garage
 - Garage has sole ownership of this class (composition)
