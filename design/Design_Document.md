@@ -26,7 +26,8 @@
     - [**Gate Class**](#gate-class)
     - [**SecurityCamera Class**](#securitycamera-class)
 - [**Design Diagrams**](#design-diagrams)
-    - [**UML Class Diagram**](#uml-class-diagram)
+    - [**Server Class Diagram**](#uml-class-diagram)
+	- [**Client Class Diagram**](#client-class-diagram)
     - [**Sequence Diagram**](#sequence-diagram)
     - [**Use Case Diagram**](#use-case-diagram)
 - [**Milestones / Timeline**](#milestones--timeline)
@@ -323,11 +324,11 @@ Manually override a customer's final parking fee when necessary.
 - Each ticket has a unique string ID (e.g., "SC0", "SC1") generated on initialization
 - Has a method to return its live security feed (since this is a simulation, have it return a static image of a real-life parking garage)
 ## Design Diagrams
-### Server Side Class Diagram
-<img src="Diagrams/ServerSideFull.svg" alt="Server Side Class Diagram" width="600"/>
+### Server Class Diagram
+<img src="Diagrams/ServerClassDiagram.svg" alt="Server Class Diagram" width="600"/>
 
-### Client Side Class Diagram
-<img src="Diagrams/ClientSideFull.svg" alt="Client Side Class Diagram" width="600"/>
+### Client Class Diagram
+<img src="Diagrams/ClientClassDiagram.svg" alt="Client Class Diagram" width="600"/>
 
 ### Sequence Diagram
 <img src="Diagrams/SequenceDiagram.svg" alt="Sequence Diagram" width="600"/>
