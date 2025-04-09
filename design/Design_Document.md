@@ -228,7 +228,7 @@ Manually override a customer's final parking fee when necessary.
 - Has a "Pay Ticket" button:
     - Transitions the GUI to a new screen prompting the user to input their ticket ID
     - Sends a `Request` message to the server requesting to look up the ticket
-		- Command code: `pt`
+		- Command code: `pt` (pay-ticket)
     - If found, the server replies with a `Success` message containing ticket details (fee, time, etc.); otherwise, a `Fail` message is returned
     - The GUI displays the ticket information and prompts the customer to confirm payment
     - Upon confirmation, the GUI sends another `Request` message to the server to process payment
