@@ -351,4 +351,4 @@ Manually override a customer's final parking fee when necessary.
 - Implement `SecurityCamera`, `Gate`, and server data saving/loading
 - Final testing and polish
 
-<img src="Gantt_Schedule.svg" alt="Gantt Chart Schedule" width="600"/>
+<img src="Gantt_Schedule.svg" alt="Gantt Chart Schedule" width="800"/>
