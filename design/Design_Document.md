@@ -324,13 +324,13 @@ Manually override a customer's final parking fee when necessary.
 - Has a method to return its live security feed (since this is a simulation, have it return a static image of a real-life parking garage)
 ## Design Diagrams
 ### UML Class Diagram
-<img src="ClassDiagram.svg" alt="UML Class Diagram" width="600"/>
+<img src="Diagrams/ClassDiagram.svg" alt="UML Class Diagram" width="600"/>
 
 ### Sequence Diagram
-<img src="SequenceDiagram.svg" alt="Sequence Diagram" width="600"/>
+<img src="Diagrams/SequenceDiagram.svg" alt="Sequence Diagram" width="600"/>
 
 ### Use Case Diagram
-<img src="UseCaseDiagram.svg" alt="Use Case Diagram" width="600"/>
+<img src="Diagrams/UseCaseDiagram.svg" alt="Use Case Diagram" width="600"/>
 
 ## Milestones / Timeline
 **Start Date:** April 14, 2025
