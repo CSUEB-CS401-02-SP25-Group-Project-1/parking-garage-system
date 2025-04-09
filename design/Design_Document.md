@@ -52,7 +52,7 @@ Upon successful implementation of the Parking Garage System (PGS), the following
     - Open and close the parking garage gate.
     - Access the garage's security cameras.
     - Change their account password.
-Manually override a customer's final parking fee when necessary.
+	- Manually override a customer's final parking fee when necessary.
 - **Customers** will be able to:
     - Self-park using a user-friendly graphical interface.
     - View the current availability of parking spaces in their selected garage.
@@ -82,11 +82,12 @@ Manually override a customer's final parking fee when necessary.
 - `Employee`
 - `Undefined`: Default value before the user role is specified
 ### Customer Class
-- Not to be confused with the `CustomerGUI`, this class is server side and does not handle input directly; it instead processes authenticated actions sent over the network via `Message` packets
-- The `Customer` class does not handle outgoing messages directly; instead, the `Server` calls its methods and returns the result to the `CustomerGUI` as a `Message` packet over the network
+- Not to be confused with the `CustomerGUI`, this class is server side and does not handle input directly
+- The `Server` calls `Customer` methods, and returns the result to the `CustomerGUI` as a `Message` object over the network
+	- All `Message` handling is done by the `Server`
 - Inherits from the `User` class and, thus, becomes associated with a specific `Garage` upon initialization
-- Customers do not have a unique user ID; the system uses ticket-based identification since actions like valet parking or shared ticket use are possible
-- The `Customer` class is designed to facilitate and validate customer actions, such as parking, paying, and checking space availability
+- Customers do not have a unique user ID
+- The `Customer` class contains all feasible customer actions, such as parking, paying, and checking space availability
 - Upon receiving a valid ticket ID, the system associates the ticket with the `Customer` object, allowing further actions like payment
 - Has a method to request a new ticket, which returns the ticket's string ID if the garage has space available
 - Provides a method to check the number of available spaces in the customer's assigned garage (returns an integer)
@@ -95,7 +96,8 @@ Manually override a customer's final parking fee when necessary.
 ### Employee Class
 - Represents an employee's actions on the server side, separate from the `EmployeeGUI` which sends commands over the network via `Message` packets
 - Similar to the `Customer` class, the `Employee` class does not handle outgoing messages directly; instead, the `Server` calls its methods and returns the result to the `EmployeeGUI` as a `Message` packet over the network
-- Authenticates employee logins based on their plaintext credentials (`username` and `password`)
+	- All `Message` handling is done by the server
+- Has attributes to authenticate logins (`username` and `password`)
 - Each employee has a unique string ID (e.g., "EM0", "EM1") generated on initialization
 - Inherits from the `User` class and, thus, becomes associated with a specific `Garage` upon initialization
 - Provides a method to override a ticket's fee, based on a given ticket ID and new fee amount
@@ -122,16 +124,15 @@ Manually override a customer's final parking fee when necessary.
 ### Garage Class
 - Represents a physical parking garage in the system
 - Aggregates all tickets associated with the garage (vehicles currently parked)
-- Aggregates all security cameras associated with the garage
-- Maintains a list of active tickets, which allows the system to:
-    - Track current occupancy
-    - Look up tickets by their string ID (e.g., for returning customers or employees)
+	- Each `Garage` maintains two `Ticket` lists: one for all tickets ever created, and one for tickets not yet paid off (customers still in garage)
+	- Separate list are useful for `Report` and for paying off tickets
+- Aggregates all `SecurityCameras` associated with the garage
 - Owns only one parking garage gate (`Gate`)
 - A new ticket cannot be created if the garage is full (e.g., the number of active tickets equals the garage's capacity)
 - The garage can report its number of available spaces using the formula: `capacity - ticketList.size()`
 - Provides a method to check if the garage is currently full, returning a boolean value of the condition `capacity == ticketList.size()`
 - Each garage has a unique string ID (e.g., "GA0", "GA1") generated at creation
-- Garage instances are initialized with a fixed capacity, hourly rate, and garage name (separate from their ID)
+- Garage instances are initialized with a capacity, hourly rate, and garage name (separate from their ID)
 - Has a method to add a new security camera to the garage (through aggregation)
 - Security cameras can also be removed from the garage based on their string ID
 - A garage's name can be renamed after initialization
@@ -140,8 +141,8 @@ Manually override a customer's final parking fee when necessary.
 - When a new ticket is generated (and space is available), it is added to the garage's ticket list
 - When a ticket is paid:
     - It gets removed from the garage's ticket list
-    - Its fee gets added to the garage's total revenue
-- Garage keeps track of its total revenue earned over the last hour, day, week, month, and year
+    - The time and amount are recored in `Report`
+- Garage keeps track of its total revenue earned over the last hour, day, week, month, and year via `Report`
 - Garage stores its peak hour of usage (based on the highest revenue earned during any given hour)
 ### Receipt Class
 - Represents a summary of a completed parking transaction, generated after a ticket is fully paid
@@ -157,32 +158,24 @@ Manually override a customer's final parking fee when necessary.
 - The `Receipt` class is strictly a data container, it does not perform any calculations or network communication
 - The class constructor has all of the class attributes as its arguments to ensure it can be reconstructed reliably from the server's message payload
 ### Report Class
-- Used by both the `Server` and `EmployeeGUI` to provide a real-time summary of garage performance
-- Like the `Receipt` class, `Report` is a simply data container that does not perform any calculations or network communication
-- Contains the following attributes, representing key operational metrics of the garage:
-    - Revenue generated this hour
-    - Revenue generated this today
-    - Revenue generated this week
-    - Revenue generated this month
-    - Revenue generated this year
-    - Total revenue earned since system start
-    - Peak hour (hour with highest revenue)
-    - Number of curently parked vehicles
+- Used by the `Server` to provide a summary of garage performance
+- Tracks total revenue in any given hour (since creation, within the last year) is a list `hourlyEarnings[]`
+- Tracks total number of cars entered in the same time frame with `hourlyEntries[]`
+- Has attribute for number of cars currently in the garage
+	- Is incremented when a ticket is created, and decremented when a ticket is paid off
 - Includes a `toString()` method used by the `Server` to format the report into a string `Message` payload
+	- `toString()` has parameters for the earliest and latest time generated on the report, so employees can peer into a limited window of the report
 - Depending on how the GUI is implemented, the `EmployeeGUI` either parses the string back into a `Report` object or directly displays the formatted string
 ### Message Class
-- Enables communication between the `Server` and GUI clients (`CustomerGUI` and `EmployeeGUI`), used to send status updates, data payloads, and log messages
+- Enables communication between the `Server` and GUI clients (`CustomerGUI` and `EmployeeGUI`)
 - Contains a type attribute (from the `MessageType` enum) that indicates the purpose of the message
 - Contains attribute for sender `from` which is specified by the `UserType` above
 - The message type helps both the `Server` and the GUI determine how to interpret and respond to the message (e.g., display a success confirmation or error prompt)
-- Includes a text attribute, which stores the actual human-readable message content or payload string (e.g., a receipt, report, or feedback message)
-- Includes a timestamp attribute that records when the message was created, set automatically at initialization
+- Includes a text attribute, which stores command sub-typing, and the actual human-readable message content or payload string (e.g., a receipt, report, or feedback message)
 - Common methods include:
     - `getText()`: Returns the message content
     - `getType()`: Returns the message type
-    - `getTimestamp()`: Returns the time the message was created
     - `getSender()`: Returns the message sender
-    - `getReciever()`: Returns the message recipient
 ### MessageType Enum
 - `Success`: Indicates that the user's action was successfully completed (e.g., payment processed, ticket generated)
 - `Fail`: Indicates that the user's action could not be completed (e.g., garage full, invalid ticket ID)
@@ -192,7 +185,7 @@ Manually override a customer's final parking fee when necessary.
 - Authenticates user input, delegates requests to the appropriate objects (e.g., `Customer`, `Employee`, `Garage`), and returns an appropriate `Message` in response
 - Maintains real-time multithreaded communication with all connected clients using individual threads for each socket connection
 - Logs all system activity to a persistent file for auditing and troubleshooting purposes
-- Sends real-time system logs to the `EmployeeGUI` through `Log`-type `Messages`, allowing employees to view internal events on their dashboard
+- Can send system log to the `EmployeeGUI`, allowing employees to view internal events on their dashboard
 - Handles data persistence by saving all essential objects (Garages, Tickets, and Employees) to file in a custom plaintext format
 - Uses each of its objects' `toString()` methods for serialization, and loads data in a specific order to preserve ID consistency and object associations upon relaunch
 - Is responsible for creating, interpreting, and routing all `Message` objects, including status updates, data responses (e.g., receipts, reports), and error messages
@@ -203,11 +196,12 @@ Manually override a customer's final parking fee when necessary.
 - All connections are immediately thrown onto a new thread
 - Has an attribute for the connected `clientSocket`
 - `Message` receiving, processing, and sending are done within this class
-- The `text` and `from` attributes of the `Message` help determine how to process the input
-- Has method `processLogin()`
-- Has method `createTicket()`
-- Has method `processPayment()`
-- Has method `generateReport()`
+	- The `text` and `from` attributes of the `Message` help determine how to process the input
+- Has methods:
+	-`processLogin()`
+	-`createTicket()`
+	-`processPayment()`
+	-`generateReport()`
 ### CustomerGUI Class
 - Represents the customer-facing graphical interface used during self-parking and checkout
 - Provides a simplified, user-friendly interface for performing key actions without employee assistance
