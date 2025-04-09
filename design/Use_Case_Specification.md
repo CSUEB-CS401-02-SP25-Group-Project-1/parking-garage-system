@@ -20,12 +20,14 @@
 ### Pre-conditions:
 - The garage has available parking spaces.
 
-- The entry gate system is operational.
+- The entry gate, ticket printer, and network are fully functional.
 
 ### Post-conditions:
 - The customer receives a valid parking ticket.
 
-- The garage's vehicle count is incremented by one.
+- The new ticket is added to the garage's active ticket list and the vehicle count is incremented.
+
+- The entry gate opens.
 
 ### Basic Flow or Main Scenario:
 
@@ -33,19 +35,21 @@
 
 2. The system checks the garage's current vehicle count and capacity.
 
-3. If space is available, the system generates a unique ticket with an entry timestamp.
+3. If space is available:
+	1. the system generates a unique ticket with an entry timestamp.
+	2. The ticket is added to the garage's active ticket list.
 
 4. The system prints the ticket and opens the entry gate.
 
 5. The customer takes the ticket and enters the garage.
 
-6. The system updates the garage's vehicle count in real time.
+6. The customer drives into the garage and the gate closes behind them.
+
+7. The system update the vehicle count.
 
 ### Extensions or Alternate Flows:
 - Alternate Flow 1: Garage Full
-  - If the garage is full, the system displays a "No Available Spaces" message.
-
-  - The entry gate remains closed, and the customer is directed to another garage.
+  - If the garage is full, the system displays a "No Available Spaces" message, leaves the entry gate closed and will direct the customer to another parking lot.
 
 ### Exceptions:
 - Printer Failure: If the ticket printer fails, the system notifies maintenance staff and displays an error message to the customer.
@@ -120,33 +124,36 @@
 ### Pre-conditions:
 - The customer has a valid parking ticket.
 
-- The customer is ready to exit the garage.
+- The ticket's entry timestamp is recorded and fee calculation numbers have been set.
 
 ### Post-conditions:
 - The customer's payment is successfully processed.
 
 - A receipt is generated and printed.
 
-- The exit gate opens, and the customer leaves the garage.
+- The exit gate opens, and the vehicle count is decremented by one.
 
-- The garage's vehicle count is decremented by one.
+- Payment logs are updated.
 
 ### Basic Flow or Main Scenario:
 1. The customer inserts their ticket into the payment terminal.
 
-2. The system retrieves the entry timestamp and calculates the fee.
+2. The system retrieves the entry timestamp associated with the ticket
 
-3. The system displays the fee to the customer.
+3. The system calculate the parking fee using the garage's hourly rate.
 
-4. The customer completes the payment.
+4. The system displays the fee to the customer.
 
-5. The system generates and prints a receipt.
+5. The customer confirms the fee and completes payment.
 
-6. The system opens the exit gate.
+6. On successful payment:
+	1. The system generates and prints a receipt with ticket ID, garage name, entry time, exit time, and fee charged.
+	2. The exit timestamp is recorded.
+	3. The system removes the paid ticket from the garage's active ticket list and decrements the vehicle count.
 
-7. The customer takes the receipt and exits the garage.
+7. The system opens the exit gate.
 
-8. The system updates the garage's vehicle count.
+8. The customer takes the receipt and exits the garage.
 
 ### Extensions or Alternate Flows:
 - Alternate Flow 1: Payment Failure
@@ -395,19 +402,23 @@
 - An error condition occurs (e.g., invalid ticket, network failure).
 
 ### Post-conditions:
-- The relevant user is notified of the error.
+- The relevant user is notified of the error with a clear message.
+- The error is logged with details for troubleshooting
+- The system may offer options to retry the errored operation.
 
 ### Basic Flow or Main Scenario:
-1. The system detects an error (e.g., invalid ticket, network failure).
+1. The system detects an error during an operation (e.g., invalid ticket, network failure).
 
 2. The system identifies the affected user (customer or employee).
 
-3. The system displays an error message on the user's interface.
+3. The system displays an error message on the user's GUI indicating the type of error and next steps to take.
 
-4. The system logs the error for further review.
+4. The system logs the error with details including error type, timestamp, and affected part of the system.
+
+5. For errors that are recoverable, the system may automatically retry or prompt the user to try again.
 
 ### Extensions or Alternate Flows: 
-- None.
+- If the error persists after multiple retries or is critical, the system directs the user to contact support.
 ### Exceptions: 
 - None.
 ### Related Use Cases:

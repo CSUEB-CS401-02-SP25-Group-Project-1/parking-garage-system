@@ -12,14 +12,13 @@
     - [**Customer Class**](#customer-class)
     - [**Employee Class**](#employee-class)
     - [**Ticket Class**](#ticket-class)
-    - [**TicketStatus Enum**](#ticketstatus-enum)
     - [**Garage Class**](#garage-class)
     - [**Receipt Class**](#receipt-class)
     - [**Report Class**](#report-class)
     - [**Message Class**](#message-class)
     - [**MessageType Enum**](#messagetype-enum)
-    - [**ClientType Enum**](#clienttype-enum)
     - [**Server Class**](#server-class)
+    - [**ClientHandler Class**](#clienthandler-class)
     - [**CustomerGUI Class**](#customergui-class)
     - [**EmployeeGUI Class**](#employeegui-class)
         - [**Login Screen**](#login-screen)
@@ -96,8 +95,6 @@ Manually override a customer's final parking fee when necessary.
 - Represents an employee's actions on the server side, separate from the `EmployeeGUI` which sends commands over the network via `Message` packets
 - Similar to the `Customer` class, the `Employee` class does not handle outgoing messages directly; instead, the `Server` calls its methods and returns the result to the `EmployeeGUI` as a `Message` packet over the network
 - Authenticates employee logins based on their plaintext credentials (`username` and `password`)
-- Once an employee successfully logs in, the `isOnline` flag gets set to `true`, preventing multiple logins of the same user account at the same time
-- After an employee logs out, `isOnline` gets set to `false`, reallowing logins from that user account
 - Each employee has a unique string ID (e.g., "EM0", "EM1") generated on initialization
 - Inherits from the `User` class and, thus, becomes associated with a specific `Garage` upon initialization
 - Provides a method to override a ticket's fee, based on a given ticket ID and new fee amount
@@ -145,21 +142,6 @@ Manually override a customer's final parking fee when necessary.
     - Its fee gets added to the garage's total revenue
 - Garage keeps track of its total revenue earned over the last hour, day, week, month, and year
 - Garage stores its peak hour of usage (based on the highest revenue earned during any given hour)
-### Revenue Class
--Manage every revenue being created by a parking garage over unique time intervals
--Helps the system create a report based on the data being used 
--Storing revenue entries with timestamps
--Updating totals per interval
-    - hour (1 hr)
-    - day  (24 hrs)
-    - week (7 days)
-    - month (30 days)
-    - year (365 days)
--Make the time zone match to the region you're currently in
--Calculating peak hour (an hour earned the most during the process)
--For better performance, discard any old revenue entries
--New revenue entries will be created inorder to keep up the date
--Calls the Revenue Helper Class inside of the Garage class
 ### Receipt Class
 - Represents a summary of a completed parking transaction, generated after a ticket is fully paid
 - The receipt includes the following attributes:
@@ -215,83 +197,120 @@ Manually override a customer's final parking fee when necessary.
 - Is responsible for creating, interpreting, and routing all `Message` objects, including status updates, data responses (e.g., receipts, reports), and error messages
 - Ensures thread safety and data integrity when modifying shared resources, such as garage capacity or ticket lists
 - Contains in-memory references to all active users, tickets, and garages, and manages them across sessions
+### ClientHandler Class
+- To serve multi-threaded purposes, the server needs a `ClientHandler` class
+- All connections are immediately thrown onto a new thread
+- Has an attribute for the connected `clientSocket`
+- `Message` receiving, processing, and sending are done within this class
+- The `text` and `from` attributes of the `Message` help determine how to process the input
+- Has method `processLogin()`
+- Has method `createTicket()`
+- Has method `processPayment()`
+- Has method `generateReport()`
 ### CustomerGUI Class
 - Represents the customer-facing graphical interface used during self-parking and checkout
 - Provides a simplified, user-friendly interface for performing key actions without employee assistance
 - Has a "Request Ticket" button:
     - Sends a `Request` message to the server requesting a new ticket
+		- The specific command is stored in the `text` field of the `Message` object, usually two letters, followed by the relevent information
+		- Command code: `gt` (generate-ticket)
     - The server replies with either a `Success` message containing the ticket ID or a `Fail` message if the garage is full
     - The GUI then displays the ticked ID on-screen for the customer
     - The client then sends a `Request` message to the server to open the garage's gate
+		- Command code: `tg` (toggle-gate)
     - As the gate is opening, GUI displays a message for the user to pass through the gate
 - Has a "View Garage Availability" button:
     - Sends a `Request` message to the server requesting the number of available parking spaces
-    - The server replies with a `Data` message containing the number of open spots
+		- Command code: `vr` (view-report)
+    - The server replies with a `Success` message containing the number of open spots
+		- If any errors occur, the server replies with a `Fail` message, with the error specifics in the `text` field
     - The GUI then displays the number of available parking spaces in that garage
 - Has a "Pay Ticket" button:
     - Transitions the GUI to a new screen prompting the user to input their ticket ID
     - Sends a `Request` message to the server requesting to look up the ticket
-    - If found, the server replies with a `Data` message containing ticket details (fee, time, etc.); otherwise, a `Fail` message is returned
+		- Command code: `pt` (pay-ticket)
+    - If found, the server replies with a `Success` message containing ticket details (fee, time, etc.); otherwise, a `Fail` message is returned
     - The GUI displays the ticket information and prompts the customer to confirm payment
     - Upon confirmation, the GUI sends another `Request` message to the server to process payment
-    - If successful, the server returns a `Receipt` (formatted from recieved `Data` message), which is displayed on-screen for the customer
+		- No need for a command code here. Server is expected only one kind of message: payment
+    - If successful, the server returns a `Receipt` (formatted from recieved `Success` message), which is displayed on-screen for the customer
+		- If the amount is insufficient, the server sends a `Fail`
     - The client then sends a `Request` message to the server to open the garage's gate
+		- Command code: `tg` (toggle-gate)
     - As the gate is opening, GUI displays a message for the user to pass through the gate
 - All server communication is handled using the `Message` class, and responses are parsed and interpreted by the GUI for user display
 ### EmployeeGUI Class
 #### Login Screen
 - Upon launching, displays a login screen with input fields for username and password
 - When the employee clicks "Submit", the GUI sends credentials to the server for authentication:
+	- Command code: `li` (log-in)
     - If the credentials are valid, the server responds with a `Success` message and the GUI transitions to the dashboard screen
     - If invalid, the server returns a `Fail` message and the GUI displays an error prompt
 #### Dashboard Screen
 - "Change Password" button:
     - Shows a prompt to allow the employee change their password
-    - The client sends a `Data` message to the server containing the new password
+    - The client sends a `Request` message to the server 
+		- `Request` typing encompasses all request to and from the server
+		- The specific command is stored in the `text` field, usually one or two characters, followed by a deliminator. The text after the deliminator is the content of the message
+		- Command code: `mp` (modify-password)
+		- The new username follows the deliminator
     - Server responds back with a `Success` message after it has checked the employee's password to see if it has special characters (a requirment) and has updated the employee's password, the GUI then shows a pop-up message saying the password has successfully been changed
     - Otherwise, the server will respond back with a `Fail` message in which the GUI shows an error message saying the user needs to input a password containing special characters
 - "Toggle Gate" button:
     - Toggles the parking garage gate on or off upon pressing it
     - Does this by sending a `Request` message to the server to toggle the employee's associated garage
+		- Command code: `tg` (toggle-gate)
 - "Change Gate Open Time" button:
-    - Shows a prompt to allow the employee change how long the garage's gate remains open before automatically closing (in seconds)
-    - After successful input validation (no negative values), the client sends a `Data` message to the server containing the new value
+    - Shows a prompt to allow the employee to change how long the garage's gate remains open before automatically closing (in seconds)
+    - After successful input validation (no negative values), the client sends a `Request` message to the server containing the new value
+		- Command code: `mg` (modify-gatetime)
     - Server responds back with a `Success` message after it updates the gate's open time
     - Show a pop-up message saying the employee has successfully changed the gate's open time if the client recieves the server's response; otherwise, show an error message
 - "Override Ticket Fee" button:
     - Opens a window to input a ticket ID and a new fee value
     - Sends the override request to the server
+		- Command code: `ot` (override-ticket)
     - Displays confirmation or error message based on server response
 - "Generate New Ticket" button:
     - Similar functionality as the "Request Ticket" button in `CustomerGUI`
     - Sends a request to generate a ticket
+		- `Message` of type `Request`
+		- Command code: `gt` (generate-ticket)
     - Displays ticket ID if successful; otherwise shows error if garage is full
 - "Checkout / Pay Ticket" button 
     - Similar functionality as the "Pay Ticket" button in `CustomerGUI`
     - Allows the employee to assist a customer with checkout
     - Sends a lookup request using a ticket ID, confirms payment, and displays the receipt
+		- Command code: `pt` (pay-ticket)
 - "View Usage Report" button:
     - Sends a report request to the server
+		- Command code: `vr` (view-report)
     - Server returns a report (encapsulated in a `Data` message)
     - GUI displays the usage statistics on screen
 - "Modify Garage Hourly Rate" button:
     - Prompts for a new hourly rate input
     - Sends the new value to the server
+		- Command Code: `mr` (modify-rate)
     - Displays confirmation based on server response
 - "View Server Logs" button:
-    - GUI receives real-time log updates via `Log`-type `Messages` sent from server
+    - GUI receives real-time log updates via `Messages` sent from server
+		- Command code: `vl` (view-log)
     - Displays logs in an immutable text area panel
 - List of Parked Vehicles:
     - Displays a real-time list of ticket IDs for all currently parked vehicles
-    - The server broadcasts these periodically or upon change using `Data` messages
+		- Command code: `vv` (view-vehicles)
+    - The server broadcasts these periodically or upon change using `Request` messages
 - List of Security Cameras:
     - Displays each security camera's ID in a top-down list
+		- Command code: `vc` (view-cameras)
     - Upon clicking on one element from the list, a pop-up window opens showing the security camera's live feed (since this is just a simulation, have the window display a static image of a real-life parking garage)
 - Vehicle Count Display:
     - GUI shows a live counter label of parked cars vs. garage capacity (e.g., "27/50")
+		- Command code: `va` (vehicle-amount)
     - Updated by the server as tickets are added or removed
 - Gate Status Label:
     - Indicates whether or not the garage gate is currently open
+	- Changes after a successful `tg` command
 ### Gate Class
 - Represents the physical entry/exit gate of a garage
 - Garage has sole ownership of this class (composition)
@@ -314,4 +333,22 @@ Manually override a customer's final parking fee when necessary.
 <img src="UseCaseDiagram.svg" alt="Use Case Diagram" width="600"/>
 
 ## Milestones / Timeline
-**TODO**
+**Start Date:** April 14, 2025
+
+**Milestone 1 — Core system classes + garage simulation logic complete:** April 22, 2025
+- Implement `Garage`, `Ticket`, `User`, `Customer`, `Employee`, `Receipt`, and `Report` classes
+- Test via console to simulate parking, paying, and generating receipts
+
+**Milestone 2 — Networking system operational with test clients:** April 27, 2025
+- Implement `Message`, `MessageType`, `Server`, and `ClientHandler`
+- Connect basic test clients and test real-time ticket requests, fee processing, and report generation
+
+**Milestone 3 — GUIs built and communicating with server:** May 4, 2025
+- Implement `CustomerGUI` with ticket request, pay flow, and live gate display
+- Implement `EmployeeGUI` with login, dashboard, ticket override, report generation, and basic logs
+
+**End Date — Feature complete: polish and final additions:** May 7, 2025
+- Implement `SecurityCamera`, `Gate`, and server data saving/loading
+- Final testing and polish
+
+<img src="Gantt_Schedule.svg" alt="Gantt Chart Schedule" width="600"/>
