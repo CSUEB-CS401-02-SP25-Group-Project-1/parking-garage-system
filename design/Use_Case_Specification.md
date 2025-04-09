@@ -482,3 +482,32 @@
 - None.
 ### Related Use Cases:
 - UC-04: Employee Login (Password security is tied to employee login.)
+
+## Use Case 13: Gate Control
+### Use Case ID: UC-13
+### Use Case Name: Gate Control
+### Relevant Requirements:
+- 4.1.2 A gate that will allow vehicles to head to the designated parking area. This can only occur when the payment has finally been made. 
+ - 4.3.2 Once the payment is done processing, the gate will slowly open. This will then lead them to the parking area in the garage. 
+### Primary Actor: 
+- Employee
+### Pre-conditions:
+- User is involved in the gate control process
+- Gate should remain closed unless the operation begins
+### Post-conditions:
+- Gate will either be open or closed depending on the outcome
+1. If  payment is done, gate will be opened
+2. Otherwise stay closed
+### Basic Flow or Main Scenario:
+- User will log in to the system
+- Control the gate from the system
+- When someone arrives and pays for the ticket, the gate will slowly open
+- Once someone crosses the gate, the gate will slowly close
+### Extensions or Alternate Flows: 
+- Gate can’t open
+1. Check the power source and see if it’s connected 
+### Exceptions: 
+- Any unauthorized attempt to enter the parking garage will taken action for trespassing
+### Related Use Cases:
+- UC-04: Employee Login (Password security is tied to employee login.)
+- UC-06: Generate Parking Ticket (After when the driver pays)
