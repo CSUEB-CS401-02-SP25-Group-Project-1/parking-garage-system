@@ -342,7 +342,7 @@ Upon successful implementation of the Parking Garage System (PGS), the following
 - Implement `Message`, `MessageType`, `Server`, and `ClientHandler`
 - Connect basic test clients and test real-time ticket requests, fee processing, and report generation
 
-**Milestone 3 — GUIs built and communicating with server:** May 4, 2025
+**Milestone 3 — GUIs built and communicating with server:** May 5, 2025
 - Implement `CustomerGUI` with ticket request, pay flow, and live gate display
 - Implement `EmployeeGUI` with login, dashboard, ticket override, report generation, and basic logs
 
