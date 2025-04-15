@@ -15,6 +15,7 @@ public class Log {
 			default: s += "ENTRY:"; break;
 		}
 		s += (new Date()).toString) + "::: " + message + "\n"; //entries conclude with newline character
+		log += s; //append to main log (duh)
 		return;
 	}
 
