@@ -70,7 +70,8 @@ public class Log {
 			// i has to be within array bounds
 			// will append things in Log until earliest date is found
 
-			s += entries[i]; //appending entry as is will be suitable.
+			s += entries[i--]; //appending entry as is will be suitable.
+			
 		}
 
 		// Once here, our String is ready to be returned
