@@ -1,3 +1,4 @@
+package server;
 public class Ticket {
 	private static int count = 0;
 
