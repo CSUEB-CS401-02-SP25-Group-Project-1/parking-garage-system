@@ -13,6 +13,7 @@ public class Report {
 
 	//Some constants that go along with hour calculations
 	private final long millies_per_hour = 1 * 60 * 60 * 1000;
+	private final long millies_per_halfhour = millies_per_hour / 2;
 
 	private double totalEarned;	// total earned by this garage
 	private long totalEntered;	// total entered this garage
@@ -199,7 +200,7 @@ public class Report {
 		// round() checks if the user has passed the halfway point of the current hour
 		// This is when the earnings of the current hour would be substantial enough to not count an extra hour
 		
-		if ((now.getTime() - created.getTime() % (millies_per_hour)) > (millies_per_hour / 2)) {
+		if ((now.getTime() - created.getTime() % (millies_per_hour)) > millies_per_halfhour) {
 			hours--;
 		}
 
