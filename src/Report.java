@@ -35,7 +35,7 @@ public class Report {
 		currentlyParked = 0;
 	}
 
-	public addEntry() {
+	public void addEntry() {
 
 		// Used for tracking a car entering the garage
 		// hourIndex is updated every iteration. Similar runtime to using 'if' statements (division is slightly longer but who cares)
@@ -65,7 +65,7 @@ public class Report {
 		totalEntered++; 
 	}
 
-	public addExit(float amount) {
+	public void addExit(float amount) {
 
 		// Used for tracking a car exiting to leave the garage
 		// Customer leaves by paying
