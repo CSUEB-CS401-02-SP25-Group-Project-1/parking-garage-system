@@ -15,6 +15,7 @@ public class Log {
 			default: s += "ENTRY:"; break;
 		}
 		s += (new Date()).toString) + "::: " + message + "\n"; //entries conclude with newline character
+		log += s; //append to main log
 		return;
 	}
 
@@ -26,11 +27,10 @@ public class Log {
 		String sLatest = latest.toString();
 
 		//Check if dates entered are valid
-		if (sEarliest.comparedTo(sLatest) > 0) {
+		if (sLatest.compareTo(sEarliest) < 0) { // Think of as "late - early" (If "early" has more time...)
 			// if earliest comes after latest
 			return "Invalid Log request";
 		}
-
 
 		String[] entries = log.split('\n'); //split log into individual entries, each entry ends with newline
 		String[] dates = new String[entries.length]; //make dates array of equal length for getting window
@@ -50,12 +50,9 @@ public class Log {
 
 		int i = entries.length - 1;
 
-		// Check first if date entered is valid
-		if (sLatest.comparedTo(dates[i]) > 0) {
-			return "Invalid Log request.";
-		}
+		//Dates entered that ask for later/earlier than possible will receive the ends of the log
 		
-		while (i >= 0 && dates[i].comparedTo(sLatest) > 0) {
+		while (i >= 0 && dates[i].compareTo(sLatest) > 0) {
 			// i has to be within bounds of the array
 			// i starts from the bottom (latest) and works backwards
 			// if the entry at dates[i] is later than our latest date, keep working backwards
@@ -66,11 +63,15 @@ public class Log {
 		// Keep using i as index
 		// Append proceeding log entries to return string
 		String s = "";
-		while (i >= 0 && dates[i].comparedTo(sEarliest) <= 0) {
+		while (i >= 0 && dates[i].compareTo(sEarliest) <= 0) {
 			// i has to be within array bounds
 			// will append things in Log until earliest date is found
 
+<<<<<<< HEAD
+			s += entries[i--]; //appending entry as is will be suitable. Need new '\n'?
+=======
 			s += entries[i--]; //appending entry as is will be suitable.
+>>>>>>> a66bd114a01230cb06815fbd3c48548f7a3d5e2d
 			
 		}
 
