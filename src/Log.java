@@ -67,11 +67,7 @@ public class Log {
 			// i has to be within array bounds
 			// will append things in Log until earliest date is found
 
-<<<<<<< HEAD
-			s += entries[i--]; //appending entry as is will be suitable. Need new '\n'?
-=======
 			s += entries[i--]; //appending entry as is will be suitable.
->>>>>>> a66bd114a01230cb06815fbd3c48548f7a3d5e2d
 			
 		}
 
