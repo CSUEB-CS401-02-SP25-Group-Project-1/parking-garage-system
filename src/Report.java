@@ -224,7 +224,7 @@ public class Report {
 
 		// round() checks if the user has passed the halfway point of the current hour
 		// This is when the earnings of the current hour would be substantial enough to count as an extra hour, so `hours` should be decremented
-		// Before the halfway point, we estimate that now enough time has passed for this hour to count
+		// Before the halfway point, we estimate that not enough time has passed for this hour to "count" towards total (even though it is still added)
 		
 		Date now = new Date();
 
