@@ -118,9 +118,9 @@ public class Report {
 		rs += "\tCurrentlyParked: " currentlyParked + '\n';
 
 		// Break for formatting
-		rs += "\n'
+		rs += "\n';
 
-		rs += "Last Hour:\n"
+		rs += "Last Hour:\n";
 		rs += "\tEarned: $" + hourlyEarnings[hourlyIndex - 1] + '\n';
 		rs += "\tEntered: " + hourlyEntries[hourlyIndex - 1] + '\n';
 		rs += "\tMax parked at once: " maxParked[hourlyIndex - 1]" + '\n';
@@ -157,7 +157,7 @@ public class Report {
 
 		String rs;
 
-		rs += "\nLast Week:\n"
+		rs += "\nLast Week:\n";
 		rs += "\tEarned: $" + earnings + '\n';
 		rs += "\tEntered: " + entries + '\n';
 		rs += "\tMax parked at once: " max + '\n';
@@ -174,7 +174,7 @@ public class Report {
 
 		String rs;
 
-		rs += "\nLast Month:\n"
+		rs += "\nLast Month:\n";
 		rs += "\tEarned: $" + stats[0] + '\n';
 		rs += "\tEntered: " + stats[1] + '\n';
 		rs += "\tMax parked at once: "stats[2] + '\n';
@@ -192,7 +192,7 @@ public class Report {
 
 		String rs;
 
-		rs += "\nLast Year:\n"
+		rs += "\nLast Year:\n";
 		rs += "\tEarned: $" + earnings + '\n';
 		rs += "\tEntered: " + entries + '\n';
 		rs += "\tMax parked at once: " max + '\n';
@@ -205,7 +205,7 @@ public class Report {
 	
 		String rs;
 
-		rs += "\nTotal:\n"
+		rs += "\nTotal:\n";
 		rs += "\tEarned: $" + totalEarned + '\n';
 		rs += "\tEntered: " + totalEntered + '\n';
 		rs += "\tMax parked at once: " + maxParked + '\n';
