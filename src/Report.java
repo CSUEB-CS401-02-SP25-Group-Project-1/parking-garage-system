@@ -9,9 +9,9 @@ public class Report {
 	private int[] mostParked; 	// tracks most # people in garage at once
 
 	private int hourIndex;		// points to current hour in arrays
-	private Date created;		// hourIndex is updated accoring to (now - created) / 3600000; now - created gives time elapsed in milliseconds
+	private Date created;		// hourIndex is updated accoring to (now - created) / 3600000; (now - created) gives time elapsed in milliseconds
 
-	//Some constants that go along with hour calculations
+	// Some constants that go along with hour calculations
 	private final long millies_per_hour = 1 * 60 * 60 * 1000;
 	private final long millies_per_halfhour = millies_per_hour / 2;
 
@@ -22,7 +22,7 @@ public class Report {
 	private int currentlyParked;	// # currently parked
 
 	public Report(){
-		hourIndex = 0;
+		
 		// use `created` as reference for all hourIndex calcs
 		created = new Date();
 
@@ -45,11 +45,11 @@ public class Report {
 		// Update cars entered this hour
 		// Revenue is not tracked in this function
 
-		Date now = new Date();
-		long hours_elapsed = (now.getTime() - created.getTime()) / millies_per_hour; // 'long' type is 64 bits, which can track differences over 100,000,000 years
-		hourIndex = diff_hr;
+		hourIndex = updateHourIndex();
 
+		// Increment number of cars in the garage
 		currentlyParked++;
+
 		// Check if there is a new peak # cars in garage
 		if (currentlyParked > mostParked[hourIndex]) {
 			maxOccupancies[hourIndex] = currentlyParked;
@@ -75,9 +75,7 @@ public class Report {
 		// Update revenue earned this hour
 		// Update total revenue earned
 
-		Date now = new Date();
-		long hours_elapsed = (now.getTime() - created.getTime()) / millies_per_hour; // 'long' type is 64 bits, which can track differences over 100,000,000 years
-		hourIndex = diff_hr;
+		hourIndex = updateHourIndex();
 
 		currentlyParked--;
 
@@ -88,16 +86,21 @@ public class Report {
 
 
 	public String toString() {
-		// Gives all states, regardless of what they might give.
+		// String version of report inculdes all windows, 
+			//hour, day, week, year
+		//regardless of what they might return (empty values)
+
 		String rs;
 
 		rs += lastHour();
 		rs += lastToday();
 		rs += lastWeek();
+		rs += lastMonth();
 		rs += lastYear();
 		rs += total();
 
 		return rs;
+
 	}
 
 
@@ -128,8 +131,7 @@ public class Report {
 		
 		// Returns the data for the last 24 hours, from this hour (weighted weirdly if you are at beginning/end of current hour.
 
-		Date now = new Date();
-		int hours = round(24, now);
+		int hours = round(24);
 
 		long[3] stats = calculateTotals(hours); // calculateTotals returns {earnings, entries, max}
 
@@ -162,15 +164,30 @@ public class Report {
 		return rs;
 	}
 
+	public String lastMonth() {
+		// Returns the data for the last 24 * 30 = 720 hours, from this hour (weighted weirdly if you are at beginning/end of current hour.
+
+		int hours = round(720);
+
+		long[3] stats = calculateTotals(hours); // calculateTotals returns {earnings, entries, max}
+
+		String rs;
+
+		rs += "\nLast Month:\n"
+		rs += "\tEarned: $" + stats[0] + '\n';
+		rs += "\tEntered: " + stats[1] + '\n';
+		rs += "\tMax parked at once: "stats[2] + '\n';
+
+		return rs;
+	}
+
 	public String lastYear() {
 		
 		//Returns data of the last 24 * 365 = 8760 hours
 
-		Date now = new Date();
+		int hours = round(8760);
 
-		int hours = round(8760, now);
-
-		long[3] stats = calculateTotals(hours)
+		long[3] stats = calculateTotals(hours); // calculateTotals returns {earnings, entries, max}
 
 		String rs;
 
@@ -195,11 +212,20 @@ public class Report {
 		return rs;
 	}
 
-	private int round(int hours, Date now) {
+	private int updateHourIndex() {
+		// Returns truncated number of hours since report creation
+
+		Date now = new Date();
+		return (now.getTime() - created.getTime()) / millies_per_hour;
+	}
+
+	private int round(int hours) {
 
 		// round() checks if the user has passed the halfway point of the current hour
 		// This is when the earnings of the current hour would be substantial enough to not count an extra hour
 		
+		Date now = new Date();
+
 		if ((now.getTime() - created.getTime() % (millies_per_hour)) > millies_per_halfhour) {
 			hours--;
 		}
