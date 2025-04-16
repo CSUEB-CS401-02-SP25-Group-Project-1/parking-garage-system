@@ -1,8 +1,5 @@
 package server;
 
-// Date format is:
-// <Wkd> <Mth> <Day> <hr>:<mn>:<ss> <TMZ> <YEAR>
-
 public class Report {
 	private float[] hourlyEarnings;	// tracks money earned
 	private int[] hourlyEntries; 	// tracks # people entered
@@ -75,20 +72,24 @@ public class Report {
 		// Update revenue earned this hour
 		// Update total revenue earned
 
+		// Point to the current hour in arrays
 		hourIndex = updateHourIndex();
 
+		// Somebody left
 		currentlyParked--;
 
+		// add amount to revenue earned this hour
 		hourlyRevenue[hourIndex] += amount;
 
+		// at amount to total revenue
 		totalRevenue += amount;
 	}
 
 
 	public String toString() {
-		// String version of report inculdes all windows, 
+		// String version of report inculdes all timeframes, 
 			//hour, day, week, year
-		//regardless of what they might return (empty values)
+		//regardless of what they might return
 
 		String rs;
 
@@ -187,7 +188,7 @@ public class Report {
 
 		int hours = round(8760);
 
-		long[3] stats = calculateTotals(hours); // calculateTotals returns {earnings, entries, max}
+		long[3] stats = calculateTotals(hours); // calculateTotals() returns {earnings, entries, max}
 
 		String rs;
 
@@ -222,11 +223,12 @@ public class Report {
 	private int round(int hours) {
 
 		// round() checks if the user has passed the halfway point of the current hour
-		// This is when the earnings of the current hour would be substantial enough to not count an extra hour
+		// This is when the earnings of the current hour would be substantial enough to count as an extra hour, so `hours` should be decremented
+		// Before the halfway point, we estimate that now enough time has passed for this hour to count
 		
 		Date now = new Date();
 
-		if ((now.getTime() - created.getTime() % (millies_per_hour)) > millies_per_halfhour) {
+		if ((now.getTime() - created.getTime() % millies_per_hour) > millies_per_halfhour) {
 			hours--;
 		}
 
