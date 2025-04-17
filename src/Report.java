@@ -1,7 +1,6 @@
 package server;
 
-// Date format is:
-// <Wkd> <Mth> <Day> <hr>:<mn>:<ss> <TMZ> <YEAR>
+import java.util.Date;
 
 public class Report {
 	private float[] hourlyEarnings;	// tracks money earned
@@ -9,9 +8,9 @@ public class Report {
 	private int[] mostParked; 	// tracks most # people in garage at once
 
 	private int hourIndex;		// points to current hour in arrays
-	private Date created;		// hourIndex is updated accoring to (now - created) / 3600000; now - created gives time elapsed in milliseconds
+	private Date created;		// hourIndex is updated accoring to (now - created) / 3600000; (now - created) gives time elapsed in milliseconds
 
-	//Some constants that go along with hour calculations
+	// Some constants that go along with hour calculations
 	private final long millies_per_hour = 1 * 60 * 60 * 1000;
 	private final long millies_per_halfhour = millies_per_hour / 2;
 
@@ -22,20 +21,20 @@ public class Report {
 	private int currentlyParked;	// # currently parked
 
 	public Report(){
-		hourIndex = 0;
+		
 		// use `created` as reference for all hourIndex calcs
 		created = new Date();
 
 		hourlyEarnings = new float[365 * 24];
 		hourlyEntries = new int[365 * 24];
-		maxParked = new int[365 * 24];
+		mostParked = new int[365 * 24];
 
 		totalEarned = 0;
 		totalEntered = 0;
 		currentlyParked = 0;
 	}
 
-	public addEntry() {
+	public void addEntry() {
 
 		// Used for tracking a car entering the garage
 		// hourIndex is updated every iteration. Similar runtime to using 'if' statements (division is slightly longer but who cares)
@@ -45,15 +44,15 @@ public class Report {
 		// Update cars entered this hour
 		// Revenue is not tracked in this function
 
-		Date now = new Date();
-		long hours_elapsed = (now.getTime() - created.getTime()) / millies_per_hour; // 'long' type is 64 bits, which can track differences over 100,000,000 years
-		hourIndex = diff_hr;
+		hourIndex = updateHourIndex();
 
+		// Increment number of cars in the garage
 		currentlyParked++;
+
 		// Check if there is a new peak # cars in garage
 		if (currentlyParked > mostParked[hourIndex]) {
-			maxOccupancies[hourIndex] = currentlyParked;
-			if (mostParked[hourIndex] > maxParked) {
+			mostParked[hourIndex] = currentlyParked;
+			if (currentlyParked > maxParked) {
 				maxParked = mostParked[hourIndex];
 			}
 		}
@@ -65,7 +64,7 @@ public class Report {
 		totalEntered++; 
 	}
 
-	public addExit(float amount) {
+	public void addExit(float amount) {
 
 		// Used for tracking a car exiting to leave the garage
 		// Customer leaves by paying
@@ -75,29 +74,36 @@ public class Report {
 		// Update revenue earned this hour
 		// Update total revenue earned
 
-		Date now = new Date();
-		long hours_elapsed = (now.getTime() - created.getTime()) / millies_per_hour; // 'long' type is 64 bits, which can track differences over 100,000,000 years
-		hourIndex = diff_hr;
+		// Point to the current hour in arrays
+		hourIndex = updateHourIndex();
 
+		// Somebody left
 		currentlyParked--;
 
-		hourlyRevenue[hourIndex] += amount;
+		// add amount to revenue earned this hour
+		hourlyEarnings[hourIndex] += amount;
 
-		totalRevenue += amount;
+		// at amount to total revenue
+		totalEarned += amount;
 	}
 
 
 	public String toString() {
-		// Gives all states, regardless of what they might give.
-		String rs;
+		// String version of report inculdes all timeframes, 
+			//hour, day, week, year
+		//regardless of what they might return
+
+		String rs = "";
 
 		rs += lastHour();
 		rs += lastToday();
 		rs += lastWeek();
+		rs += lastMonth();
 		rs += lastYear();
 		rs += total();
 
 		return rs;
+
 	}
 
 
@@ -106,20 +112,20 @@ public class Report {
 		// Returns data for this hour and the last hour
 		// Hard to decide which one to use and which one not to use, so included both
 
-		String rs;
+		String rs = "";
 
-		rs += "This Hour:\n"
-		rs += "\tEarned: $" + hourlyEarnings[hourlyIndex] + '\n';
-		rs += "\tEntered: " + hourlyEntries[hourlyIndex] + '\n';
-		rs += "\tCurrentlyParked: " currentlyParked + '\n';
+		rs += "This Hour:\n";
+		rs += "\tEarned: $" + hourlyEarnings[hourIndex] + '\n';
+		rs += "\tEntered: " + hourlyEntries[hourIndex] + '\n';
+		rs += "\tCurrentlyParked: " + currentlyParked + '\n';
 
 		// Break for formatting
-		rs += "\n'
+		rs += '\n';
 
-		rs += "Last Hour:\n"
-		rs += "\tEarned: $" + hourlyEarnings[hourlyIndex - 1] + '\n';
-		rs += "\tEntered: " + hourlyEntries[hourlyIndex - 1] + '\n';
-		rs += "\tMax parked at once: " maxParked[hourlyIndex - 1]" + '\n';
+		rs += "Last Hour:\n";
+		rs += "\tEarned: $" + hourlyEarnings[hourIndex - 1] + '\n';
+		rs += "\tEntered: " + hourlyEntries[hourIndex - 1] + '\n';
+		rs += "\tMax parked at once: " + mostParked[hourIndex - 1] + '\n';
 
 		return rs;
 	}
@@ -128,17 +134,16 @@ public class Report {
 		
 		// Returns the data for the last 24 hours, from this hour (weighted weirdly if you are at beginning/end of current hour.
 
-		Date now = new Date();
-		int hours = round(24, now);
+		int hours = round(24);
 
-		long[3] stats = calculateTotals(hours); // calculateTotals returns {earnings, entries, max}
+		long[] stats = calculateTotals(hours); // calculateTotals returns {earnings, entries, max}
 
-		String rs;
+		String rs = "";
 
-		rs += "\nLast 24 Hours:\n"
+		rs += "\nLast 24 Hours:\n";
 		rs += "\tEarned: $" + stats[0] + '\n';
 		rs += "\tEntered: " + stats[1] + '\n';
-		rs += "\tMax parked at once: "stats[2] + '\n';
+		rs += "\tMax parked at once: " + stats[2] + '\n';
 
 		return rs;
 	}
@@ -148,16 +153,33 @@ public class Report {
 		// Returns data for the last 24 * 7 = 168 hours
 
 		Date now = new Date();
-		int hours = round(168, now);
+		int hours = round(168);
 
-		long[3] stats = calculateTotals(hour);
+		long[] stats = calculateTotals(hours);
 
-		String rs;
+		String rs = "";
 
-		rs += "\nLast Week:\n"
-		rs += "\tEarned: $" + earnings + '\n';
-		rs += "\tEntered: " + entries + '\n';
-		rs += "\tMax parked at once: " max + '\n';
+		rs += "\nLast Week:\n";
+		rs += "\tEarned: $" + stats[0] + '\n';
+		rs += "\tEntered: " + stats[1] + '\n';
+		rs += "\tMax parked at once: " + stats[2] + '\n';
+
+		return rs;
+	}
+
+	public String lastMonth() {
+		// Returns the data for the last 24 * 30 = 720 hours, from this hour (weighted weirdly if you are at beginning/end of current hour.
+
+		int hours = round(720);
+
+		long[] stats = calculateTotals(hours); // calculateTotals returns {earnings, entries, max}
+
+		String rs = "";
+
+		rs += "\nLast Month:\n";
+		rs += "\tEarned: $" + stats[0] + '\n';
+		rs += "\tEntered: " + stats[1] + '\n';
+		rs += "\tMax parked at once: " + stats[2] + '\n';
 
 		return rs;
 	}
@@ -166,18 +188,16 @@ public class Report {
 		
 		//Returns data of the last 24 * 365 = 8760 hours
 
-		Date now = new Date();
+		int hours = round(8760);
 
-		int hours = round(8760, now);
+		long[] stats = calculateTotals(hours); // calculateTotals() returns {earnings, entries, max}
 
-		long[3] stats = calculateTotals(hours)
+		String rs = "";
 
-		String rs;
-
-		rs += "\nLast Year:\n"
-		rs += "\tEarned: $" + earnings + '\n';
-		rs += "\tEntered: " + entries + '\n';
-		rs += "\tMax parked at once: " max + '\n';
+		rs += "\nLast Year:\n";
+		rs += "\tEarned: $" + stats[0] + '\n';
+		rs += "\tEntered: " + stats[1] + '\n';
+		rs += "\tMax parked at once: " + stats[2] + '\n';
 
 		return rs;
 	
@@ -185,9 +205,9 @@ public class Report {
 
 	public String total() {
 	
-		String rs;
+		String rs = "";
 
-		rs += "\nTotal:\n"
+		rs += "\nTotal:\n";
 		rs += "\tEarned: $" + totalEarned + '\n';
 		rs += "\tEntered: " + totalEntered + '\n';
 		rs += "\tMax parked at once: " + maxParked + '\n';
@@ -195,12 +215,23 @@ public class Report {
 		return rs;
 	}
 
-	private int round(int hours, Date now) {
+	private int updateHourIndex() {
+		// Returns truncated number of hours since report creation
+
+		Date now = new Date();
+		long hour_diff = (now.getTime() - created.getTime()) / millies_per_hour;
+		return (int) hour_diff;
+	}
+
+	private int round(int hours) {
 
 		// round() checks if the user has passed the halfway point of the current hour
-		// This is when the earnings of the current hour would be substantial enough to not count an extra hour
+		// This is when the earnings of the current hour would be substantial enough to count as an extra hour, so `hours` should be decremented
+		// Before the halfway point, we estimate that not enough time has passed for this hour to "count" towards total (even though it is still added)
 		
-		if ((now.getTime() - created.getTime() % (millies_per_hour)) > millies_per_halfhour) {
+		Date now = new Date();
+
+		if ((now.getTime() - created.getTime() % millies_per_hour) > millies_per_halfhour) {
 			hours--;
 		}
 
@@ -211,16 +242,20 @@ public class Report {
 
 		// calculateTotals is a commonly used process in this class, which accumulates stats of the Report's array attributes
 
-		long earnings, entries, max = 0;
+		long earnings = 0;
+		long entries = 0; 
+		long max = 0;
 
 		for (int i = hourIndex; i >= (hourIndex - window) && i > 0; i--) {
 			earnings += hourlyEarnings[i];
 			entries += hourlyEntries[i];
 			if (mostParked[i] > max) {
-				max = maxParked[i];
+				max = mostParked[i];
 			}
 		}
+		
+		long[] stats = {earnings, entries, max};
 
-		return {earnings, entries, max};
+		return stats;
 	}	
 }
