@@ -1,5 +1,7 @@
 package server;
 
+import java.util.Date;
+
 public class Report {
 	private float[] hourlyEarnings;	// tracks money earned
 	private int[] hourlyEntries; 	// tracks # people entered
@@ -25,7 +27,7 @@ public class Report {
 
 		hourlyEarnings = new float[365 * 24];
 		hourlyEntries = new int[365 * 24];
-		maxParked = new int[365 * 24];
+		mostParked = new int[365 * 24];
 
 		totalEarned = 0;
 		totalEntered = 0;
@@ -49,8 +51,8 @@ public class Report {
 
 		// Check if there is a new peak # cars in garage
 		if (currentlyParked > mostParked[hourIndex]) {
-			maxOccupancies[hourIndex] = currentlyParked;
-			if (mostParked[hourIndex] > maxParked) {
+			mostParked[hourIndex] = currentlyParked;
+			if (currentlyParked > maxParked) {
 				maxParked = mostParked[hourIndex];
 			}
 		}
@@ -79,10 +81,10 @@ public class Report {
 		currentlyParked--;
 
 		// add amount to revenue earned this hour
-		hourlyRevenue[hourIndex] += amount;
+		hourlyEarnings[hourIndex] += amount;
 
 		// at amount to total revenue
-		totalRevenue += amount;
+		totalEarned += amount;
 	}
 
 
@@ -91,7 +93,7 @@ public class Report {
 			//hour, day, week, year
 		//regardless of what they might return
 
-		String rs;
+		String rs = "";
 
 		rs += lastHour();
 		rs += lastToday();
@@ -110,20 +112,20 @@ public class Report {
 		// Returns data for this hour and the last hour
 		// Hard to decide which one to use and which one not to use, so included both
 
-		String rs;
+		String rs = "";
 
-		rs += "This Hour:\n"
-		rs += "\tEarned: $" + hourlyEarnings[hourlyIndex] + '\n';
-		rs += "\tEntered: " + hourlyEntries[hourlyIndex] + '\n';
+		rs += "This Hour:\n";
+		rs += "\tEarned: $" + hourlyEarnings[hourIndex] + '\n';
+		rs += "\tEntered: " + hourlyEntries[hourIndex] + '\n';
 		rs += "\tCurrentlyParked: " + currentlyParked + '\n';
 
 		// Break for formatting
-		rs += "\n';
+		rs += '\n';
 
 		rs += "Last Hour:\n";
-		rs += "\tEarned: $" + hourlyEarnings[hourlyIndex - 1] + '\n';
-		rs += "\tEntered: " + hourlyEntries[hourlyIndex - 1] + '\n';
-		rs += "\tMax parked at once: " + maxParked[hourlyIndex - 1] + '\n';
+		rs += "\tEarned: $" + hourlyEarnings[hourIndex - 1] + '\n';
+		rs += "\tEntered: " + hourlyEntries[hourIndex - 1] + '\n';
+		rs += "\tMax parked at once: " + mostParked[hourIndex - 1] + '\n';
 
 		return rs;
 	}
@@ -134,11 +136,11 @@ public class Report {
 
 		int hours = round(24);
 
-		long[3] stats = calculateTotals(hours); // calculateTotals returns {earnings, entries, max}
+		long[] stats = calculateTotals(hours); // calculateTotals returns {earnings, entries, max}
 
-		String rs;
+		String rs = "";
 
-		rs += "\nLast 24 Hours:\n"
+		rs += "\nLast 24 Hours:\n";
 		rs += "\tEarned: $" + stats[0] + '\n';
 		rs += "\tEntered: " + stats[1] + '\n';
 		rs += "\tMax parked at once: " + stats[2] + '\n';
@@ -151,11 +153,11 @@ public class Report {
 		// Returns data for the last 24 * 7 = 168 hours
 
 		Date now = new Date();
-		int hours = round(168, now);
+		int hours = round(168);
 
-		long[3] stats = calculateTotals(hour);
+		long[] stats = calculateTotals(hours);
 
-		String rs;
+		String rs = "";
 
 		rs += "\nLast Week:\n";
 		rs += "\tEarned: $" + stats[0] + '\n';
@@ -170,9 +172,9 @@ public class Report {
 
 		int hours = round(720);
 
-		long[3] stats = calculateTotals(hours); // calculateTotals returns {earnings, entries, max}
+		long[] stats = calculateTotals(hours); // calculateTotals returns {earnings, entries, max}
 
-		String rs;
+		String rs = "";
 
 		rs += "\nLast Month:\n";
 		rs += "\tEarned: $" + stats[0] + '\n';
@@ -188,9 +190,9 @@ public class Report {
 
 		int hours = round(8760);
 
-		long[3] stats = calculateTotals(hours); // calculateTotals() returns {earnings, entries, max}
+		long[] stats = calculateTotals(hours); // calculateTotals() returns {earnings, entries, max}
 
-		String rs;
+		String rs = "";
 
 		rs += "\nLast Year:\n";
 		rs += "\tEarned: $" + stats[0] + '\n';
@@ -203,7 +205,7 @@ public class Report {
 
 	public String total() {
 	
-		String rs;
+		String rs = "";
 
 		rs += "\nTotal:\n";
 		rs += "\tEarned: $" + totalEarned + '\n';
@@ -217,7 +219,8 @@ public class Report {
 		// Returns truncated number of hours since report creation
 
 		Date now = new Date();
-		return (now.getTime() - created.getTime()) / millies_per_hour;
+		long hour_diff = (now.getTime() - created.getTime()) / millies_per_hour;
+		return (int) hour_diff;
 	}
 
 	private int round(int hours) {
@@ -239,16 +242,20 @@ public class Report {
 
 		// calculateTotals is a commonly used process in this class, which accumulates stats of the Report's array attributes
 
-		long earnings, entries, max = 0;
+		long earnings = 0;
+		long entries = 0; 
+		long max = 0;
 
 		for (int i = hourIndex; i >= (hourIndex - window) && i > 0; i--) {
 			earnings += hourlyEarnings[i];
 			entries += hourlyEntries[i];
 			if (mostParked[i] > max) {
-				max = maxParked[i];
+				max = mostParked[i];
 			}
 		}
+		
+		long[] stats = {earnings, entries, max};
 
-		return {earnings, entries, max};
+		return stats;
 	}	
 }
