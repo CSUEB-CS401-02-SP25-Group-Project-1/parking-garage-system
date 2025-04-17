@@ -1,4 +1,7 @@
 package server; //use server and client packages?
+
+import java.util.Date;
+
 public class Log {
 	private String log;
 
@@ -7,14 +10,14 @@ public class Log {
 		this.append(LogType.ENTRY, "Log created"); //append immediate creation entry 
 	}
 
-	public void append(String logMessage, LogType logType) { //use LogType? Or just append native string to Log?
-		String s = ""
+	public void append(LogType logType, String message) { //use LogType? Or just append native string to Log?
+		String s = "";
 		switch (logType) { //will remove if different way of classifying log entries is agreed upon
 			case LogType.ACTION: s += "ACTION:"; break;
 			case LogType.ERROR: s += "ERROR:"; break;
 			default: s += "ENTRY:"; break;
 		}
-		s += (new Date()).toString) + "::: " + message + "\n"; //entries conclude with newline character
+		s += (new Date()).toString() + "::: " + message + "\n"; //entries conclude with newline character
 		log += s; //append to main log
 		return;
 	}
@@ -23,7 +26,7 @@ public class Log {
 
 		//We ask for a Date object for consistent formatting
 		//But everything is a string in our log, so:
-		String sEarliest = earlist.toString();
+		String sEarliest = earliest.toString();
 		String sLatest = latest.toString();
 
 		//Check if dates entered are valid
@@ -32,7 +35,7 @@ public class Log {
 			return "Invalid Log request";
 		}
 
-		String[] entries = log.split('\n'); //split log into individual entries, each entry ends with newline
+		String[] entries = log.split("\n"); //split log into individual entries, each entry ends with newline
 		String[] dates = new String[entries.length]; //make dates array of equal length for getting window
 		
 		for (int i = 0; i < entries.length; i++) {
@@ -40,7 +43,7 @@ public class Log {
 			// Splitting at semicolon gives {<LogType>, <Date>, ..., <Message>}. Extra entries for 3 colon format
 			// Index 1 holds the date String
 			// Rest of log entry is discarded for this
-			dates[i] = entries[i].split(':')[1];
+			dates[i] = entries[i].split(":")[1];
 		}
 
 		// Now we have a list of entries and a list of dates.
@@ -76,4 +79,10 @@ public class Log {
 
 		return s;
 	}
+	
+	public enum LogType {
+			ACTION,
+			ERROR,
+			ENTRY
+	};
 }
