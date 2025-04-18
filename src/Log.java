@@ -66,7 +66,7 @@ public class Log {
 		// Keep using i as index
 		// Append proceeding log entries to return string
 		String s = "";
-		while (i >= 0 && dates[i].compareTo(sEarliest) <= 0) {
+		while (i >= 0 && dates[i].compareTo(sEarliest) >= 0) {
 			// i has to be within array bounds
 			// will append things in Log until earliest date is found
 
