@@ -152,7 +152,6 @@ public class Report {
 		
 		// Returns data for the last 24 * 7 = 168 hours
 
-		Date now = new Date();
 		int hours = round(168);
 
 		long[] stats = calculateTotals(hours);
