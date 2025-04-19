@@ -13,9 +13,9 @@ public class Log {
 	public void append(LogType logType, String message) { //use LogType? Or just append native string to Log?
 		String s = "";
 		switch (logType) { //will remove if different way of classifying log entries is agreed upon
-			case LogType.ACTION: s += "ACTION:"; break;
-			case LogType.ERROR: s += "ERROR:"; break;
-			default: s += "ENTRY:"; break;
+			case LogType.ACTION: s += "ACTION::"; break;
+			case LogType.ERROR: s += "ERROR::"; break;
+			default: s += "ENTRY::"; break;
 		}
 		s += (new Date()).toString() + "::: " + message + "\n"; //entries conclude with newline character
 		log += s; //append to main log
@@ -43,7 +43,7 @@ public class Log {
 			// Splitting at semicolon gives {<LogType>, <Date>, ..., <Message>}. Extra entries for 3 colon format
 			// Index 1 holds the date String
 			// Rest of log entry is discarded for this
-			dates[i] = entries[i].split(":")[1];
+			dates[i] = entries[i].split("::")[1];
 		}
 
 		// Now we have a list of entries and a list of dates.
