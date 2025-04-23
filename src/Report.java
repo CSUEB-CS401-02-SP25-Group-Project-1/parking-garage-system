@@ -7,9 +7,9 @@ public class Report {
 	private int[] hourlyEntries; 	// tracks # people entered
 	private int[] mostParked; 	// tracks most # people in garage at once
 
-	private int hourIndex;		// points to current hour in arrays
-	private Date created;		// hourIndex is updated accoring to (now - created) / 3600000; 
-					// (now - created) gives time elapsed in milliseconds
+	private int hourIndex;	// points to current hour in arrays
+	private Date created;	// hourIndex is updated accoring to (now - created) / 3600000; 
+				// (now - created) gives time elapsed in milliseconds
 
 	// Some constants that go along with hour calculations
 	private final long millies_per_hour = 1 * 60 * 60 * 1000;
@@ -41,7 +41,9 @@ public class Report {
 	public void addEntry() {
 
 		// Used for tracking a car entering the garage
-		// hourIndex is updated every iteration. Similar runtime to using 'if' statements (division is slightly longer but who cares)
+		// hourIndex is updated every iteration. 
+			// Similar runtime to using 'if' statements 
+			// (division is slightly longer but who cares)
 		// Update amount of cars in the garage
 		// Check if there is a peak occupancy
 		// Update total cars entered
@@ -72,7 +74,9 @@ public class Report {
 
 		// Used for tracking a car exiting to leave the garage
 		// Customer leaves by paying
-		// hourIndex is updated every iteration. Similar runtime to using 'if' statements (division is slightly longer but who cares)
+		// hourIndex is updated every iteration. 
+			// Similar runtime to using 'if' statements 
+			// (division is slightly longer but who cares)
 		// Update amount of cars in the garage
 		// No possibility of peak occupancy
 		// Update revenue earned this hour
@@ -136,11 +140,12 @@ public class Report {
 
 	public String lastToday() {
 		
-		// Returns the data for the last 24 hours, from this hour (weighted weirdly if you are at beginning/end of current hour.
+		// Returns the data for the last 24 hours
 
 		int hours = round(24);
 
-		long[] stats = calculateTotals(hours); // calculateTotals returns {earnings, entries, max}
+		// calculateTotals returns {earnings, entries, max}
+		long[] stats = calculateTotals(hours); 
 
 		String rs = "";
 
@@ -171,11 +176,12 @@ public class Report {
 	}
 
 	public String lastMonth() {
-		// Returns the data for the last 24 * 30 = 720 hours, from this hour (weighted weirdly if you are at beginning/end of current hour.
+		// Returns the data for the last 24 * 30 = 720 hours
 
 		int hours = round(720);
 
-		long[] stats = calculateTotals(hours); // calculateTotals returns {earnings, entries, max}
+		// calculateTotals returns {earnings, entries, max}
+		long[] stats = calculateTotals(hours); 
 
 		String rs = "";
 
@@ -193,7 +199,8 @@ public class Report {
 
 		int hours = round(8760);
 
-		long[] stats = calculateTotals(hours); // calculateTotals() returns {earnings, entries, max}
+		// calculateTotals() returns {earnings, entries, max}
+		long[] stats = calculateTotals(hours); 
 
 		String rs = "";
 
@@ -229,8 +236,8 @@ public class Report {
 	private int round(int hours) {
 
 		// round() checks if the user has passed the halfway point of the current hour
-		// This is when the earnings of the current hour would be substantial enough to count as an extra hour, so `hours` should be decremented
-		// Before the halfway point, we estimate that not enough time has passed for this hour to "count" towards total (even though it is still added)
+		// This is when the earnings of the current hour would be 
+		// substantial enough to count, so `hours` should be decremented.
 		
 		Date now = new Date();
 
@@ -243,7 +250,8 @@ public class Report {
 
 	private long[] calculateTotals(int window) {
 
-		// calculateTotals is a commonly used process in this class, which accumulates stats of the Report's array attributes
+		// calculateTotals accumulates stats of the Report's array attributes
+		// # hours to accumulate is specified in `window`
 
 		long earnings = 0;
 		long entries = 0; 
