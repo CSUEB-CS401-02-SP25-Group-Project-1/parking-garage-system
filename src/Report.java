@@ -8,7 +8,8 @@ public class Report {
 	private int[] mostParked; 	// tracks most # people in garage at once
 
 	private int hourIndex;		// points to current hour in arrays
-	private Date created;		// hourIndex is updated accoring to (now - created) / 3600000; (now - created) gives time elapsed in milliseconds
+	private Date created;		// hourIndex is updated accoring to (now - created) / 3600000; 
+					// (now - created) gives time elapsed in milliseconds
 
 	// Some constants that go along with hour calculations
 	private final long millies_per_hour = 1 * 60 * 60 * 1000;
@@ -33,6 +34,9 @@ public class Report {
 		totalEntered = 0;
 		currentlyParked = 0;
 	}
+
+	public long[] getEarnings() {return hourlyEarnings;}
+	public long[] getEntries() {return hourlyEntries;}
 
 	public void addEntry() {
 
@@ -152,7 +156,6 @@ public class Report {
 		
 		// Returns data for the last 24 * 7 = 168 hours
 
-		Date now = new Date();
 		int hours = round(168);
 
 		long[] stats = calculateTotals(hours);
