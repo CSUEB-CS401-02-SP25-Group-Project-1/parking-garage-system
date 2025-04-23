@@ -62,14 +62,19 @@ public class Server{
 		public void run() {
 			// make init a requirement for the client to send?
 			while (isRunning) {
+				// Object streams won't send/receive new messages
+				// if you use one list and .clear() it.
+				// Need to create new lists for every message
+				outboundMessages = new ArrayList<>();
+				inboundMessages = new ArrayList<>();
 				try {
 					inboundMessages = in.readObject();
-					inboundMessages.forEach(msg -> processMessages(msg));
+					inboundMessages.forEach(msg -> processMessage(msg));
 				} catch (IOException | ClassNotFoundException e) {
 					System.err.println(e); continue;
 				}
 
-				// processMessages prepares outboundMessages autonomously
+				// processMessage prepares outboundMessages autonomously
 				out.writeObject(outboundMessages);
 			}
 		}
