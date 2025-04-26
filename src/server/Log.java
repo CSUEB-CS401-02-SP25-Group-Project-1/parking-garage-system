@@ -6,6 +6,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -19,6 +21,16 @@ public class Log {
 		createFile();
 	}
 	
+	public Log(String dir) { // constructor without specifying prefix
+		setPath(dir, ""); // prefix would be blank
+		createFile();
+	}
+	
+	public Log() { // constructor without specifying a directory or prefix
+		setPath("", ""); // would be current directory and blank prefix
+		createFile();
+	}
+
 	public String getFilepath() {
 		return path;
 	}
@@ -30,8 +42,23 @@ public class Log {
 		System.out.println(entry); // also prints entry to console
 	}
 	
-	public void append(String text) { // default append() method without specifying a log type
+	public void append(String text) { // append method without specifying a log type
 		append(LogType.ACTION, text); // default type will be ACTION in this case
+	}
+	
+	public ArrayList<String> getEntries(Date earliest, Date latest) { // returns all log entries from date range
+		ArrayList<String> retrieved = new ArrayList<String>();
+		for (String entry : entries) {
+			Date entryDate = getEntryDate(entry);
+			if (entryDate.before(earliest)) { // ignore entries that are way earlier in time
+				continue;
+			}
+			if (entryDate.after(latest)) { // stop iterating once entries are beyond date range
+				break;
+			}
+			retrieved.add(entry);
+		}
+		return retrieved;
 	}
 
 	// helper methods
@@ -77,5 +104,19 @@ public class Log {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private Date getEntryDate(String entry) { // returns date from string (as a string)
+		String[] split = entry.split("\\] \\["); 
+		String[] split2 = split[1].split("\\]"); // eliminate left end of string
+		String dateStr = split2[0]; // eliminate right end of string
+		SimpleDateFormat dateParser = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy"); // converts string back into date object
+		Date entryDate = null;
+		try {
+			entryDate = dateParser.parse(dateStr);
+		} catch (ParseException e) {
+			return null;
+		}
+		return entryDate;
 	}
 }
