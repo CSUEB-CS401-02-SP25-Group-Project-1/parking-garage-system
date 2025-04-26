@@ -1,8 +1,8 @@
 package tests;
 
+import shared.*;
 import static org.junit.Assert.*;
 import org.junit.*;
-import shared.*;
 
 public class MessageTest {
 	@Test

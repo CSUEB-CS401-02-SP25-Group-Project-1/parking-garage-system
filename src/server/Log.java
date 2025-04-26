@@ -1,15 +1,10 @@
 package server;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
+import java.text.*;
+import java.util.*;
 
 public class Log {
 	String path;
@@ -48,6 +43,9 @@ public class Log {
 	
 	public ArrayList<String> getEntries(Date earliest, Date latest) { // returns all log entries from date range
 		ArrayList<String> retrieved = new ArrayList<String>();
+		if (earliest.after(latest)) { // return nothing if "earliest" is later than "latest" timestamp
+			return retrieved;
+		}
 		for (String entry : entries) {
 			Date entryDate = getEntryDate(entry);
 			if (entryDate.before(earliest)) { // ignore entries that are way earlier in time
@@ -59,6 +57,22 @@ public class Log {
 			retrieved.add(entry);
 		}
 		return retrieved;
+	}
+	
+	public ArrayList<String> getEntries(Date earliest) { // returns all log entries after a certain date
+		ArrayList<String> retrieved = new ArrayList<String>();
+		for (String entry : entries) {
+			Date entryDate = getEntryDate(entry);
+			if (entryDate.before(earliest)) { // ignore entries that are way earlier in time
+				continue;
+			}
+			retrieved.add(entry);
+		}
+		return retrieved;
+	}
+	
+	public ArrayList<String> getEntries() { // returns all entries if no date range is specified
+		return entries;
 	}
 
 	// helper methods
@@ -87,13 +101,7 @@ public class Log {
 	}
 	
 	private String format(LogType logType, String text) { // formats log entry
-		String formattedText = "[";
-		switch (logType) {
-			case LogType.ACTION: formattedText += "ACTION"; break;
-			case LogType.ERROR: formattedText += "ERROR"; break;
-			default: formattedText += "ENTRY"; break;
-		}
-		formattedText += "] [" + (new Date()).toString() + "] " + text.toUpperCase(); // text will be in all caps
+		String formattedText = "["+logType+"] ["+(new Date()).toString()+"] "+text.toUpperCase(); // text will be in all caps
 		return formattedText;
 	}
 	
