@@ -16,11 +16,11 @@ public class Server {
 		// starting connection
 		try (ServerSocket ss = new ServerSocket(PORT)) {
 			ss.setReuseAddress(true); // ensures server uses same ip address
-			System.out.println("Server started at IP: "+ss.getInetAddress().getHostAddress()); // TODO: replace all print statements with logs
+			log.append("Server started at IP: "+ss.getInetAddress().getHostAddress());
 			// server loop
 			while (true) {
 				Socket client = ss.accept();
-				ClientHandler ch = new ClientHandler(client);
+				ClientHandler ch = new ClientHandler(client, log);
 				new Thread(ch).start(); // client is handled in new thread
 			}
 		// exception handling
@@ -31,13 +31,15 @@ public class Server {
 	
 	private static class ClientHandler implements Runnable {
 		private final Socket client;
+		private final Log log;
 		
-		public ClientHandler(Socket client) {
+		public ClientHandler(Socket client, Log log) {
 			this.client = client;
+			this.log = log;
 		}
 		
 		public void run() {
-			System.out.println(client.getInetAddress().getHostAddress()+" has connected"); // TODO: temp
+			log.append(client.getInetAddress().getHostAddress()+" has connected"); // TODO: temp
 		}
 	}
 }
