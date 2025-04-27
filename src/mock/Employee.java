@@ -1,10 +1,7 @@
 package mock;
 
 import java.util.Date;
-
 import interfaces.EmployeeInterface;
-import mock.Receipt;
-import mock.Report;
 
 public class Employee extends User implements EmployeeInterface {
 	private static int count = 0;

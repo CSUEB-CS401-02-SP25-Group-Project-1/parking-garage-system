@@ -2,11 +2,7 @@ package mock;
 
 import java.util.ArrayList;
 import java.util.Date;
-
 import interfaces.GarageInterface;
-import mock.Receipt;
-import mock.Report;
-import mock.SecurityCamera;
 
 public class Garage implements GarageInterface {
 	private static int count = 0;

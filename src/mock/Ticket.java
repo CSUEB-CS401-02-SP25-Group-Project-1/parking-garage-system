@@ -2,7 +2,6 @@ package mock;
 
 import java.util.Date;
 import interfaces.TicketInterface;
-import mock.Garage;
 
 public class Ticket implements TicketInterface {
 	private static int count = 0;
@@ -15,6 +14,7 @@ public class Ticket implements TicketInterface {
 	private Double fee;
 	
 	public Ticket(Garage garage) {
+		id = "TI"+count++;
 		this.garage = garage;
 		entryTime = new Date();
 	}

@@ -2,7 +2,6 @@ package mock;
 
 import java.util.ArrayList;
 import java.util.Date;
-import mock.Earning;
 import interfaces.ReportInterface;
 
 public class Report implements ReportInterface {
