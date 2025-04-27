@@ -1,5 +1,7 @@
 package shared;
 
+import java.io.Serializable;
+
 //Message class is used by Server, EmployeeGUI, and CustomerGUI
 //to communicate. `From` is used by the server to determine the 
 //level of authority of the client. `messageType` is used to by
@@ -28,7 +30,8 @@ package shared;
 //	`va`	:	view amount	: viewer sees # of cars in garage
 //
 
-public class Message {
+@SuppressWarnings("serial")
+public class Message implements Serializable {
 	private MessageType messageType;
 	private String from;
 	private String text;

@@ -10,6 +10,7 @@ public class Server {
 	final static int PORT = 7777; // server port number
 	final static String LOGS_DIR = "/logs/"; // saved logs directory
 	final static String LOG_PREFIX = "server_"; // log filename prefix
+	
 	public static void main(String[] args) {
 		Log log = new Log(Paths.get(System.getProperty("user.dir"), LOGS_DIR).toString(), LOG_PREFIX); // create new log for server instance
 		// TODO: some business logic here for loading server components from file
@@ -25,7 +26,7 @@ public class Server {
 			}
 		// exception handling
 		} catch (IOException e) {
-			e.printStackTrace();
+			log.append(LogType.ERROR, e.toString()); // log error message to file
 		}
 	}
 	
@@ -39,7 +40,29 @@ public class Server {
 		}
 		
 		public void run() {
-			log.append(client.getInetAddress().getHostAddress()+" has connected"); // TODO: temp
+			log.append(client.getInetAddress().getHostAddress()+" has connected"); // TODO: maybe include client id/type too?
+			try {
+				ObjectOutputStream out = new ObjectOutputStream(client.getOutputStream()); // outgoing messages to client
+				ObjectInputStream in = new ObjectInputStream(client.getInputStream()); // incoming messages from client
+				Message outgoing;
+				Message incoming;
+				// TODO: depending on the design, you may want to have server check if client wants to login first before processing any other message
+				do { // client-server message communication loop
+					incoming = (Message)in.readObject();
+					log.append("Client says: "+incoming.getText()); // TODO: temp
+					outgoing = new Message(MessageType.Success, "server", "foo"); // TODO: temp
+					out.writeObject(outgoing); // sends server response to client
+				} while (true); // TODO: change this to !isLoggingOut()
+				//client.close();
+				//log.append(client.getInetAddress().getHostAddress()+" has logged out"); // TODO: uncomment
+			} catch (IOException | ClassNotFoundException e) {
+				log.append(LogType.ERROR, e.toString());
+			}
+		}
+		
+		// helper methods
+		private boolean isLoggingOut(Message msg) { // determines if the client is requesting to log out
+			return false; // TODO: write code here
 		}
 	}
 }
