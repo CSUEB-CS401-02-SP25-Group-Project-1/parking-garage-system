@@ -1,7 +1,6 @@
 package interfaces;
 
 import java.util.ArrayList;
-
 import mock.Gate;
 import mock.Receipt;
 import mock.Report;

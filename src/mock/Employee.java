@@ -14,7 +14,7 @@ public class Employee extends User implements EmployeeInterface {
 		id = "EM"+count++;
 		this.username = username;
 		this.password = password;
-		garage = setGarage(garage);
+		setGarage(garage);
 	}
 
 	public String getID() {

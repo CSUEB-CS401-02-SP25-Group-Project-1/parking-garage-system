@@ -2,7 +2,7 @@ package interfaces;
 
 import mock.Garage;
 import mock.Receipt;
-import mock.UserType;
+import server.UserType;
 
 public interface UserInterface {
 	void setGarage(Garage newGarage);
