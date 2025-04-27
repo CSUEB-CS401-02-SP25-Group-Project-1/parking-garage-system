@@ -7,9 +7,9 @@ import java.text.*;
 import java.util.*;
 
 public class Log {
-	String path;
-	BufferedWriter fileWriter; // buffered so that new entries are written to file immediately
-	ArrayList<String> entries = new ArrayList<String>();
+	private String path;
+	private BufferedWriter fileWriter; // buffered so that new entries are written to file immediately
+	private ArrayList<String> entries = new ArrayList<String>();
 	
 	public Log(String dir, String prefix) {
 		setPath(dir, prefix);

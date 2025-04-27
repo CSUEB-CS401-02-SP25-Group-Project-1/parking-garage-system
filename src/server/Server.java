@@ -7,9 +7,9 @@ import java.net.*;
 import java.nio.file.Paths;
 
 public class Server {
-	final static int PORT = 7777; // server port number
-	final static String LOGS_DIR = "/logs/"; // saved logs directory
-	final static String LOG_PREFIX = "server_"; // log filename prefix
+	private final static int PORT = 7777; // server port number
+	private final static String LOGS_DIR = "/logs/"; // saved logs directory
+	private final static String LOG_PREFIX = "server_"; // log filename prefix
 	
 	public static void main(String[] args) {
 		Log log = new Log(Paths.get(System.getProperty("user.dir"), LOGS_DIR).toString(), LOG_PREFIX); // create new log for server instance
