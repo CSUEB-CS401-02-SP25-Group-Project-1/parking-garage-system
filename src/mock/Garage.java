@@ -15,7 +15,7 @@ public class Garage {
 	private ArrayList<SecurityCamera> cams; // aggregated security cameras
 	private ArrayList<String> logEntries; // log entries for a particular garage
 	
-	// Constructors
+	// Constructorsu
 	public Garage() {
 		id = "GA"+count++;
 	}
