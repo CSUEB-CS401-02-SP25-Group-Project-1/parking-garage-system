@@ -1,7 +1,7 @@
 package interfaces;
 
-import server.Receipt;
-import server.Report;
+import mock.Receipt;
+import mock.Report;
 
 public interface EmployeeInterface {
 	String getID();

@@ -3,9 +3,9 @@ package interfaces;
 import java.util.ArrayList;
 
 import mock.Gate;
-import server.Receipt;
-import server.Report;
-import server.SecurityCamera;
+import mock.Receipt;
+import mock.Report;
+import mock.SecurityCamera;
 
 public interface GarageInterface {
 	String getID();

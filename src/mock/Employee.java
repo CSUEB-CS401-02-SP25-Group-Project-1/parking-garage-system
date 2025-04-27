@@ -1,8 +1,8 @@
 package mock;
 
 import interfaces.EmployeeInterface;
-import server.Receipt;
-import server.Report;
+import mock.Receipt;
+import mock.Report;
 
 public class Employee extends User implements EmployeeInterface {
 	private static int count = 0;

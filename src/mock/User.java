@@ -1,9 +1,9 @@
 package mock;
 
 import interfaces.UserInterface;
-import server.Garage;
-import server.Receipt;
-import server.UserType;
+import mock.Garage;
+import mock.Receipt;
+import mock.UserType;
 
 public class User implements UserInterface {
 	protected Garage garage; // associated garage
