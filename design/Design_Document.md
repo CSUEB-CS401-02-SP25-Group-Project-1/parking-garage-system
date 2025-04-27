@@ -15,6 +15,7 @@
     - [**Garage Class**](#garage-class)
     - [**Receipt Class**](#receipt-class)
     - [**Report Class**](#report-class)
+    - [**Earning Class**](#earning-class)
     - [**Message Class**](#message-class)
     - [**MessageType Enum**](#messagetype-enum)
     - [**Server Class**](#server-class)
@@ -160,13 +161,30 @@ Upon successful implementation of the Parking Garage System (PGS), the following
 - The class constructor has all of the class attributes as its arguments to ensure it can be reconstructed reliably from the server's message payload
 ### Report Class
 - Used by the `Server` to provide a summary of garage performance
-- Tracks total revenue in any given hour (since creation, within the last year) is a list `hourlyEarnings[]`
-- Tracks total number of cars entered in the same time frame with `hourlyEntries[]`
+- Tracks total revenue across different time frames (from the last hour, day, week, year, lifetime, etc.) by iterating through an ArrayList of `Earning` objects and checking their dates.
+- Report class creates a new `Earning` object containing the exit date and payment amount after a ticket payment has been successful. It then stores it in the list of Earnings.
+- Report class stores every vehicle entry date of the garage in an ArrayList (`entryDates`)
 - Has attribute for number of cars currently in the garage
 	- Is incremented when a ticket is created, and decremented when a ticket is paid off
 - Includes a `toString()` method used by the `Server` to format the report into a string `Message` payload
 	- `toString()` has parameters for the earliest and latest time generated on the report, so employees can peer into a limited window of the report
-- Depending on how the GUI is implemented, the `EmployeeGUI` either parses the string back into a `Report` object or directly displays the formatted string
+- The `EmployeeGUI` directly displays the formatted string
+### Earning Class
+- Represents a record of a completed parking transaction within a garage.
+- Each `Earning` object stores:
+	- The exit time (`Date`) when the vehicle left the garage.
+	- The payment amount (`double`) collected at that time.
+- Earning objects are created and managed by the `Report` class to keep track of all revenue over time.
+- Serves as the basis for calculating:
+	- Revenue earned per hour
+	- Revenue earned today
+	- Revenue earned this week, month, and year
+	- Total lifetime revenue
+- The `Earning` class is strictly a data container:
+	- It does not perform any calculations on its own.
+	- It provides `getDate()` and `getRevenue()` methods for retrieving its fields.
+	- It includes a `toString()` method for the server to save its data to file.
+- Helps the `Report` class maintain granular, time-based revenue analytics without directly modifying ticket data.
 ### Message Class
 - Enables communication between the `Server` and GUI clients (`CustomerGUI` and `EmployeeGUI`)
 - Contains a type attribute (from the `MessageType` enum) that indicates the purpose of the message
