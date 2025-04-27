@@ -14,6 +14,8 @@ public interface ReportInterface {
 	double getRevenueThisWeek();
 	double getRevenueThisYear();
 	double getTotalRevenue();
+	int getCurrentlyParkedNum();
 	String getPeakHour(); // returns peak hour based on entry times
 	String toString();
+	
 }
