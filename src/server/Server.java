@@ -26,7 +26,7 @@ public class Server {
 			}
 		// exception handling
 		} catch (IOException e) {
-			log.append(LogType.ERROR, e.toString()); // log error message to file
+			log.append(LogType.ERROR, e+" in client reception"); // log error message to file
 		}
 	}
 	
@@ -56,7 +56,7 @@ public class Server {
 				//client.close();
 				//log.append(client.getInetAddress().getHostAddress()+" has logged out"); // TODO: uncomment
 			} catch (IOException | ClassNotFoundException e) {
-				log.append(LogType.ERROR, e.toString());
+				log.append(LogType.ERROR, e+" in client communication"); // TODO: identify which client caused this error (ip or some other id)
 			}
 		}
 		
