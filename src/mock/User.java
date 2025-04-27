@@ -1,5 +1,6 @@
 package mock;
 
+import java.util.Date;
 import interfaces.UserInterface;
 import mock.Garage;
 import mock.Receipt;
@@ -28,7 +29,7 @@ public class User implements UserInterface {
 
 	public Receipt payTicket(String ticketID) {
 		// calls garage.payTicket() and returns the returned receipt 
-		return new Receipt(); // dummy value
+		return new Receipt("TI601", "The Awesome Garage", new Date(), new Date(), 9.99); // dummy value
 	}
 
 }

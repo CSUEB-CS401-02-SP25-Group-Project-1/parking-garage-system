@@ -1,6 +1,8 @@
 package mock;
 
 import java.util.ArrayList;
+import java.util.Date;
+
 import interfaces.GarageInterface;
 import mock.Receipt;
 import mock.Report;
@@ -60,7 +62,7 @@ public class Garage implements GarageInterface {
 
 	public String generateTicket() { // returns ticket ID if successful
 		if (!isFull()) {
-			Ticket ticket = new Ticket();
+			Ticket ticket = new Ticket(this);
 			allTickets.add(ticket);
 			activeTickets.add(ticket);
 			return ticket.getID();
@@ -74,7 +76,7 @@ public class Garage implements GarageInterface {
 		// if payment went through, create a new receipt
 		// if ticket was already paid for, return null instead
 		
-		return new Receipt(); // dummy value
+		return new Receipt("TI602", "The Awesome Garage", new Date(), new Date(), 599.99); // dummy value
 	}
 
 	public Report viewReport() {

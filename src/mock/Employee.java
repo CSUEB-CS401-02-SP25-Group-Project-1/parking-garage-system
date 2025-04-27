@@ -1,5 +1,7 @@
 package mock;
 
+import java.util.Date;
+
 import interfaces.EmployeeInterface;
 import mock.Receipt;
 import mock.Report;
@@ -14,7 +16,7 @@ public class Employee extends User implements EmployeeInterface {
 		id = "EM"+count++;
 		this.username = username;
 		this.password = password;
-		setGarage(garage);
+		this.garage = garage;
 	}
 
 	public String getID() {
@@ -41,7 +43,7 @@ public class Employee extends User implements EmployeeInterface {
 
 	public Receipt getReceipt(String ticketID) {
 		// returns the receipt of a ticket
-		return new Receipt(); // dummy value
+		return new Receipt("TI600", "The Awesome Garage", new Date(), new Date(), 79.99); // dummy value
 	}
 
 	public Report getGarageReport() {
