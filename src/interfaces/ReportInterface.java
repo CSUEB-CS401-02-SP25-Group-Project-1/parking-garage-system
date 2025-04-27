@@ -17,5 +17,4 @@ public interface ReportInterface {
 	int getCurrentlyParkedNum();
 	String getPeakHour(); // returns peak hour based on entry times
 	String toString();
-	
 }

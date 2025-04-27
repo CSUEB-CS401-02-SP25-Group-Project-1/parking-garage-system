@@ -2,6 +2,7 @@ package interfaces;
 
 import java.util.ArrayList;
 
+import mock.Gate;
 import server.Receipt;
 import server.Report;
 import server.SecurityCamera;
@@ -23,4 +24,5 @@ public interface GarageInterface {
 	ArrayList<SecurityCamera> getCameras();
 	void addLogEntry(String logEntry);
 	ArrayList<String> getLogEntries();
+	Gate getGate();
 }
