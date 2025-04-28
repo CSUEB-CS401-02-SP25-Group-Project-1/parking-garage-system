@@ -33,6 +33,10 @@ public class Server {
 	private static class ClientHandler implements Runnable {
 		private final Socket client;
 		private final Log log;
+		private boolean isEmployee;
+		private Garage garage;
+		ObjectOutputStream out; // outgoing messages to client
+		ObjectInputStream in; // incoming messages from client
 		
 		public ClientHandler(Socket client, Log log) {
 			this.client = client;
@@ -42,20 +46,12 @@ public class Server {
 		public void run() {
 			log.append(client.getInetAddress().getHostAddress()+" has connected"); // TODO: maybe include client id/type too?
 			try {
-				ObjectOutputStream out = new ObjectOutputStream(client.getOutputStream()); // outgoing messages to client
-				ObjectInputStream in = new ObjectInputStream(client.getInputStream()); // incoming messages from client
-				Message outgoing;
-				Message incoming;
-				// TODO: depending on the design, you may want to have server check if client wants to login first before processing any other message
-				do { // client-server message communication loop
-					incoming = (Message)in.readObject();
-					log.append("Client says: "+incoming.getText()); // TODO: temp
-					outgoing = new Message(MessageType.Success, "server", "foo"); // TODO: temp
-					out.writeObject(outgoing); // sends server response to client
-				} while (true); // TODO: change this to !isLoggingOut()
-				//client.close();
-				//log.append(client.getInetAddress().getHostAddress()+" has logged out"); // TODO: uncomment
-			} catch (IOException | ClassNotFoundException e) {
+				out = new ObjectOutputStream(client.getOutputStream());
+				in = new ObjectInputStream(client.getInputStream());
+				// processes init message (assigns client garage and role)
+				// login loop (for employee client)
+				// main communication loop
+			} catch (IOException e) {
 				log.append(LogType.ERROR, e+" in client communication"); // TODO: identify which client caused this error (ip or some other id)
 			}
 		}
