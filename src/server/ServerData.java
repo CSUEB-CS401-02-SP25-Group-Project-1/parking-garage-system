@@ -5,7 +5,7 @@ import java.io.FileNotFoundException;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Scanner;
-
+import mock.Employee;
 import mock.Garage;
 import mock.Report;
 import mock.SecurityCamera;
@@ -16,6 +16,7 @@ public class ServerData {
 	private final String TICKET_SUBDIR = "/tickets/"; // "TI#.txt"
 	private final String REPORT_SUBDIR = "/reports/"; // "GA#.txt"
 	private final String CAMERA_SUBDIR = "/cameras/"; // "SC#.txt"
+	private final String EMPLOYEE_SUBDIR = "/employees/"; // "EM#.txt"
 	private String rootDir;
 	private final Log log;
 	
@@ -25,6 +26,7 @@ public class ServerData {
 	private HashMap<String, Ticket> tickets = new HashMap<>();
 	private HashMap<String, Report> reports = new HashMap<>();
 	private HashMap<String, SecurityCamera> cameras = new HashMap<>();
+	private HashMap<String, Employee> employees = new HashMap<>();
 	
 	public ServerData(String rootDir, Log log) {
 		this.log = log;
@@ -37,6 +39,7 @@ public class ServerData {
 		loadTickets();
 		loadReports();
 		loadCameras();
+		loadEmployees();
 	}
 	
 	public Garage getGarage(String garageID) {
@@ -63,6 +66,13 @@ public class ServerData {
 	public SecurityCamera getSecurityCamera(String cameraID) {
 		if (cameras.containsKey(cameraID)) {
 			return cameras.get(cameraID);
+		}
+		return null;
+	}
+	
+	public Employee getEmployee(String employeeID) {
+		if (employees.containsKey(employeeID)) {
+			return employees.get(employeeID);
 		}
 		return null;
 	}
@@ -115,6 +125,10 @@ public class ServerData {
 		
 	}
 	
+	private void loadEmployees() {
+		
+	}
+	
 	private void assignRoot(String rootDir) {
 		if (rootDir == null) { // if no root directory has been specified
 			rootDir = ""; // leave it blank
@@ -129,10 +143,9 @@ public class ServerData {
 			root.mkdir(); // make new folder if it doesn't exist
 		}
 		// check subdirectories
-		String subdirs[] = {GARAGE_SUBDIR, TICKET_SUBDIR, REPORT_SUBDIR, CAMERA_SUBDIR};
+		String subdirs[] = {GARAGE_SUBDIR, TICKET_SUBDIR, REPORT_SUBDIR, CAMERA_SUBDIR, EMPLOYEE_SUBDIR};
 		for (String subdir : subdirs) {
 			File sd = new File(Paths.get(rootDir, subdir).toString());
-			System.out.println(sd);
 			if (!sd.exists()) {
 				sd.mkdir(); // make new folder if it doesn't exist
 			}
