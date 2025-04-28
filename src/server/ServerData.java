@@ -34,13 +34,19 @@ public class ServerData {
 		initFolders();
 	}
 	
-	public void loadAll() { // loads data from all subdirectories
+	public void loadAll() {
 		loadGarages();
 		loadTickets();
 		loadReports();
 		loadCameras();
 		loadEmployees();
 	}
+	
+	public void saveAll() { // useful for when server is about to terminate
+		
+	}
+	
+	// methods for retrieving an object based on their id
 	
 	public Garage getGarage(String garageID) {
 		if (garages.containsKey(garageID)) {
@@ -75,6 +81,28 @@ public class ServerData {
 			return employees.get(employeeID);
 		}
 		return null;
+	}
+	
+	// methods to save an individual object to file
+	
+	public void saveGarage(Garage garage) { 
+		
+	}
+	
+	public void saveTicket(Ticket ticket) {
+		
+	}
+	
+	public void saveReport(Report report) {
+		
+	}
+	
+	public void saveSecurityCamera(SecurityCamera camera) {
+		
+	}
+	
+	public void saveEmployee(Employee employee) {
+		
 	}
 	
 	// helper methods
