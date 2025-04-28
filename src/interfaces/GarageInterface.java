@@ -18,6 +18,7 @@ public interface GarageInterface {
 	boolean isFull();
 	String generateTicket(); // returns ticket ID of generated ticket
 	void loadTicket(Ticket ticket);
+	Ticket getTicket(String ticketID);
 	Receipt payTicket(String ticketID);
 	void loadReport(Report report);
 	Report viewReport();

@@ -73,6 +73,10 @@ public class Garage implements GarageInterface {
 		}
 		allTickets.add(ticket);
 	}
+	
+	public Ticket getTicket(String ticketID) { // returns ticket from all tickets list based on its ticket id
+		return null; // dummy value
+	}
 
 	public Receipt payTicket(String ticketID) { // returns receipt if successful
 		// do logic here for finding ticket based on ticket ID
