@@ -15,8 +15,8 @@ public class Server {
 	public static void main(String[] args) {
 		Log log = new Log(Paths.get(System.getProperty("user.dir"), LOGS_DIR).toString(), LOG_PREFIX); // create new log for server instance
 		// load server data from file
-		ServerData serverData = new ServerData(DATA_DIR);
-		serverData.loadAll();
+		ServerData serverData = new ServerData(DATA_DIR, log);
+		//serverData.loadAll(); // TODO
 		// starting connection
 		try (ServerSocket ss = new ServerSocket(PORT)) {
 			ss.setReuseAddress(true); // ensures server uses same ip address
@@ -31,10 +31,6 @@ public class Server {
 		} catch (IOException e) {
 			log.append(LogType.ERROR, e+" in client reception"); // log error message to file
 		}
-	}
-	
-	public static Garage getGarage(String garageID) {
-		
 	}
 	
 	private static class ClientHandler implements Runnable {
