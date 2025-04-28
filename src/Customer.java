@@ -1,8 +1,6 @@
 package server;
 
-public class Customer {
-
-	private Garage garage;
+public class Customer extends User implements CustomerInterface{
 
 	public Customer(Garage garage) {
 		this.garage = garage;
@@ -33,9 +31,7 @@ public class Customer {
 		return receipt;
 	}
 
-	public String viewReport() {
-		String s = "Available spaces: "
-			+ garage.getAvailableSpace();
-		return s;
+	public int viewGarageAvailability() {
+		return garage.getAvailableSpace();
 	}
 }
