@@ -3,45 +3,56 @@ package server;
 public class Receipt 
 {
 	
-	private Ticket ticket;
-	
+	private String ticket_id;
+	private	String garageName;
+	private Date entryTime;
+	private	Date exitTime;
+	private double total_amount;
+
 	public Receipt(Ticket ticket)
 	{
-		this.ticket = ticket;
-	}
-	
-	public String toString()
-	{
-		String result = "Ticket ID: " + ticket.getID() + "\n";
+
+		this.ticket_id = ticket.getID();
+		this.garageName = ticket.getGarage().getName();
+		this.entryTime = ticket.getEntryTime();
+		this.exitTime = ticket.getExitTime();
 		
-		result += "Garage: " + ticket.getGarage().getName() + "\n";
-		
-		result += "Entry Time" + ticket.getEntryTime() + "\n";
-		
-		if(ticket.getExitTime() != null)
+		if (ticket.isClosed())
 		{
-			result += "Exit Time: " + ticket.getExitTime() + "\n";
-		}
-		
-		result += "Status: ";
-		
-		if(ticket.isClosed())
-		{
-			result += "Currently Closed!";
+			Date exit = ticket.getExitTime();
+			Date entry = ticket.getExitTime();
+			long hours_in_garage = (exit.getTime() - entry.getTime()) / 3600000;
+			this.total_amount = hours_in_garage * ticket.getGarage().getRate();
 		}
 		
 		else
 		{
-			result += "It's Open!";
+			this.total_amount = 0.0;
 		}
+
+	}
+	
+	public String toString()
+	{
+
+		String result = "RECEIPT\n";
+		result += "Garage Name: " + garageName + "\n";
+		result += "Ticket ID: " + ticket_id + "\n";
+		result += "Entry Time: " + entryTime + "\n";
+		result += "Exit Time: ";
 		
-		if(ticket.isOverridden())
+		if (exitTime != null)
 		{
-			result += "Overridden";
+			result += exitTime + "\n";
 		}
 		
-		result += "\n";
+		else
+		{
+			result += "Still parked in the garage!" + "\n";
+		}
 		
+		result += "Total Amount: $" + total_amount + "\n";
 		return result;
+		
 	}
 }
