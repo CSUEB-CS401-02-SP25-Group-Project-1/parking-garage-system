@@ -109,24 +109,34 @@ public class Garage {
 	//3. Report is updated
 	//4. Receipt is generated and returned
 	public Receipt payTicket(String ticketId, double amount) {
-		Ticket ticket;
+		Ticket ticket = null;
 		
 		// Remove ticket from activeTickets
 		for(int i = 0; i < this.activeTickets.size(); i++){
 			if(this.activeTickets.get(i).getID() == ticketId){
 				ticket = this.activeTickets.get(i);
-				this.activeTickets.remove(i);
+				// don't remove ticket until payment is validated
 				break;
 			}
 		}
 		
+		// if no tickets were found
+		if (ticket == null) {return null;}
+
 		//Find ticket in allTickets and mark as paid
+		boolean paid = false;
 		for(int i = 0; i < this.allTickets.size(); i++){
 			if(this.allTickets.get(i).getID() == ticketId){
-				this.activeTickets.get(i).pay((float)amount);
+				paid = this.activeTickets.get(i).pay((float)amount);
 				break;
 			}
 		}
+
+		// if user submitted payment less than required:
+		if (!paid) {return null;}
+
+		// Ticket is now paid and is removed from active tickets
+		this.activeTickets.remove(i);
 		
 		//Update Report
 		this.report.addExit((float)amount);
