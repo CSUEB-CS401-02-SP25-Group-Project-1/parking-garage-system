@@ -92,7 +92,7 @@ public class Garage implements GarageInterface {
 	}
 
 	public Report viewReport() {
-		return new Report(); // dummy value
+		return null; // dummy value
 	}
 
 	public boolean addCamera(SecurityCamera newCamera) {
