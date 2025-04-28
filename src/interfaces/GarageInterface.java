@@ -5,6 +5,7 @@ import mock.Gate;
 import mock.Receipt;
 import mock.Report;
 import mock.SecurityCamera;
+import mock.Ticket;
 
 public interface GarageInterface {
 	String getID();
@@ -16,7 +17,9 @@ public interface GarageInterface {
 	int getAvailableSpaces();
 	boolean isFull();
 	String generateTicket(); // returns ticket ID of generated ticket
+	void loadTicket(Ticket ticket);
 	Receipt payTicket(String ticketID);
+	void loadReport(Report report);
 	Report viewReport();
 	boolean addCamera(SecurityCamera newCamera);
 	boolean removeCamera(String cameraID);

@@ -9,14 +9,26 @@ public class Ticket implements TicketInterface {
 	private Garage garage; // associated garage
 	private Date entryTime;
 	private Date exitTime;
-	private boolean overridden;
-	private boolean paid;
+	private boolean overridden = false;
+	private boolean paid = false;
 	private Double fee;
 	
+	// constructor for generating new ticket
 	public Ticket(Garage garage) {
 		id = "TI"+count++;
 		this.garage = garage;
 		entryTime = new Date();
+	}
+	
+	// constructor for loading ticket from file
+	public Ticket(Garage garage, Date entryTime, Date exitTime, boolean overriden, boolean paid, double fee) {
+		id = "TI"+count++;
+		this.garage = garage;
+		this.entryTime = entryTime;
+		this.exitTime = exitTime;
+		this.overridden = overriden;
+		this.paid = paid;
+		this.fee = fee;
 	}
 
 	public Garage getGarage() {
@@ -67,4 +79,7 @@ public class Ticket implements TicketInterface {
 		}
 	}
 
+	public String toString() {
+		return garage.getID()+","+entryTime+","+exitTime+","+overridden+","+paid+","+fee;
+	}
 }

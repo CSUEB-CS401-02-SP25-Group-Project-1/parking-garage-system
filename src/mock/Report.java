@@ -65,6 +65,7 @@ public class Report implements ReportInterface {
 	
 	public String toString() {
 		// used to dump all report data to file (both arrays)
-		return "LONG LINES OF EARNINGS AND ENTRY TIMES";
+		return "DUMP ALL ENTRY DATES ON ONE LINE\n"+
+				"DUMP ALL EARNINGS ON ANOTHER";
 	}
 }

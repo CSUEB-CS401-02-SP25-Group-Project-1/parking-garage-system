@@ -15,6 +15,7 @@ public class Garage implements GarageInterface {
 	private ArrayList<SecurityCamera> cameras = new ArrayList<>(); // list of cameras associated with garage
 	private ArrayList<String> logEntries = new ArrayList<>(); // every log entry related to garage for employees to view (since boot-up)
 	private Gate gate;
+	private Report report; // add every new entry and exit to report
 	
 	public Garage(String name, double hourlyRate, int capacity, int gateOpenTime) {
 		id = "GA"+count++;
@@ -65,6 +66,13 @@ public class Garage implements GarageInterface {
 		}
 		return null;
 	}
+	
+	public void loadTicket(Ticket ticket) { // used by server to load existing tickets to both arrays
+		if (!ticket.isPaid()) {
+			activeTickets.add(ticket);
+		}
+		allTickets.add(ticket);
+	}
 
 	public Receipt payTicket(String ticketID) { // returns receipt if successful
 		// do logic here for finding ticket based on ticket ID
@@ -73,6 +81,10 @@ public class Garage implements GarageInterface {
 		// if ticket was already paid for, return null instead
 		
 		return new Receipt("TI602", "The Awesome Garage", new Date(), new Date(), 599.99); // dummy value
+	}
+	
+	public void loadReport(Report report) { // used by server to load report from file
+		this.report = report;
 	}
 
 	public Report viewReport() {
@@ -110,5 +122,9 @@ public class Garage implements GarageInterface {
 	
 	public Gate getGate() {
 		return gate;
+	}
+	
+	public String toString() {
+		return name+","+hourlyRate+","+capacity+","+gate.getOpenTime();
 	}
 }

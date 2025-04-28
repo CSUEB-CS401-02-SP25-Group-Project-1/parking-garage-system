@@ -51,5 +51,9 @@ public class Employee extends User implements EmployeeInterface {
 	public void setGarageHourlyRate(double newRate) {
 		garage.setHourlyRate(newRate);
 	}
+	
+	public String toString() {
+		return garage.getID()+","+username+","+password;
+	}
 
 }
