@@ -3,6 +3,10 @@ package server;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.file.Paths;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Scanner;
 import mock.Employee;
@@ -107,38 +111,7 @@ public class ServerData {
 	
 	// helper methods
 	private void loadGarages() {
-	    File garageDir = new File(Paths.get(rootDir, GARAGE_SUBDIR).toString());
-	    for (File garageFile : garageDir.listFiles()) {
-	        try (Scanner lineScanner = new Scanner(garageFile)) {
-	            if (!lineScanner.hasNextLine()) { // if file is empty
-	            	log.append(LogType.ERROR, "Skipping loading: " + garageFile.getName() + " (Empty data file)");
-	            	continue; // skip it
-	            }
-	            // split parameters from string
-	            String data = lineScanner.nextLine();
-	            String[] split = data.split(",");
-	            if (split.length != 4) {
-	                log.append(LogType.ERROR, "Skipping loading: " + garageFile.getName() + " (Invalid number of parameters)");
-	                continue;
-	            }
-	            // attempt to parse garage data
-	            try {
-	            	// garage parameters
-	                String name = split[0];
-	                double hourlyRate = Double.parseDouble(split[1]);
-	                int capacity = Integer.parseInt(split[2]);
-	                int gateOpenTime = Integer.parseInt(split[3]);
-	                // instantiate garage object
-	                Garage garage = new Garage(name, hourlyRate, capacity, gateOpenTime);
-	                garages.put(garage.getID(), garage); // get assigned garage id and add garage to record
-	            } catch (NumberFormatException e) {
-	                log.append(LogType.ERROR, "Skipping loading: " + garageFile.getName() + " (Invalid data)");
-	            }
-	        // log error message if garage file was not found all of a sudden
-	        } catch (FileNotFoundException e) {
-	            log.append(LogType.ERROR, "Skipping loading: " + garageFile.getName() + " (File not found)");
-	        }
-	    }
+
 	}
 	
 	private void loadTickets() {
@@ -155,6 +128,81 @@ public class ServerData {
 	
 	private void loadEmployees() {
 		
+	}
+	
+	private String getFullSubdir(String subdir) {
+		return Paths.get(rootDir, subdir).toString();
+	}
+	
+	private boolean isValidGarageData(String garageData) {
+		String split[] = garageData.split(",");
+		if (split.length != 4) { // valid garages have 4 parameters
+			return false;
+		}
+		//String name; // no need to check name
+        double hourlyRate;
+        int capacity;
+        int gateOpenTime;
+		try { // typecast conversion check
+			//name = split[0];
+            hourlyRate = Double.parseDouble(split[1]);
+            capacity = Integer.parseInt(split[2]);
+            gateOpenTime = Integer.parseInt(split[3]);
+		} catch (NumberFormatException e) {
+			return false;
+		}
+		if (hourlyRate < 0) { // hourly rate cannot be negative
+			return false;
+		}
+		if (capacity < 0) { // capacity cannot be negative
+			return false;
+		}
+		if (gateOpenTime < 0) { // gate's open time cannot be negative
+			return false;
+		}
+		return true;
+	}
+	
+	private boolean isValidTicketData(String ticketData) {
+		String split[] = ticketData.split(",");
+		if (split.length != 6) { // valid tickets have 6 parameters
+			return false;
+		}
+		//String garageID;
+		Date entryTime;
+		Date exitTime;
+		boolean overridden;
+		boolean paid;
+		double fee;
+		try { // typecast conversion check
+			//garageID = split[0];
+			entryTime = getDateFromString(split[1]);
+			exitTime = getDateFromString(split[2]);
+			overridden = Boolean.getBoolean(split[3]);
+			paid = Boolean.getBoolean(split[4]);
+			fee = Double.parseDouble(split[5]);
+		} catch (NumberFormatException e) {
+			return false;
+		}
+		if (entryTime == null) { // null check entry time
+			return false;
+		}
+		if (exitTime == null) { // null check exit time
+			return false;
+		}
+		if (fee < 0) { // fees cannot be negative
+			return false;
+		}
+		return true;
+	}
+	
+	private Date getDateFromString(String dateString) {
+		SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
+		try {
+			return formatter.parse(dateString);
+		} catch (ParseException e) {
+			return null;
+		}
 	}
 	
 	private void assignRoot(String rootDir) {
