@@ -170,15 +170,15 @@ public class ServerData {
 			String feeStr = split[5];
 			// null string check
 			Long entryTime = null;
-			if (entryTimeStr != "null") {
+			if (!entryTimeStr.equals("null")) {
 				entryTime = Long.parseLong(entryTimeStr);
 			}
 			Long exitTime = null;
-			if (exitTimeStr != "null") {
+			if (!exitTimeStr.equals("null")) {
 				exitTime = Long.parseLong(exitTimeStr);
 			}
 			Double fee = null;
-			if (feeStr != "null") {
+			if (!feeStr.equals("null")) {
 				fee = Double.parseDouble(feeStr);
 			}
 			// find associated garage from id
