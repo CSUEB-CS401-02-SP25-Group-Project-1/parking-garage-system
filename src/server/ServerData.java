@@ -162,7 +162,7 @@ public class ServerData {
 		return earnings;
 	}
 	
-	private boolean isValidEarning(String earningData) {
+	private boolean isValidEarningData(String earningData) {
 		// TODO: business logic
 		return true;
 	}
