@@ -40,9 +40,9 @@ public class ServerData {
 	
 	public void loadAll() {
 		loadGarages();
-		loadTickets(); // tickets must be loaded after garages
-		loadReports(); // reports must be loaded after garages
-		loadCameras(); // cameras must be loaded after garages
+		loadTickets();
+		loadReports();
+		loadCameras();
 		loadEmployees();
 	}
 	
@@ -111,62 +111,11 @@ public class ServerData {
 	
 	// helper methods
 	private void loadGarages() {
-		File dir = new File(getFullSubdir(GARAGE_SUBDIR));
-		Scanner lineScanner;
-		for (File curFile : dir.listFiles()) {
-			try {
-				lineScanner = new Scanner(curFile);
-			} catch (FileNotFoundException e) {
-				continue; // skip if file cannot be found all of a sudden
-			}
-			String curData = lineScanner.nextLine();
-			lineScanner.close(); // close current line scanner instance
-			if (!isValidGarageData(curData)) {
-				continue; // skip if data is invalid
-			}
-			// parsing into object
-			String split[] = curData.split(",");
-			String name = split[0];
-            double hourlyRate = Double.parseDouble(split[1]);
-            int capacity = Integer.parseInt(split[2]);
-            int gateOpenTime = Integer.parseInt(split[3]);
-            // add garage to database
-            Garage curGarage = new Garage(name, hourlyRate, capacity, gateOpenTime);
-            garages.put(curGarage.getID(), curGarage);
-		}
+
 	}
 	
 	private void loadTickets() {
-		File dir = new File(getFullSubdir(TICKET_SUBDIR));
-		Scanner lineScanner;
-		for (File curFile : dir.listFiles()) {
-			try {
-				lineScanner = new Scanner(curFile);
-			} catch (FileNotFoundException e) {
-				continue; // skip if file cannot be found all of a sudden
-			}
-			String curData = lineScanner.nextLine();
-			lineScanner.close(); // close current line scanner instance
-			if (!isValidGarageData(curData)) {
-				continue; // skip if data is invalid
-			}
-			// parsing into object
-			String split[] = curData.split(",");
-			String garageID = split[0];
-			Date entryTime = getDateFromString(split[1]);
-			Date exitTime = getDateFromString(split[2]);
-			boolean overridden = Boolean.parseBoolean(split[3]);
-			boolean paid = Boolean.parseBoolean(split[4]);
-			double fee = Double.parseDouble(split[5]);
-			Garage garage = getGarage(garageID);;
-			// check if associated garage exists in database
-			if (garage == null) {
-				continue; // skip loading ticket if it doesn't
-			}
-			// add ticket to database
-			Ticket curTicket = new Ticket(garage, exitTime, exitTime, paid, paid, fee);
-			tickets.put(curTicket.getID(), curTicket);
-		}
+		
 	}
 	
 	private void loadReports() {
