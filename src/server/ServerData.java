@@ -115,7 +115,42 @@ public class ServerData {
 	}
 	
 	private void loadTickets() {
+<<<<<<< Updated upstream
 		
+=======
+		File dir = new File(getFullSubdir(TICKET_SUBDIR));
+		Scanner lineScanner;
+		for (File curFile : dir.listFiles()) {
+			try {
+				lineScanner = new Scanner(curFile);
+			} catch (FileNotFoundException e) {
+				continue; // skip if file cannot be found all of a sudden
+			}
+			String curData = lineScanner.nextLine();
+			lineScanner.close(); // close current line scanner instance
+			if (!isValidTicketData(curData)) {
+				continue; // skip if data is invalid
+			}
+			// parsing into object
+			String split[] = curData.split(",");
+			String garageID = split[0];
+			Date entryTime = getDateFromString(split[1]);
+			Date exitTime = getDateFromString(split[2]);
+			boolean overridden = Boolean.parseBoolean(split[3]);
+			boolean paid = Boolean.parseBoolean(split[4]);
+			double fee = Double.parseDouble(split[5]);
+			Garage garage = getGarage(garageID);;
+			// check if associated garage exists in database
+			if (garage == null) {
+				continue; // skip loading ticket if it doesn't
+			}
+			// add ticket to database
+			Ticket curTicket = new Ticket(garage, entryTime, exitTime, overridden, paid, fee);
+			tickets.put(curTicket.getID(), curTicket);
+			// add ticket to garage
+			curTicket.getGarage().loadTicket(curTicket);
+		}
+>>>>>>> Stashed changes
 	}
 	
 	private void loadReports() {
@@ -123,7 +158,30 @@ public class ServerData {
 	}
 	
 	private void loadCameras() {
-		
+		File dir = new File(getFullSubdir(TICKET_SUBDIR));
+		Scanner lineScanner;
+		for (File curFile : dir.listFiles()) {
+			try {
+				lineScanner = new Scanner(curFile);
+			} catch (FileNotFoundException e) {
+				continue; // skip if file cannot be found all of a sudden
+			}
+			String curData = lineScanner.nextLine();
+			lineScanner.close(); // close current line scanner instance
+			if (!isValidSecurityCameraData(curData)) {
+				continue; // skip if data is invalid
+			}
+			Garage garage = getGarage(curData); // camera data only has 1 parameter (garage ID)
+			// check if associated garage exists in database
+			if (garage == null) {
+				continue; // skip loading camera if it doesn't
+			}
+			// add camera to database
+			SecurityCamera curCamera = new SecurityCamera(garage);
+			cameras.put(curCamera.getID(), curCamera);
+			// add camera to garage
+			garages.get(curCamera.getGarage(), )
+		}
 	}
 	
 	private void loadEmployees() {
