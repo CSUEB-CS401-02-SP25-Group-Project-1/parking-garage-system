@@ -131,7 +131,24 @@ public class ServerData {
 	}
 	
 	private void loadGarage(File garageFile) {
-		
+		try {
+			Scanner lineScanner = new Scanner(garageFile);
+			String garageData = lineScanner.nextLine();
+			lineScanner.close();
+			if (!isValidGarageData(garageData)) {
+				log.append(LogType.ERROR, "Invalid garage data from "+garageFile.getName()+". Skipping...");
+				return;
+			}
+			String split[] = garageData.split(",");
+			String name = split[0];
+			double hourlyRate = Double.parseDouble(split[1]);
+	        int capacity = Integer.parseInt(split[2]);
+	        double gateOpenTime = Double.parseDouble(split[3]);
+	        Garage garage = new Garage(name, hourlyRate, capacity, gateOpenTime);
+	        garages.put(garage.getID(), garage);
+		} catch (Exception e) {
+			log.append(LogType.ERROR, e+" while loading garage from"+garageFile.getName());
+		}
 	}
 	
 	private void loadTicket(File ticketFile) {
