@@ -130,7 +130,7 @@ public class ServerData {
 		
 	}
 	
-	private String getFullSubdir(String subdir) {
+	private String getFullSubdir(String subdir) { // returns full subdirectory path
 		return Paths.get(rootDir, subdir).toString();
 	}
 	
@@ -148,7 +148,7 @@ public class ServerData {
             hourlyRate = Double.parseDouble(split[1]);
             capacity = Integer.parseInt(split[2]);
             gateOpenTime = Integer.parseInt(split[3]);
-		} catch (NumberFormatException e) {
+		} catch (Exception e) {
 			return false;
 		}
 		if (hourlyRate < 0) { // hourly rate cannot be negative
@@ -178,10 +178,10 @@ public class ServerData {
 			//garageID = split[0];
 			entryTime = getDateFromString(split[1]);
 			exitTime = getDateFromString(split[2]);
-			overridden = Boolean.getBoolean(split[3]);
-			paid = Boolean.getBoolean(split[4]);
+			overridden = Boolean.parseBoolean(split[3]);
+			paid = Boolean.parseBoolean(split[4]);
 			fee = Double.parseDouble(split[5]);
-		} catch (NumberFormatException e) {
+		} catch (Exception e) {
 			return false;
 		}
 		if (entryTime == null) { // null check entry time
@@ -200,7 +200,7 @@ public class ServerData {
 	
 	private boolean isValidSecurityCameraData(String cameraData) {
 		String split[] = cameraData.split(",");
-		if (split.length == 1) { // valid cameras only have 1 parameter
+		if (split.length != 1) { // valid cameras only have 1 parameter
 			return false;
 		}
 		//String garageID = split[0];
@@ -209,7 +209,7 @@ public class ServerData {
 	
 	private boolean isValidEmployeeData(String employeeData) {
 		String split[] = employeeData.split(",");
-		if (split.length == 3) { // valid employees have 3 parameters
+		if (split.length != 3) { // valid employees have 3 parameters
 			return false;
 		}
 		//String garageID = split[0];
