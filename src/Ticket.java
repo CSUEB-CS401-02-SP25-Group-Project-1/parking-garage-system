@@ -8,7 +8,7 @@ public class Ticket {
 	private Garage garage;
 	private Date entryTime;
 	private Date exitTime;
-	private boolean isClosed;
+	private boolean isPaid;
 	private boolean isOverridden;
 	private int ID;
 
@@ -17,7 +17,7 @@ public class Ticket {
 		exitTime = null;
 		ID = ++count;
 
-		isClosed = false;
+		isPaid = false;
 		isOverridden = false;
 
 		this.garage = garage;
@@ -27,16 +27,16 @@ public class Ticket {
 	public Date getEntryTime() {return entryTime;}
 	public Date getExitTime() {
 		// if the ticket is not closed, there is no exit time
-		if (!isClosed) {return null;}
+		if (!isPaid) {return null;}
 		else {return exitTime;}
 	}
-	public boolean isClosed() {return isClosed;}
+	public boolean isPaid() {return isPaid;}
 	public boolean isOverridden() {return isOverridden;}
 	public String getID() {return ("T" + ID);}
 	
 	public void override() {
 		// force-pays a ticket
-		isClosed = true;
+		isPaid = true;
 		isOverridden = true;
 		exitTime = new Date();
 	}	
@@ -49,7 +49,7 @@ public class Ticket {
 		float due = hour_in_garage * garage.getRate();
 		if (amount >= due) {
 			exitTime = now;
-			isClosed = true;
+			isPaid = true;
 			return true;
 		} else {
 			return false;
