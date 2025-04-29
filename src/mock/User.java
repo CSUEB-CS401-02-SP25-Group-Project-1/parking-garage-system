@@ -5,29 +5,40 @@ import interfaces.UserInterface;
 import server.UserType;
 
 public class User implements UserInterface {
-	protected Garage garage; // associated garage
-	protected UserType type;
-
-	public void setGarage(Garage newGarage) {
-		garage = newGarage;
+	protected Garage garage;
+	protected UserType userType; 
+	
+	public User() {
+		this.garage = null;
+		this.userType = UserType.Undefined;
 	}
-
+	
+	public User(Garage garage) {
+		this.garage = garage;
+		this.userType = UserType.Undefined;
+	}
+	
+	public void setGarage(Garage garage){
+		this.garage = garage;
+	}
+	
 	public Garage getGarage() {
-		return garage;
+		return this.garage;
 	}
-
+	
 	public UserType getType() {
-		return type;
+		return this.userType;
 	}
 
-	public String generateTicket() {
-		// generates a new ticket from garage and returns the id of the generated ticket
-		return "TI800"; // dummy value
+	
+	public String generateTicket() {	
+		Ticket ticket = garage.generateTicket();
+		if(ticket != null) 
+			return "Ticket has been generated.\n Ticket ID: " + ticket.getID();
 	}
-
-	public Receipt payTicket(String ticketID) {
-		// calls garage.payTicket() and returns the returned receipt 
-		return new Receipt("TI601", "The Awesome Garage", new Date(), new Date(), 9.99); // dummy value
+	
+	public Receipt payTicket(String ticketID, float amount) {	
+		garage.payTicket();
+		return garage.getReceipt(ticketID);;
 	}
-
 }
