@@ -111,13 +111,32 @@ public class ServerData {
 	
 	// helper methods
 	private void loadGarages() {
-
+		File dir = new File(getFullSubdir(GARAGE_SUBDIR));
+		Scanner lineScanner;
+		for (File curFile : dir.listFiles()) {
+			try {
+				lineScanner = new Scanner(curFile);
+			} catch (FileNotFoundException e) {
+				continue; // skip if file cannot be found all of a sudden
+			}
+			String curData = lineScanner.nextLine();
+			lineScanner.close(); // close current line scanner instance
+			if (!isValidGarageData(curData)) {
+				continue; // skip if data is invalid
+			}
+			// parsing into object
+			String split[] = curData.split(",");
+			String name = split[0];
+            double hourlyRate = Double.parseDouble(split[1]);
+            int capacity = Integer.parseInt(split[2]);
+            int gateOpenTime = Integer.parseInt(split[3]);
+            // add garage to database
+            Garage curGarage = new Garage(name, hourlyRate, capacity, gateOpenTime);
+            garages.put(curGarage.getID(), curGarage);
+		}
 	}
 	
 	private void loadTickets() {
-<<<<<<< Updated upstream
-		
-=======
 		File dir = new File(getFullSubdir(TICKET_SUBDIR));
 		Scanner lineScanner;
 		for (File curFile : dir.listFiles()) {
@@ -150,7 +169,6 @@ public class ServerData {
 			// add ticket to garage
 			curTicket.getGarage().loadTicket(curTicket);
 		}
->>>>>>> Stashed changes
 	}
 	
 	private void loadReports() {
@@ -158,7 +176,7 @@ public class ServerData {
 	}
 	
 	private void loadCameras() {
-		File dir = new File(getFullSubdir(TICKET_SUBDIR));
+		File dir = new File(getFullSubdir(CAMERA_SUBDIR));
 		Scanner lineScanner;
 		for (File curFile : dir.listFiles()) {
 			try {
@@ -180,12 +198,38 @@ public class ServerData {
 			SecurityCamera curCamera = new SecurityCamera(garage);
 			cameras.put(curCamera.getID(), curCamera);
 			// add camera to garage
-			garages.get(curCamera.getGarage(), )
+			garage.addCamera(curCamera);
 		}
 	}
 	
 	private void loadEmployees() {
-		
+		File dir = new File(getFullSubdir(EMPLOYEE_SUBDIR));
+		Scanner lineScanner;
+		for (File curFile : dir.listFiles()) {
+			try {
+				lineScanner = new Scanner(curFile);
+			} catch (FileNotFoundException e) {
+				continue; // skip if file cannot be found all of a sudden
+			}
+			String curData = lineScanner.nextLine();
+			lineScanner.close(); // close current line scanner instance
+			if (!isValidSecurityCameraData(curData)) {
+				continue; // skip if data is invalid
+			}
+			// parsing into object
+			String split[] = curData.split(",");
+			String garageID = split[0];
+			String username = split[1];
+			String password = split[2];
+			Garage garage = garages.get(garageID);
+			// check if associated garage exists in database
+			if (garage == null) {
+				continue; // skip loading employee if it doesn't
+			}
+			// add employee to database
+			Employee curEmployee = new Employee(garage, username, password);
+			employees.put(curEmployee.getID(), curEmployee);
+		}
 	}
 	
 	private String getFullSubdir(String subdir) { // returns full subdirectory path
