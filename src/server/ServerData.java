@@ -3,9 +3,12 @@ package server;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Scanner;
+
+import mock.Earning;
 import mock.Employee;
 import mock.Garage;
 import mock.Report;
@@ -36,11 +39,11 @@ public class ServerData {
 	}
 	
 	public void loadAll() {
-		loadGarages();
-		loadTickets();
-		loadReports();
-		loadCameras();
-		loadEmployees();
+		loadAllGarages();
+		loadAllTickets();
+		loadAllReports();
+		loadAllCameras();
+		loadAllEmployees();
 	}
 	
 	public void saveAll() { // useful for when server is about to terminate
@@ -107,188 +110,61 @@ public class ServerData {
 	}
 	
 	// helper methods
-	private void loadGarages() {
-		File dir = new File(getFullSubdir(GARAGE_SUBDIR));
-		Scanner lineScanner;
-		for (File curFile : dir.listFiles()) {
-			try {
-				lineScanner = new Scanner(curFile);
-			} catch (FileNotFoundException e) {
-				continue; // skip if file cannot be found all of a sudden
-			}
-			if (!lineScanner.hasNextLine()) continue; // skip if file is empty
-			String curData = lineScanner.nextLine();
-			lineScanner.close(); // close current line scanner instance
-			if (!isValidGarageData(curData)) {
-				continue; // skip if data is invalid
-			}
-			// parsing into object
-			String split[] = curData.split(",");
-			String name = split[0];
-            double hourlyRate = Double.parseDouble(split[1]);
-            int capacity = Integer.parseInt(split[2]);
-            double gateOpenTime = Double.parseDouble(split[3]);
-            // add garage to database
-            Garage curGarage = new Garage(name, hourlyRate, capacity, gateOpenTime);
-            garages.put(curGarage.getID(), curGarage);
-		}
+	private void loadAllGarages() {
+		
 	}
 	
-	private void loadTickets() {
-		File dir = new File(getFullSubdir(TICKET_SUBDIR));
-		Scanner lineScanner;
-		for (File curFile : dir.listFiles()) {
-			try {
-				lineScanner = new Scanner(curFile);
-			} catch (FileNotFoundException e) {
-				continue; // skip if file cannot be found all of a sudden
-			}
-			if (!lineScanner.hasNextLine()) continue; // skip if file is empty
-			String curData = lineScanner.nextLine();
-			lineScanner.close(); // close current line scanner instance
-			if (!isValidTicketData(curData)) {
-				continue; // skip if data is invalid
-			}
-			// parsing into object
-			String split[] = curData.split(",");
-			String garageID = split[0];
-			Long entryTime = Long.parseLong(split[1]);
-			Long exitTime = Long.parseLong(split[2]);
-			boolean overridden = Boolean.parseBoolean(split[3]);
-			boolean paid = Boolean.parseBoolean(split[4]);
-			double fee = Double.parseDouble(split[5]);
-			Garage garage = getGarage(garageID);;
-			// check if associated garage exists in database
-			if (garage == null) {
-				continue; // skip loading ticket if it doesn't
-			}
-			// add ticket to database
-			Ticket curTicket = new Ticket(garage, new Date(entryTime), new Date(exitTime), overridden, paid, fee);
-			tickets.put(curTicket.getID(), curTicket);
-			// add ticket to garage
-			curTicket.getGarage().loadTicket(curTicket);
-		}
+	private void loadAllTickets() {
+		
 	}
 	
-	private void loadReports() {
-		File dir = new File(getFullSubdir(REPORT_SUBDIR));
-		Scanner lineScanner;
-		for (File curFile : dir.listFiles()) {
-			try {
-				lineScanner = new Scanner(curFile);
-			} catch (FileNotFoundException e) {
-				continue; // skip if file cannot be found all of a sudden
-			}
-			if (!lineScanner.hasNextLine()) continue; // check if all 3 lines exist
-			String garageID = lineScanner.nextLine();
-			if (!lineScanner.hasNextLine()) continue;
-			String entriesStr = lineScanner.nextLine();
-			if (!lineScanner.hasNextLine()) continue;
-			String earningsStr = lineScanner.nextLine();
-			lineScanner.close();
-			// check if associated garage exists in database
-			Garage garage = getGarage(garageID);
-			if (garage == null) {
-				continue; // skip loading ticket if it doesn't
-			}
-			// parsing into object
-			Report curReport = new Report(garage);
-			// load entry dates
-			String entriesSplit[] = entriesStr.split(",");
-			for (String curEntry : entriesSplit) {
-				Long curEntryTimestamp = null;
-				try { // attempt typecast conversion
-					curEntryTimestamp = Long.parseLong(curEntry);
-				} catch (Exception e) {
-					continue; // skip entry if conversion failed
-				}
-				curReport.addEntryTime(new Date(curEntryTimestamp));
-			}
-			// load earnings
-			String earningsSplit[] = earningsStr.split("\\|");
-			for (String curEarningStr : earningsSplit) {
-				String curEarningData[] = curEarningStr.split(",");
-				if (curEarningData.length != 2) { // valid earnings have two parameters
-					continue;
-				}
-				long curEarningTimestamp;
-				double curEarningRevenue;
-				try { // attempt typecast conversion
-					curEarningTimestamp = Long.parseLong(curEarningData[0]);
-					curEarningRevenue = Double.parseDouble(curEarningData[1]);
-				} catch (Exception e) {
-					continue; // skip earning if typecast failed
-				}
-				curReport.addExit(new Date(curEarningTimestamp), curEarningRevenue);
-			}
-			// add report to database
-			reports.put(curReport.getID(), curReport);
-			// add report to garage
-			garage.loadReport(curReport);
-		}
+	private void loadAllReports() {
+		
 	}
 	
-	private void loadCameras() {
-		File dir = new File(getFullSubdir(CAMERA_SUBDIR));
-		Scanner lineScanner;
-		for (File curFile : dir.listFiles()) {
-			try {
-				lineScanner = new Scanner(curFile);
-			} catch (FileNotFoundException e) {
-				continue; // skip if file cannot be found all of a sudden
-			}
-			if (!lineScanner.hasNextLine()) continue; // skip if file is empty
-			String curData = lineScanner.nextLine();
-			lineScanner.close(); // close current line scanner instance
-			if (!isValidSecurityCameraData(curData)) {
-				continue; // skip if data is invalid
-			}
-			Garage garage = getGarage(curData); // camera data only has 1 parameter (garage ID)
-			// check if associated garage exists in database
-			if (garage == null) {
-				continue; // skip loading camera if it doesn't
-			}
-			// add camera to database
-			SecurityCamera curCamera = new SecurityCamera(garage);
-			cameras.put(curCamera.getID(), curCamera);
-			// add camera to garage
-			garage.addCamera(curCamera);
-		}
+	private void loadAllCameras() {
+		
 	}
 	
-	private void loadEmployees() {
-		File dir = new File(getFullSubdir(EMPLOYEE_SUBDIR));
-		Scanner lineScanner;
-		for (File curFile : dir.listFiles()) {
-			try {
-				lineScanner = new Scanner(curFile);
-			} catch (FileNotFoundException e) {
-				continue; // skip if file cannot be found all of a sudden
-			}
-			if (!lineScanner.hasNextLine()) continue; // skip if file is empty
-			String curData = lineScanner.nextLine();
-			lineScanner.close(); // close current line scanner instance
-			if (!isValidEmployeeData(curData)) {
-				continue; // skip if data is invalid
-			}
-			// parsing into object
-			String split[] = curData.split(",");
-			String garageID = split[0];
-			String username = split[1];
-			String password = split[2];
-			Garage garage = garages.get(garageID);
-			// check if associated garage exists in database
-			if (garage == null) {
-				continue; // skip loading employee if it doesn't
-			}
-			// add employee to database
-			Employee curEmployee = new Employee(garage, username, password);
-			employees.put(curEmployee.getID(), curEmployee);
-		}
+	private void loadAllEmployees() {
+		
 	}
 	
-	private String getFullSubdir(String subdir) { // returns full subdirectory path
-		return Paths.get(rootDir, subdir).toString();
+	private void loadGarage(File garageFile) {
+		
+	}
+	
+	private void loadTicket(File ticketFile) {
+		
+	}
+	
+	private void loadReport(File reportFile) {
+		
+	}
+	
+	private void loadCamera(File cameraFile) {
+		
+	}
+	
+	private void loadEmployee(File employeeFile) {
+		
+	}
+	
+	private ArrayList<Date> getEntryTimes(String reportEntriesStr) { // returns the instantiated entry times from a report file's line of entries 
+		ArrayList<Date> entryTimes = new ArrayList<>();
+		// TODO: business logic
+		return entryTimes;
+	}
+	
+	private ArrayList<Earning> getEarnings(String reportEarningsStr) { // returns the instantiated earnings from a report file's line of earnings 
+		ArrayList<Earning> earnings = new ArrayList<>();
+		// TODO: business logic
+		return earnings;
+	}
+	
+	private boolean isValidEarning(String earningData) {
+		// TODO: business logic
+		return true;
 	}
 	
 	private boolean isValidGarageData(String garageData) {
@@ -396,4 +272,7 @@ public class ServerData {
 		}
 	}
 	
+	private String getFullSubdir(String subdir) { // returns full subdirectory path
+		return Paths.get(rootDir, subdir).toString();
+	}
 }
