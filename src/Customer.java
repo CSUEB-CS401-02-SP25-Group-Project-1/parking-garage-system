@@ -10,26 +10,7 @@ public class Customer extends User implements CustomerInterface{
 		garage = null;
 	}
 
-	public String generateTicket() {
-		// generates ticket in garage
-		// returns the ID of ticket created
-
-		Ticket generatedTicket = garage.generateTicket();
-		return generatedTicket.getID();
-	}
-
-	public Receipt payTicket(String ticketID, float amount) {
-		// pays ticket at ID
-		// returns true/false depending on success
-		
-		// there are problems in the garage.payTicket() class
-		// no checking if ID is valid
-		// no checking if payment is valid
-		Receipt receipt = garage.payTicket(ticketID, amount);
-
-		// `receipt` is null if payment fails?
-		return receipt;
-	}
+	// most methods a Customer will use come from the parent class User
 
 	public int viewGarageAvailability() {
 		return garage.getAvailableSpace();
