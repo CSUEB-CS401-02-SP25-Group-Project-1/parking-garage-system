@@ -152,7 +152,50 @@ public class ServerData {
 	}
 	
 	private void loadTicket(File ticketFile) {
-		
+		try {
+			Scanner lineScanner = new Scanner(ticketFile);
+			String ticketData = lineScanner.nextLine();
+			lineScanner.close();
+			if (!isValidTicketData(ticketData)) {
+				log.append(LogType.ERROR, "Invalid ticket data from "+ticketFile.getName()+". Skipping...");
+				return;
+			}
+			String split[] = ticketData.split(",");
+			// parameters
+			String garageID = split[0];
+			String entryTimeStr = split[1];
+			String exitTimeStr = split[2];
+			Boolean overridden = Boolean.parseBoolean(split[3]);
+			Boolean paid = Boolean.parseBoolean(split[4]);
+			String feeStr = split[5];
+			// null string check
+			Long entryTime = null;
+			if (entryTimeStr != "null") {
+				entryTime = Long.parseLong(entryTimeStr);
+			}
+			Long exitTime = null;
+			if (exitTimeStr != "null") {
+				exitTime = Long.parseLong(exitTimeStr);
+			}
+			Double fee = null;
+			if (feeStr != "null") {
+				fee = Double.parseDouble(feeStr);
+			}
+			// find associated garage from id
+			Garage garage = garages.get(garageID);
+			if (garage == null) {
+				log.append(LogType.ERROR, "Unable to find garage for "+ticketFile.getName()+". Skipping...");
+				return;
+			}
+			// assemble into object
+			Ticket ticket = new Ticket(garage, new Date(entryTime), new Date(exitTime), overridden, paid, fee);
+			// add ticket to database
+			tickets.put(ticket.getID(), ticket);
+			// add ticket to associated garage
+			garage.loadTicket(ticket);
+		} catch (Exception e) {
+			log.append(LogType.ERROR, e+" while loading ticket from"+ticketFile.getName());
+		}
 	}
 	
 	private void loadReport(File reportFile) {
@@ -218,7 +261,14 @@ public class ServerData {
 		if (split.length != 6) { // valid tickets have 6 parameters
 			return false;
 		}
-		//String garageID;
+		// parameters
+		//String garageID = split[0];
+		String entryTimeStr = split[1];
+		String exitTimeStr = split[2];
+		String overriddenStr = split[3];
+		String paidStr = split[4];
+		String feeStr = split[5];
+		// typecast conversion check
 		@SuppressWarnings("unused")
 		Long entryTime;
 		@SuppressWarnings("unused")
@@ -227,14 +277,19 @@ public class ServerData {
 		boolean overridden;
 		@SuppressWarnings("unused")
 		boolean paid;
-		double fee;
-		try { // typecast conversion check
-			//garageID = split[0];
-			entryTime = Long.parseLong(split[1]);
-			exitTime = Long.parseLong(split[2]);
-			overridden = Boolean.parseBoolean(split[3]);
-			paid = Boolean.parseBoolean(split[4]);
-			fee = Double.parseDouble(split[5]);
+		double fee = 0;
+		try { 
+			if (entryTimeStr != null) {
+				entryTime = Long.parseLong(entryTimeStr);
+			}
+			if (exitTimeStr != null) {
+				exitTime = Long.parseLong(exitTimeStr);
+			}
+			overridden = Boolean.parseBoolean(overriddenStr);
+			paid = Boolean.parseBoolean(paidStr);
+			if (feeStr != null) {
+				fee = Double.parseDouble(feeStr);
+			}
 		} catch (Exception e) {
 			return false;
 		}
