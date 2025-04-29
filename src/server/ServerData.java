@@ -3,14 +3,9 @@ package server;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.file.Paths;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Scanner;
-
-import mock.Earning;
 import mock.Employee;
 import mock.Garage;
 import mock.Report;
