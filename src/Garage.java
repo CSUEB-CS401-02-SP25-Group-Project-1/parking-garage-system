@@ -78,6 +78,19 @@ public class Garage {
 	public Boolean isFull() {
 		return capacity == activeTickets.size();
 	}
+
+	public List<Ticket> getTickets() {return activeTickets;}
+
+	public Ticket getTicket(String id) {
+		Ticket t = null;
+		for (Ticket ticket : activeTickets) {
+			if (id.compareTo(ticket.getID()) == 0) {
+				t = ticket;
+			}
+		}
+		// returns null if nothing found
+		return t;
+	}	
 	
 	// TICKETING
 	
