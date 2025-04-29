@@ -12,8 +12,6 @@ public class User {
 	public User(Garage garage) {
 		this.garage = garage;
 		this.userType = UserType.Undefined;
-		Ticket ticket = new Ticket();
-		Receipt receipt = new Receipt(ticket.getID());
 	}
 	
 	public void setGarage(Garage garage){
@@ -28,9 +26,11 @@ public class User {
 		return this.userType;
 	}
 	
-	public void printReceipt(Ticket ticketID){
-		receipt.receipt(ticketID);
-		System.out.println("Ticket total: \n" + receipt.toString());
-		
+	public void printReceipt(Ticket ticket){
+		Ticket ticket = garage.getTicket(ticket);
+		if(ticket != null && ticket.isPaid() == true) {
+			Receipt receipt = new Receipt(ticket);
+			System.out.println("Receipt Total: \n" + receipt.toString());
+		}
 	}
 }
