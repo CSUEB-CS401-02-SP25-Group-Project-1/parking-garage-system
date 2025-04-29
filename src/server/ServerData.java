@@ -196,6 +196,28 @@ public class ServerData {
 		return true;
 	}
 	
+	// private boolean isValidReportData(String reportData) // reports will be checked in their loading method
+	
+	private boolean isValidSecurityCameraData(String cameraData) {
+		String split[] = cameraData.split(",");
+		if (split.length == 1) { // valid cameras only have 1 parameter
+			return false;
+		}
+		//String garageID = split[0];
+		return true;
+	}
+	
+	private boolean isValidEmployeeData(String employeeData) {
+		String split[] = employeeData.split(",");
+		if (split.length == 3) { // valid employees have 3 parameters
+			return false;
+		}
+		//String garageID = split[0];
+		//String username = split[1];
+		//String password = split[2]; // main server logic will handle password validation
+		return true;
+	}
+	
 	private Date getDateFromString(String dateString) {
 		SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
 		try {
