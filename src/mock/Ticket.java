@@ -80,6 +80,6 @@ public class Ticket implements TicketInterface {
 	}
 
 	public String toString() {
-		return garage.getID()+","+entryTime+","+exitTime+","+overridden+","+paid+","+fee;
+		return garage.getID()+","+entryTime.getTime()+","+exitTime.getTime()+","+overridden+","+paid+","+fee;
 	}
 }

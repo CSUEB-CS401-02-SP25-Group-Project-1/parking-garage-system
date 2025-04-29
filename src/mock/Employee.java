@@ -47,7 +47,7 @@ public class Employee extends User implements EmployeeInterface {
 
 	public Report getGarageReport() {
 		// returns a generated report of the garage
-		return new Report(); // dummy value
+		return new Report(garage); // dummy value
 	}
 
 	public void setGarageHourlyRate(double newRate) {

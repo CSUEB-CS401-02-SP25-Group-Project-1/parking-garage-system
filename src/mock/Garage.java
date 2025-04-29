@@ -17,7 +17,7 @@ public class Garage implements GarageInterface {
 	private Gate gate;
 	private Report report; // add every new entry and exit to report
 	
-	public Garage(String name, double hourlyRate, int capacity, int gateOpenTime) {
+	public Garage(String name, double hourlyRate, int capacity, double gateOpenTime) {
 		id = "GA"+count++;
 		this.name = name;
 		this.hourlyRate = hourlyRate;

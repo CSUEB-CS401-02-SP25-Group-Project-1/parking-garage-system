@@ -9,6 +9,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Scanner;
+
+import mock.Earning;
 import mock.Employee;
 import mock.Garage;
 import mock.Report;
@@ -18,7 +20,7 @@ import mock.Ticket;
 public class ServerData {
 	private final String GARAGE_SUBDIR = "/garages/"; // "GA#.txt"
 	private final String TICKET_SUBDIR = "/tickets/"; // "TI#.txt"
-	private final String REPORT_SUBDIR = "/reports/"; // "GA#.txt"
+	private final String REPORT_SUBDIR = "/reports/"; // "RE#.txt"
 	private final String CAMERA_SUBDIR = "/cameras/"; // "SC#.txt"
 	private final String EMPLOYEE_SUBDIR = "/employees/"; // "EM#.txt"
 	private String rootDir;
@@ -119,6 +121,7 @@ public class ServerData {
 			} catch (FileNotFoundException e) {
 				continue; // skip if file cannot be found all of a sudden
 			}
+			if (!lineScanner.hasNextLine()) continue; // skip if file is empty
 			String curData = lineScanner.nextLine();
 			lineScanner.close(); // close current line scanner instance
 			if (!isValidGarageData(curData)) {
@@ -129,7 +132,7 @@ public class ServerData {
 			String name = split[0];
             double hourlyRate = Double.parseDouble(split[1]);
             int capacity = Integer.parseInt(split[2]);
-            int gateOpenTime = Integer.parseInt(split[3]);
+            double gateOpenTime = Double.parseDouble(split[3]);
             // add garage to database
             Garage curGarage = new Garage(name, hourlyRate, capacity, gateOpenTime);
             garages.put(curGarage.getID(), curGarage);
@@ -145,6 +148,7 @@ public class ServerData {
 			} catch (FileNotFoundException e) {
 				continue; // skip if file cannot be found all of a sudden
 			}
+			if (!lineScanner.hasNextLine()) continue; // skip if file is empty
 			String curData = lineScanner.nextLine();
 			lineScanner.close(); // close current line scanner instance
 			if (!isValidTicketData(curData)) {
@@ -153,8 +157,8 @@ public class ServerData {
 			// parsing into object
 			String split[] = curData.split(",");
 			String garageID = split[0];
-			Date entryTime = getDateFromString(split[1]);
-			Date exitTime = getDateFromString(split[2]);
+			Long entryTime = Long.parseLong(split[1]);
+			Long exitTime = Long.parseLong(split[2]);
 			boolean overridden = Boolean.parseBoolean(split[3]);
 			boolean paid = Boolean.parseBoolean(split[4]);
 			double fee = Double.parseDouble(split[5]);
@@ -164,7 +168,7 @@ public class ServerData {
 				continue; // skip loading ticket if it doesn't
 			}
 			// add ticket to database
-			Ticket curTicket = new Ticket(garage, entryTime, exitTime, overridden, paid, fee);
+			Ticket curTicket = new Ticket(garage, new Date(entryTime), new Date(exitTime), overridden, paid, fee);
 			tickets.put(curTicket.getID(), curTicket);
 			// add ticket to garage
 			curTicket.getGarage().loadTicket(curTicket);
@@ -172,7 +176,61 @@ public class ServerData {
 	}
 	
 	private void loadReports() {
-		
+		File dir = new File(getFullSubdir(REPORT_SUBDIR));
+		Scanner lineScanner;
+		for (File curFile : dir.listFiles()) {
+			try {
+				lineScanner = new Scanner(curFile);
+			} catch (FileNotFoundException e) {
+				continue; // skip if file cannot be found all of a sudden
+			}
+			if (!lineScanner.hasNextLine()) continue; // check if all 3 lines exist
+			String garageID = lineScanner.nextLine();
+			if (!lineScanner.hasNextLine()) continue;
+			String entriesStr = lineScanner.nextLine();
+			if (!lineScanner.hasNextLine()) continue;
+			String earningsStr = lineScanner.nextLine();
+			lineScanner.close();
+			// check if associated garage exists in database
+			Garage garage = getGarage(garageID);
+			if (garage == null) {
+				continue; // skip loading ticket if it doesn't
+			}
+			// parsing into object
+			Report curReport = new Report(garage);
+			// load entry dates
+			String entriesSplit[] = entriesStr.split(",");
+			for (String curEntry : entriesSplit) {
+				Long curEntryTimestamp = null;
+				try { // attempt typecast conversion
+					curEntryTimestamp = Long.parseLong(curEntry);
+				} catch (Exception e) {
+					continue; // skip entry if conversion failed
+				}
+				curReport.addEntryTime(new Date(curEntryTimestamp));
+			}
+			// load earnings
+			String earningsSplit[] = earningsStr.split("\\|");
+			for (String curEarningStr : earningsSplit) {
+				String curEarningData[] = curEarningStr.split(",");
+				if (curEarningData.length != 2) { // valid earnings have two parameters
+					continue;
+				}
+				long curEarningTimestamp;
+				double curEarningRevenue;
+				try { // attempt typecast conversion
+					curEarningTimestamp = Long.parseLong(curEarningData[0]);
+					curEarningRevenue = Double.parseDouble(curEarningData[1]);
+				} catch (Exception e) {
+					continue; // skip earning if typecast failed
+				}
+				curReport.addExit(new Date(curEarningTimestamp), curEarningRevenue);
+			}
+			// add report to database
+			reports.put(curReport.getID(), curReport);
+			// add report to garage
+			garage.loadReport(curReport);
+		}
 	}
 	
 	private void loadCameras() {
@@ -184,6 +242,7 @@ public class ServerData {
 			} catch (FileNotFoundException e) {
 				continue; // skip if file cannot be found all of a sudden
 			}
+			if (!lineScanner.hasNextLine()) continue; // skip if file is empty
 			String curData = lineScanner.nextLine();
 			lineScanner.close(); // close current line scanner instance
 			if (!isValidSecurityCameraData(curData)) {
@@ -211,6 +270,7 @@ public class ServerData {
 			} catch (FileNotFoundException e) {
 				continue; // skip if file cannot be found all of a sudden
 			}
+			if (!lineScanner.hasNextLine()) continue; // skip if file is empty
 			String curData = lineScanner.nextLine();
 			lineScanner.close(); // close current line scanner instance
 			if (!isValidEmployeeData(curData)) {
@@ -244,12 +304,12 @@ public class ServerData {
 		//String name; // no need to check name
         double hourlyRate;
         int capacity;
-        int gateOpenTime;
+        double gateOpenTime;
 		try { // typecast conversion check
 			//name = split[0];
             hourlyRate = Double.parseDouble(split[1]);
             capacity = Integer.parseInt(split[2]);
-            gateOpenTime = Integer.parseInt(split[3]);
+            gateOpenTime = Double.parseDouble(split[3]);
 		} catch (Exception e) {
 			return false;
 		}
@@ -271,8 +331,10 @@ public class ServerData {
 			return false;
 		}
 		//String garageID;
-		Date entryTime;
-		Date exitTime;
+		@SuppressWarnings("unused")
+		Long entryTime;
+		@SuppressWarnings("unused")
+		Long exitTime;
 		@SuppressWarnings("unused")
 		boolean overridden;
 		@SuppressWarnings("unused")
@@ -280,18 +342,12 @@ public class ServerData {
 		double fee;
 		try { // typecast conversion check
 			//garageID = split[0];
-			entryTime = getDateFromString(split[1]);
-			exitTime = getDateFromString(split[2]);
+			entryTime = Long.parseLong(split[1]);
+			exitTime = Long.parseLong(split[2]);
 			overridden = Boolean.parseBoolean(split[3]);
 			paid = Boolean.parseBoolean(split[4]);
 			fee = Double.parseDouble(split[5]);
 		} catch (Exception e) {
-			return false;
-		}
-		if (entryTime == null) { // null check entry time
-			return false;
-		}
-		if (exitTime == null) { // null check exit time
 			return false;
 		}
 		if (fee < 0) { // fees cannot be negative
@@ -320,15 +376,6 @@ public class ServerData {
 		//String username = split[1];
 		//String password = split[2]; // main server logic will handle password validation
 		return true;
-	}
-	
-	private Date getDateFromString(String dateString) {
-		SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
-		try {
-			return formatter.parse(dateString);
-		} catch (ParseException e) {
-			return null;
-		}
 	}
 	
 	private void assignRoot(String rootDir) {

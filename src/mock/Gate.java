@@ -3,10 +3,10 @@ package mock;
 import interfaces.GateInterface;
 
 public class Gate implements GateInterface {
-	int openTime; // in seconds
+	double openTime; // in seconds
 	boolean open = false;
 	
-	public Gate(int openTime) {
+	public Gate(double openTime) {
 		this.openTime = openTime;
 	}
 	
@@ -18,11 +18,11 @@ public class Gate implements GateInterface {
 		open = false;
 	}
 
-	public void setOpenTime(int seconds) {
+	public void setOpenTime(double seconds) {
 		openTime = seconds;
 	}
 
-	public int getOpenTime() {
+	public double getOpenTime() {
 		return openTime;
 	}
 	

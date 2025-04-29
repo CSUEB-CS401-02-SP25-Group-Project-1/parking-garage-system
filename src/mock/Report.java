@@ -5,9 +5,17 @@ import java.util.Date;
 import interfaces.ReportInterface;
 
 public class Report implements ReportInterface {
+	private static int count = 0;
+	private String id;
 	private ArrayList<Date> entryTimes;
 	private ArrayList<Earning> earnings;
 	private int currentlyParked; // number of currently parked vehicles in garage
+	private Garage garage;
+	
+	public Report(Garage garage) {
+		id = "RE"+count++;
+		this.garage = garage;
+	}
 
 	public void addEntryTime(Date entryTime) {
 		entryTimes.add(entryTime);
@@ -46,6 +54,10 @@ public class Report implements ReportInterface {
 		return 2000000000.41; // dummy value
 	}
 	
+	public Garage getGarage() {
+		return garage;
+	}
+	
 	public void setCurrentlyParkedNum(int currentlyParked) {
 		this.currentlyParked = currentlyParked;
 	}
@@ -64,8 +76,18 @@ public class Report implements ReportInterface {
 	}
 	
 	public String toString() {
-		// used to dump all report data to file (both arrays)
-		return "DUMP ALL ENTRY DATES ON ONE LINE\n"+
-				"DUMP ALL EARNINGS ON ANOTHER";
+		String temp = garage.getID()+"\n";
+		for (Date curDate : entryTimes) {
+			temp += curDate.getTime()+",";
+		}
+		temp += "\n";
+		for (Earning curEarning : earnings) {
+			temp += curEarning+"\\|";
+		}
+		return temp;
+	}
+
+	public String getID() {
+		return id;
 	}
 }
