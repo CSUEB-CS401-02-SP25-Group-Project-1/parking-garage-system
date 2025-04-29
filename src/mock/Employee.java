@@ -2,6 +2,7 @@ package mock;
 
 import java.util.Date;
 import interfaces.EmployeeInterface;
+import server.UserType;
 
 public class Employee extends User implements EmployeeInterface {
 	private static int count = 0;
@@ -14,6 +15,7 @@ public class Employee extends User implements EmployeeInterface {
 		this.username = username;
 		this.password = password;
 		this.garage = garage;
+		this.userType = UserType.Employee;
 	}
 
 	public String getID() {

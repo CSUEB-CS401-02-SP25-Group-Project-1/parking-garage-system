@@ -30,15 +30,11 @@ public class User implements UserInterface {
 		return this.userType;
 	}
 
-	
 	public String generateTicket() {	
-		Ticket ticket = garage.generateTicket();
-		if(ticket != null) 
-			return "Ticket has been generated.\n Ticket ID: " + ticket.getID();
+		return garage.generateTicket();
 	}
 	
-	public Receipt payTicket(String ticketID, float amount) {	
-		garage.payTicket();
-		return garage.getReceipt(ticketID);;
+	public Receipt payTicket(String ticketID) {	
+		return garage.payTicket(ticketID);
 	}
 }

@@ -213,7 +213,7 @@ public class ServerData {
 			}
 			String curData = lineScanner.nextLine();
 			lineScanner.close(); // close current line scanner instance
-			if (!isValidSecurityCameraData(curData)) {
+			if (!isValidEmployeeData(curData)) {
 				continue; // skip if data is invalid
 			}
 			// parsing into object
@@ -273,7 +273,9 @@ public class ServerData {
 		//String garageID;
 		Date entryTime;
 		Date exitTime;
+		@SuppressWarnings("unused")
 		boolean overridden;
+		@SuppressWarnings("unused")
 		boolean paid;
 		double fee;
 		try { // typecast conversion check
