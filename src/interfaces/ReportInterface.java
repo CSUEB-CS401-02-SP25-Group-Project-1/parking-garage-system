@@ -8,6 +8,7 @@ import mock.Garage;
 public interface ReportInterface {
 	void addEntryTime(Date entryTime); // adds entry time to list, but does not create new Earning object
 	void addExit(Date exitTime, double amount); // adds exit time and payment amount to new Earning object, this Earning also gets added to a list of Earnings
+	void addExit(Earning earning); // earnings can also be added directly
 	ArrayList<Date> getEntryTimes();
 	ArrayList<Earning> getEarnings();
 	double getRevenueThisHour();

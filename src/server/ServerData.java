@@ -1,13 +1,12 @@
 package server;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Scanner;
-
 import mock.Earning;
 import mock.Employee;
 import mock.Garage;
@@ -47,7 +46,11 @@ public class ServerData {
 	}
 	
 	public void saveAll() { // useful for when server is about to terminate
-		
+		saveAllGarages();
+		saveAllTickets();
+		saveAllReports();
+		saveAllCameras();
+		saveAllEmployees();
 	}
 	
 	// methods for retrieving an object based on their id
@@ -90,141 +93,311 @@ public class ServerData {
 	// methods to save an individual object to file
 	
 	public void saveGarage(Garage garage) { 
-		
+	    String savePath = Paths.get(getFullSubdir(GARAGE_SUBDIR), garage.getID()+".txt").toString();
+	    try (FileWriter saveFile = new FileWriter(savePath)) {
+	        saveFile.write(garage.toString());
+	    } catch (Exception e) {
+	        log.append(LogType.ERROR, "Unable to save garage "+garage.getID()+" to file: "+e);
+	    }
 	}
-	
+
 	public void saveTicket(Ticket ticket) {
-		
+	    String savePath = Paths.get(getFullSubdir(TICKET_SUBDIR), ticket.getID()+".txt").toString();
+	    try (FileWriter saveFile = new FileWriter(savePath)) {
+	        saveFile.write(ticket.toString());
+	    } catch (Exception e) {
+	        log.append(LogType.ERROR, "Unable to save ticket "+ticket.getID()+" to file: "+e);
+	    }
 	}
-	
+
 	public void saveReport(Report report) {
-		
+	    String savePath = Paths.get(getFullSubdir(REPORT_SUBDIR), report.getID()+".txt").toString();
+	    try (FileWriter saveFile = new FileWriter(savePath)) {
+	        saveFile.write(report.toString());
+	    } catch (Exception e) {
+	        log.append(LogType.ERROR, "Unable to save report "+report.getID()+" to file: "+e);
+	    }
 	}
-	
+
 	public void saveSecurityCamera(SecurityCamera camera) {
-		
+	    String savePath = Paths.get(getFullSubdir(CAMERA_SUBDIR), camera.getID()+".txt").toString();
+	    try (FileWriter saveFile = new FileWriter(savePath)) {
+	        saveFile.write(camera.toString());
+	    } catch (Exception e) {
+	        log.append(LogType.ERROR, "Unable to save camera "+camera.getID()+" to file: "+e);
+	    }
 	}
-	
+
 	public void saveEmployee(Employee employee) {
-		
+	    String savePath = Paths.get(getFullSubdir(EMPLOYEE_SUBDIR), employee.getID()+".txt").toString();
+	    try (FileWriter saveFile = new FileWriter(savePath)) {
+	        saveFile.write(employee.toString());
+	    } catch (Exception e) {
+	        log.append(LogType.ERROR, "Unable to save employee "+employee.getID()+" to file: "+e);
+	    }
 	}
 	
 	// helper methods
+	private void saveAllGarages() {
+		for (String garageID : garages.keySet()) {
+			Garage garage = garages.get(garageID);
+			saveGarage(garage);
+		}
+	}
+	
+	private void saveAllTickets() {
+		for (String ticketID : tickets.keySet()) {
+			Ticket ticket = tickets.get(ticketID);
+			saveTicket(ticket);
+		}
+	}
+	
+	private void saveAllReports() {
+		for (String reportID : reports.keySet()) {
+			Report report = reports.get(reportID);
+			saveReport(report);
+		}
+	}
+	
+	private void saveAllCameras() {
+		for (String cameraID : cameras.keySet()) {
+			SecurityCamera camera = cameras.get(cameraID);
+			saveSecurityCamera(camera);
+		}
+	}
+	
+	private void saveAllEmployees() {
+		for (String employeeID : employees.keySet()) {
+			Employee employee = employees.get(employeeID);
+			saveEmployee(employee);
+		}
+	}
+	
 	private void loadAllGarages() {
-		
+		String dir = getFullSubdir(GARAGE_SUBDIR);
+		File folder = new File(dir);
+		for (File garageFile : folder.listFiles()) {
+			loadGarage(garageFile);
+		}
 	}
 	
 	private void loadAllTickets() {
-		
+		String dir = getFullSubdir(TICKET_SUBDIR);
+		File folder = new File(dir);
+		for (File ticketFile : folder.listFiles()) {
+			loadTicket(ticketFile);
+		}
 	}
 	
 	private void loadAllReports() {
-		
+		String dir = getFullSubdir(REPORT_SUBDIR);
+		File folder = new File(dir);
+		for (File reportFile : folder.listFiles()) {
+			loadReport(reportFile);
+		}
 	}
 	
 	private void loadAllCameras() {
-		
+		String dir = getFullSubdir(CAMERA_SUBDIR);
+		File folder = new File(dir);
+		for (File cameraFile : folder.listFiles()) {
+			loadCamera(cameraFile);
+		}
 	}
 	
 	private void loadAllEmployees() {
-		
+		String dir = getFullSubdir(EMPLOYEE_SUBDIR);
+		File folder = new File(dir);
+		for (File employeeFile : folder.listFiles()) {
+			loadEmployee(employeeFile);
+		}
 	}
 	
 	private void loadGarage(File garageFile) {
-		try {
-			Scanner lineScanner = new Scanner(garageFile);
-			String garageData = lineScanner.nextLine();
-			lineScanner.close();
-			if (!isValidGarageData(garageData)) {
-				log.append(LogType.ERROR, "Invalid garage data from "+garageFile.getName()+". Skipping...");
-				return;
-			}
-			String split[] = garageData.split(",");
-			String name = split[0];
-			double hourlyRate = Double.parseDouble(split[1]);
+	    try (Scanner lineScanner = new Scanner(garageFile)) {
+	        // read file
+	        String garageData = lineScanner.nextLine();
+	        if (!isValidGarageData(garageData)) {
+	            log.append(LogType.ERROR, "Invalid garage data from "+garageFile.getName()+". Skipping...");
+	            return;
+	        }
+	        String split[] = garageData.split(",");
+	        // parameters
+	        String name = split[0];
+	        double hourlyRate = Double.parseDouble(split[1]);
 	        int capacity = Integer.parseInt(split[2]);
 	        double gateOpenTime = Double.parseDouble(split[3]);
+	        // assemble object
 	        Garage garage = new Garage(name, hourlyRate, capacity, gateOpenTime);
+	        // add garage to database
 	        garages.put(garage.getID(), garage);
-		} catch (Exception e) {
-			log.append(LogType.ERROR, e+" while loading garage from"+garageFile.getName());
-		}
+	    } catch (Exception e) {
+	        log.append(LogType.ERROR, e+" while loading garage from "+garageFile.getName()+". Skipping...");
+	    }
 	}
-	
+
 	private void loadTicket(File ticketFile) {
-		try {
-			Scanner lineScanner = new Scanner(ticketFile);
-			String ticketData = lineScanner.nextLine();
-			lineScanner.close();
-			if (!isValidTicketData(ticketData)) {
-				log.append(LogType.ERROR, "Invalid ticket data from "+ticketFile.getName()+". Skipping...");
-				return;
-			}
-			String split[] = ticketData.split(",");
-			// parameters
-			String garageID = split[0];
-			String entryTimeStr = split[1];
-			String exitTimeStr = split[2];
-			Boolean overridden = Boolean.parseBoolean(split[3]);
-			Boolean paid = Boolean.parseBoolean(split[4]);
-			String feeStr = split[5];
-			// null string check
-			Long entryTime = null;
-			if (!entryTimeStr.equals("null")) {
-				entryTime = Long.parseLong(entryTimeStr);
-			}
-			Long exitTime = null;
-			if (!exitTimeStr.equals("null")) {
-				exitTime = Long.parseLong(exitTimeStr);
-			}
-			Double fee = null;
-			if (!feeStr.equals("null")) {
-				fee = Double.parseDouble(feeStr);
-			}
-			// find associated garage from id
-			Garage garage = garages.get(garageID);
-			if (garage == null) {
-				log.append(LogType.ERROR, "Unable to find garage for "+ticketFile.getName()+". Skipping...");
-				return;
-			}
-			// assemble into object
-			Ticket ticket = new Ticket(garage, new Date(entryTime), new Date(exitTime), overridden, paid, fee);
-			// add ticket to database
-			tickets.put(ticket.getID(), ticket);
-			// add ticket to associated garage
-			garage.loadTicket(ticket);
-		} catch (Exception e) {
-			log.append(LogType.ERROR, e+" while loading ticket from"+ticketFile.getName());
-		}
+	    try (Scanner lineScanner = new Scanner(ticketFile)) {
+	        // load from file
+	        String ticketData = lineScanner.nextLine();
+	        if (!isValidTicketData(ticketData)) {
+	            log.append(LogType.ERROR, "Invalid ticket data from "+ticketFile.getName()+". Skipping...");
+	            return;
+	        }
+	        String split[] = ticketData.split(",");
+	        // parameters
+	        String garageID = split[0];
+	        String entryTimeStr = split[1];
+	        String exitTimeStr = split[2];
+	        Boolean overridden = Boolean.parseBoolean(split[3]);
+	        Boolean paid = Boolean.parseBoolean(split[4]);
+	        String feeStr = split[5];
+	        // null string check
+	        Long entryTime = null;
+	        if (!entryTimeStr.equals("null")) {
+	            entryTime = Long.parseLong(entryTimeStr);
+	        }
+	        Long exitTime = null;
+	        if (!exitTimeStr.equals("null")) {
+	            exitTime = Long.parseLong(exitTimeStr);
+	        }
+	        Double fee = null;
+	        if (!feeStr.equals("null")) {
+	            fee = Double.parseDouble(feeStr);
+	        }
+	        // find associated garage from id
+	        Garage garage = garages.get(garageID);
+	        if (garage == null) {
+	            log.append(LogType.ERROR, "Unable to find garage for ticket "+ticketFile.getName()+". Skipping...");
+	            return;
+	        }
+	        // assemble object
+	        Ticket ticket = new Ticket(garage, new Date(entryTime), new Date(exitTime), overridden, paid, fee);
+	        // add ticket to database
+	        tickets.put(ticket.getID(), ticket);
+	        // add ticket to associated garage
+	        garage.loadTicket(ticket);
+	    } catch (Exception e) {
+	        log.append(LogType.ERROR, e+" while loading ticket from "+ticketFile.getName()+". Skipping...");
+	    }
 	}
-	
+
 	private void loadReport(File reportFile) {
-		
+	    try (Scanner lineScanner = new Scanner(reportFile)) {
+	        // load from file
+	        String garageID = lineScanner.nextLine();
+	        String entriesStr = lineScanner.nextLine();
+	        String earningsStr = lineScanner.nextLine();
+	        // find associated garage from id
+	        Garage garage = garages.get(garageID);
+	        if (garage == null) {
+	            log.append(LogType.ERROR, "Unable to find garage for report "+reportFile.getName()+". Skipping...");
+	            return;
+	        }
+	        // get entries and earnings from strings
+	        ArrayList<Date> entryTimes = getEntryTimesFromString(entriesStr);
+	        ArrayList<Earning> earnings = getEarningsFromString(earningsStr);
+	        // assemble object
+	        Report report = new Report(garage);
+	        for (Date entryTime : entryTimes) {
+	            report.addEntryTime(entryTime);
+	        }
+	        for (Earning earning : earnings) {
+	            report.addExit(earning);
+	        }
+	        // add report to database
+	        reports.put(report.getID(), report);
+	        // add report to garage
+	        garage.loadReport(report);
+	    } catch (Exception e) {
+	        log.append(LogType.ERROR, e+" while loading report from "+reportFile.getName()+". Skipping...");
+	    }
 	}
-	
+
 	private void loadCamera(File cameraFile) {
-		
+	    try (Scanner lineScanner = new Scanner(cameraFile)) {
+	        // load from file
+	        String cameraData = lineScanner.nextLine();
+	        if (!isValidSecurityCameraData(cameraData)) {
+	            log.append(LogType.ERROR, "Invalid camera data from "+cameraFile.getName()+". Skipping...");
+	            return;
+	        }
+	        // find associated garage from id
+	        Garage garage = garages.get(cameraData);
+	        if (garage == null) {
+	            log.append(LogType.ERROR, "Unable to find garage for camera "+cameraFile.getName()+". Skipping...");
+	            return;
+	        }
+	        // assemble object
+	        SecurityCamera camera = new SecurityCamera(garage);
+	        // add camera to database
+	        cameras.put(camera.getID(), camera);
+	        // add camera to garage
+	        garage.addCamera(camera);
+	    } catch (Exception e) {
+	        log.append(LogType.ERROR, e+" while loading camera from "+cameraFile.getName()+". Skipping...");
+	    }
 	}
-	
+
 	private void loadEmployee(File employeeFile) {
-		
+	    try (Scanner lineScanner = new Scanner(employeeFile)) {
+	        // load from file
+	        String employeeData = lineScanner.nextLine();
+	        if (!isValidEmployeeData(employeeData)) {
+	            log.append(LogType.ERROR, "Invalid employee data from "+employeeFile.getName()+". Skipping...");
+	            return;
+	        }
+	        String split[] = employeeData.split(",");
+	        // parameters
+	        String garageID = split[0];
+	        String username = split[1];
+	        String password = split[2];
+	        // find associated garage from id
+	        Garage garage = garages.get(garageID);
+	        if (garage == null) {
+	            log.append(LogType.ERROR, "Unable to find garage for employee "+employeeFile.getName()+". Skipping...");
+	            return;
+	        }
+	        // assemble object
+	        Employee employee = new Employee(garage, username, password);
+	        // add employee to database
+	        employees.put(employee.getID(), employee);
+	    } catch (Exception e) {
+	        log.append(LogType.ERROR, e+" while loading employee from "+employeeFile.getName()+". Skipping...");
+	    }
 	}
 	
-	private ArrayList<Date> getEntryTimes(String reportEntriesStr) { // returns the instantiated entry times from a report file's line of entries 
+	private ArrayList<Date> getEntryTimesFromString(String reportEntriesStr) { // returns the instantiated entry times from a report file's line of entries 
 		ArrayList<Date> entryTimes = new ArrayList<>();
-		// TODO: business logic
+		String split[] = reportEntriesStr.split(",");
+		for (String s : split) {
+			try {
+				Long entryTime = Long.parseLong(s);
+				entryTimes.add(new Date(entryTime));
+			} catch (Exception e) {
+				continue;
+			}
+		}
 		return entryTimes;
 	}
 	
-	private ArrayList<Earning> getEarnings(String reportEarningsStr) { // returns the instantiated earnings from a report file's line of earnings 
+	private ArrayList<Earning> getEarningsFromString(String reportEarningsStr) { // returns the instantiated earnings from a report file's line of earnings 
 		ArrayList<Earning> earnings = new ArrayList<>();
-		// TODO: business logic
+		String splitData[] = reportEarningsStr.split("\\|");
+		for (String earning : splitData) {
+			try {
+				String splitEarning[] = earning.split(",");
+				Long exitTime = Long.parseLong(splitEarning[0]);
+				double revenue = Double.parseDouble(splitEarning[1]);
+				if (revenue < 0) { // no negative revenue!
+					continue;
+				}
+				earnings.add(new Earning(new Date(exitTime), revenue));
+			} catch (Exception e) {
+				continue;
+			}
+		}
 		return earnings;
-	}
-	
-	private boolean isValidEarningData(String earningData) {
-		// TODO: business logic
-		return true;
 	}
 	
 	private boolean isValidGarageData(String garageData) {
@@ -278,16 +451,16 @@ public class ServerData {
 		@SuppressWarnings("unused")
 		boolean paid;
 		double fee = 0;
-		try { 
-			if (entryTimeStr != null) {
+		try { // only tickets are allowed to have null values
+			if (!entryTimeStr.equals("null")) {
 				entryTime = Long.parseLong(entryTimeStr);
 			}
-			if (exitTimeStr != null) {
+			if (!exitTimeStr.equals("null")) {
 				exitTime = Long.parseLong(exitTimeStr);
 			}
 			overridden = Boolean.parseBoolean(overriddenStr);
 			paid = Boolean.parseBoolean(paidStr);
-			if (feeStr != null) {
+			if (!feeStr.equals("null")) {
 				fee = Double.parseDouble(feeStr);
 			}
 		} catch (Exception e) {

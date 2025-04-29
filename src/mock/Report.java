@@ -24,6 +24,10 @@ public class Report implements ReportInterface {
 	public void addExit(Date exitTime, double amount) {
 		earnings.add(new Earning(exitTime, amount));
 	}
+	
+	public void addExit(Earning earning) {
+		earnings.add(earning);
+	}
 
 	public ArrayList<Date> getEntryTimes() {
 		return entryTimes;
@@ -90,4 +94,6 @@ public class Report implements ReportInterface {
 	public String getID() {
 		return id;
 	}
+
+	
 }
