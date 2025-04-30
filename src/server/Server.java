@@ -72,7 +72,7 @@ public class Server {
 					in.close();
 					client.close();
 					log.append(LogType.ACTION, client+" has logged out", garage);
-				} catch (IOException e) {
+				} catch (Exception e) {
 					log.append(LogType.ERROR, e+" when singing out client "+client);
 				}
 				
