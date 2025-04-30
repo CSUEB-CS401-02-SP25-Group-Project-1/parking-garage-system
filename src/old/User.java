@@ -1,36 +1,44 @@
-package ParkingLot;
+package server;
 
-public class User {
-	protected Garage garage;
-	protected UserType userType; 
-	
+public class User implements UserInterface{
+
+	private Garage garage;
+	private UserType userType;
+
+	// constructors:
 	public User() {
-		this.garage = null;
-		this.userType = UserType.Undefined;
+		garage = new Garage();
+		userType = UserType.Undefined;
 	}
-	
+
 	public User(Garage garage) {
 		this.garage = garage;
-		this.userType = UserType.Undefined;
+		userType = UserType.Undefined;
 	}
-	
-	public void setGarage(Garage garage){
+
+	public User(Garage garage, UserType userType) {
 		this.garage = garage;
+		this.userType = userType;
 	}
-	
-	public Garage getGarage() {
-		return this.garage;
+
+	// methods from interface:
+	public void setGarage(Garage newGarage) {
+		garage = newGarage;
 	}
-	
-	public UserType getType() {
-		return this.userType;
+
+	public void setUserType(UserType newType) {userType = newType;}
+
+	public Garage getGarage() {return garage;}
+	public UserType getType() {return userType;}
+
+	// return type of `Ticket`? to match Employee?
+	public Ticket generateTicket() {
+		return garage.generateTicket();
 	}
-	
-	public void printReceipt(Ticket ticket){
-		Ticket ticket = garage.getTicket(ticket);
-		if(ticket != null && ticket.isPaid() == true) {
-			Receipt receipt = new Receipt(ticket);
-			System.out.println("Receipt Total: \n" + receipt.toString());
-		}
+
+	// payTicket needs amount passed into it
+	public Receipt payTicket(String ticketID, double amount) {
+		// garage.payTicket() already returns a receipt
+		return garage.payTicket(ticketID, amount);
 	}
 }
