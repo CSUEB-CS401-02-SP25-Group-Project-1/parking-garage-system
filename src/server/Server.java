@@ -5,6 +5,7 @@ import shared.*;
 import java.io.*;
 import java.net.*;
 import java.nio.file.Paths;
+import javax.swing.ImageIcon;
 
 public class Server {
 	private final static int PORT = 7777; // server port number
@@ -80,6 +81,14 @@ public class Server {
 				out.writeObject(new Message(type, "server", text));
 			} catch (IOException e) {
 				log.append(LogType.ERROR, e+" while attempting to send message to client ("+client+")");
+			}
+		}
+		
+		private void sendImageMessage(MessageType type, String text, ImageIcon image) { // for live security camera feed
+			try {
+				out.writeObject(new ImageMessage(type, "server", text, image));
+			} catch (IOException e) {
+				log.append(LogType.ERROR, e+" while attempting to send image message to client ("+client+")");
 			}
 		}
 		
@@ -264,6 +273,9 @@ public class Server {
 					ticketID = parameters[1];
 					viewBillingSummary(ticketID);
 					break;
+				case "gn":
+					viewGarageName();
+					break;
 				default:
 					sendMessage(MessageType.Fail, "unknown_command");
 					log.append(LogType.ERROR, client+" requested unknown command: "+command);
@@ -418,7 +430,7 @@ public class Server {
 			// input validation
 			if (newOpenTime < 0) {
 				sendMessage(MessageType.Fail, "mg:invalid_time");
-				log.append(LogType.ERROR, "Unable to update garage "+garage.getID()+"'s gate opening time for employee "+employee.getID()+" (invalid time", garage);
+				log.append(LogType.ERROR, "Unable to update garage "+garage.getID()+"'s gate opening time for employee "+employee.getUsername()+" (invalid time)", garage);
 				return;
 			}
 			// command logic
@@ -432,36 +444,49 @@ public class Server {
 		private void overrideTicket(String ticketID, double newFee) { // ot
 			// input validation
 			if (newFee < 0) {
-				// TODO: error messages
+				sendMessage(MessageType.Fail, "ot:invalid_fee");
+				log.append(LogType.ERROR, "Unable to override ticket "+ticketID+" for employee "+employee.getUsername()+" (invalid value)", garage);
 				return;
 			}
 			Ticket ticket = serverData.getTicket(ticketID);
 			if (ticket == null) {
-				// TODO: error messages
+				sendMessage(MessageType.Fail, "ot:ticket_not_found");
+				log.append(LogType.ERROR, "Unable to override ticket "+ticketID+" for employee "+employee.getUsername()+" (ticket not found)", garage);
 				return;
 			}
 			// command logic
 			ticket.overrideFee(newFee);
 			serverData.saveTicket(ticket);
 			// success message
+			sendMessage(MessageType.Success, "ot:overridden_ticket");
+			log.append(LogType.ACTION, employee.getUsername()+" has overridden ticket "+ticket.getID(), garage);
 		}
 		
 		private void viewReport() { // vr
 			Report report = garage.viewReport();
 			serverData.saveReport(report); // save newly-updated report
 			// return report as string
+			sendMessage(MessageType.Success, 
+						"vr:"+report.getRevenueThisHour()+","+report.getRevenueToday()+","+
+						report.getRevenueThisWeek()+","+report.getRevenueThisMonth()+","+
+						report.getRevenueToday()+","+report.getTotalRevenue()+","+
+						report.getPeakHour()+","+report.getCurrentlyParkedNum());
+			log.append(LogType.ACTION, "Generated garage report for employee "+employee.getUsername(), garage);
 		}
 		
 		private void modifyRate(double newRate) { // mr
 			// input validation
 			if (newRate < 0) {
-				// TODO: error messages
+				sendMessage(MessageType.Fail, "mr:invalid_rate");
+				log.append(LogType.ERROR, "Unable to modify hourly rate for garage "+garage.getID()+" for employee "+employee.getUsername()+" (invalid value)", garage);
 				return;
 			}
 			// update garage's rate
 			garage.setHourlyRate(newRate);
-			serverData.saveGarage(garage);
+			serverData.saveGarage(garage); // save new rate to file
 			// success message
+			sendMessage(MessageType.Success, "mr:modified_rate");
+			log.append(LogType.ACTION, "Employee "+employee.getUsername()+" updated hourly rate for garage: "+garage.getHourlyRate(), garage);
 		}
 		
 		private void viewActiveTickets() { // vv
@@ -469,7 +494,9 @@ public class Server {
 			for (Ticket ticket : garage.getActiveTickets()) {
 				ticketIDs += ticket.getID()+",";
 			}
-			// return ticketIDs string
+			// return ticketIDs string in message
+			sendMessage(MessageType.Success, "vv:"+ticketIDs);
+			log.append(LogType.ACTION, "Sent list of active tickets in garage "+garage.getID()+" to employee "+employee.getUsername(), garage);
 		}
 		
 		private void viewCameraList() { // vc
@@ -478,20 +505,32 @@ public class Server {
 				cameraIDs += camera.getID()+",";
 			}
 			// return cameraIDs string
+			sendMessage(MessageType.Success, "vc:"+cameraIDs);
+			log.append(LogType.ACTION, "Sent list of cameras in garage "+garage.getID()+" to employee "+employee.getUsername(), garage);
 		}
 		
 		private void viewFeed(String cameraID) { // vf
 			// find security camera from id
 			SecurityCamera camera = serverData.getSecurityCamera(cameraID);
 			if (camera == null) {
-				// TODO: error messages
+				sendMessage(MessageType.Fail, "vf:camera_not_found");
+				log.append(LogType.ERROR, "Unable to send live feed of camera "+cameraID+" to employee "+employee.getUsername()+" (camera not found)", garage);
 				return;
 			}
-			// return live feed in a message
+			// return live feed in an image message
+			sendImageMessage(MessageType.Success, "vf:image", camera.view());
+			log.append(LogType.ACTION, "Sent live feed of camera "+camera.getID()+" to employee "+employee.getUsername(), garage);
 		}
 		
 		private void viewLogs() { // vl
-			
+			String logsAsString = "";
+			for (String log : garage.getLogEntries()) {
+				logsAsString += log+"\n";
+			}
+			// send garage logs in message payload
+			sendMessage(MessageType.Success, "vl:"+logsAsString);
+				// clients must discern that this is a human-readable string after the "vl:" prefix
+			log.append(LogType.ACTION, "Sent current logs of garage "+garage.getID()+" to employee "+employee.getUsername(), garage);
 		}
 		
 		private class GateHandler implements Runnable { // a class that keeps gate toggling logic running in another thread

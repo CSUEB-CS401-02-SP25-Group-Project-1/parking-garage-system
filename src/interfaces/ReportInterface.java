@@ -14,6 +14,7 @@ public interface ReportInterface {
 	double getRevenueThisHour();
 	double getRevenueToday();
 	double getRevenueThisWeek();
+	double getRevenueThisMonth();
 	double getRevenueThisYear();
 	double getTotalRevenue();
 	Garage getGarage();

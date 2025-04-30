@@ -47,6 +47,11 @@ public class Report implements ReportInterface {
 		// do date comparison of each earning in list and return accumulated value
 		return 9999999.99; // dummy value
 	}
+	
+	public double getRevenueThisMonth() {
+		// do date comparison of each earning in list and return accumulated value
+		return 666.66; // dummy value
+	}
 
 	public double getRevenueThisYear() {
 		// do date comparison of each earning in list and return accumulated value
