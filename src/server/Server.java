@@ -66,12 +66,16 @@ public class Server {
 			} catch (Exception e) {
 				log.append(LogType.ERROR, e+" when communicating with client "+client);
 			} finally {
+				sendMessage(MessageType.Success, "lo:signed_out");
 				try {
 					out.close();
 					in.close();
+					client.close();
+					log.append(LogType.ACTION, client+" has logged out", garage);
 				} catch (IOException e) {
-					log.append(e+": Unable to close connection for "+client);
-				}			
+					log.append(LogType.ERROR, e+" when singing out client "+client);
+				}
+				
 			}
 		}
 		
