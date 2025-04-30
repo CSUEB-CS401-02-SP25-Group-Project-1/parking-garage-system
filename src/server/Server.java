@@ -268,7 +268,8 @@ public class Server {
 					break;
 				case "pt":
 					String ticketID = parameters[1];
-					payTicket(ticketID);
+					float payment = Float.parseFloat(parameters[2]);
+					payTicket(ticketID, payment);
 					break;
 				case "tg":
 					toggleGate();
@@ -349,7 +350,7 @@ public class Server {
 			log.append(LogType.ENTRY, "Generated ticket "+ticket.getID()+" for client "+client, garage);
 		}
 		
-		private void payTicket(String ticketID) { // pt
+		private void payTicket(String ticketID, float amount) { // pt
 			// input validation
 			Ticket ticket = serverData.getTicket(ticketID);
 			if (ticket == null) { // check if ticket exists in database
@@ -363,7 +364,11 @@ public class Server {
 				return;
 			}
 			// update ticket
-			ticket.pay();
+			boolean success = ticket.pay(amount);
+			if (!success) { // check if client has paid enough
+				sendMessage(MessageType.Fail, "pt:insufficient_funds");
+				log.append(LogType.ERROR, "Unable to fulfull payment for ticket "+ticket.getID()+" for client "+client+ "(insufficient funds)", garage);
+			}
 			serverData.saveTicket(ticket);
 			// return receipt
 			sendMessage(MessageType.Success, "pt:"+new Receipt(ticket.getID(), garage.getName(),
