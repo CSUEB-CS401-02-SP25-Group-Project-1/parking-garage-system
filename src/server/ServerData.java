@@ -159,6 +159,7 @@ public class ServerData {
 	public boolean saveEmployee(Employee employee) {
 		if (getEmployee(employee.getID()) == null) {
 	    	employees.put(employee.getID(), employee); // add employee to database if it's not there already
+	    	employeesByUsername.put(employee.getUsername(), employee);
 	    }
 	    String savePath = Paths.get(getFullSubdir(EMPLOYEE_SUBDIR), employee.getID()+".txt").toString();
 	    try (FileWriter saveFile = new FileWriter(savePath)) {
