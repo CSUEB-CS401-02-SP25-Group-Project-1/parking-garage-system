@@ -353,7 +353,7 @@ public class Server {
 				log.append(LogType.ERROR, "Unable to retrieve ticket "+ticket.getID()+" for client "+client+ "(ticket not found)", garage);
 				return;
 			}
-			if (!ticket.isPaid()) { // check if ticket hasn't been paid for yet
+			if (ticket.isPaid()) { // check if ticket hasn't been paid for yet
 				sendMessage(MessageType.Fail, "pt:already_paid");
 				log.append(LogType.ERROR, "Unable to fulfill payment for ticket "+ticket.getID()+" for client "+client+ "(already paid)", garage);
 				return;
