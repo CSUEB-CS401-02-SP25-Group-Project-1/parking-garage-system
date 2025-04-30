@@ -126,6 +126,8 @@ public class Ticket implements TicketInterface{
 		// payment processing done at client end?
 		// fee has been calculated and returned with getFee()
 		// this method serves as a softer version of override()
+		if (isPaid || isOverridden) {return;}
+
 		exitTime = new Date();
 		isPaid = true;
 
