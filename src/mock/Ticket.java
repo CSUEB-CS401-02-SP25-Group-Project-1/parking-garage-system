@@ -2,6 +2,7 @@ package mock;
 
 import java.util.Date;
 import interfaces.TicketInterface;
+import server.Garage;
 
 public class Ticket implements TicketInterface {
 	private static int count = 0;

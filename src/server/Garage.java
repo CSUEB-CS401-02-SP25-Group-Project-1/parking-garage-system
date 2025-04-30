@@ -1,8 +1,11 @@
-package mock;
+package server;
 
 import java.util.ArrayList;
 import java.util.Date;
 import interfaces.GarageInterface;
+import mock.Report;
+import mock.SecurityCamera;
+import mock.Ticket;
 
 public class Garage implements GarageInterface {
 	private static int count = 0;
@@ -67,6 +70,7 @@ public class Garage implements GarageInterface {
 		return null;
 	}
 	
+	@Override
 	public void loadTicket(Ticket ticket) { // used by server to load existing tickets to both arrays
 		if (!ticket.isPaid()) {
 			activeTickets.add(ticket);
@@ -99,6 +103,7 @@ public class Garage implements GarageInterface {
 		return new Receipt(ticket);
 	}
 	
+	@Override
 	public void loadReport(Report report) { // used by server to load report from file
 		this.report = report;
 	}
@@ -107,6 +112,7 @@ public class Garage implements GarageInterface {
 		return this.report;
 	}
 
+	@Override
 	public boolean addCamera(SecurityCamera newCamera) {
 		// add camera to garage's camera list if camera hasn't been added yet
 		int camCount = this.cameras.size();

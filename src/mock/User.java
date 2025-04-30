@@ -2,6 +2,7 @@ package mock;
 
 import java.util.Date;
 import interfaces.UserInterface;
+import server.Garage;
 import server.UserType;
 
 public class User implements UserInterface {

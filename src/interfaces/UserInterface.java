@@ -1,7 +1,7 @@
 package interfaces;
 
-import mock.Garage;
 import mock.Receipt;
+import server.Garage;
 import server.UserType;
 
 public interface UserInterface {
