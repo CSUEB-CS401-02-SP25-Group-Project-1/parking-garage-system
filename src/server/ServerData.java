@@ -7,12 +7,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Scanner;
-import mock.Earning;
-import mock.Employee;
-import mock.Garage;
-import mock.Report;
-import mock.SecurityCamera;
-import mock.Ticket;
+import server.Earning;
+import server.Employee;
+import server.Garage;
+import server.Report;
+import server.SecurityCamera;
+import server.Ticket;
 
 public class ServerData {
 	private final String GARAGE_SUBDIR = "/garages/"; // "GA#.txt"
