@@ -24,6 +24,8 @@ public interface GarageInterface {
 	Report viewReport();
 	boolean addCamera(SecurityCamera newCamera);
 	boolean removeCamera(String cameraID);
+	ArrayList<Ticket> getActiveTickets();
+	ArrayList<Ticket> getAllTickets();
 	ArrayList<SecurityCamera> getCameras();
 	void addLogEntry(String logEntry);
 	ArrayList<String> getLogEntries();

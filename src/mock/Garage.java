@@ -131,4 +131,12 @@ public class Garage implements GarageInterface {
 	public String toString() {
 		return name+","+hourlyRate+","+capacity+","+gate.getOpenTime();
 	}
+
+	public ArrayList<Ticket> getActiveTickets() {
+		return activeTickets;
+	}
+
+	public ArrayList<Ticket> getAllTickets() {
+		return allTickets;
+	}
 }

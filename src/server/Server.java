@@ -16,7 +16,7 @@ public class Server {
 		Log log = new Log(Paths.get(System.getProperty("user.dir"), LOGS_DIR).toString(), LOG_PREFIX); // create new log for server instance
 		// load server data from file
 		ServerData serverData = new ServerData(DATA_DIR, log);
-		//serverData.loadAll(); // TODO
+		serverData.loadAll();
 		// starting connection
 		try (ServerSocket ss = new ServerSocket(PORT)) {
 			ss.setReuseAddress(true); // ensures server uses same ip address
@@ -37,6 +37,7 @@ public class Server {
 		private final Socket client;
 		private final Log log;
 		private boolean isEmployee;
+		private Employee employee; // employee object needed to execute employee-only commands (provided upon login)
 		private Garage garage;
 		private ServerData serverData;
 		ObjectOutputStream out; // outgoing messages to client
@@ -128,7 +129,7 @@ public class Server {
 			return true;
 		}
 		
-		private void listenLogin() {
+		private void listenLogin() { // li; retrieves employee object after successful login
 			
 		}
 		
@@ -138,6 +139,136 @@ public class Server {
 
 		private void handleCustomer() {
 			
+		}
+		
+		// customer commands (includes common user commands)
+		
+		private void generateTicket() { // gt
+			String ticketID = garage.generateTicket(); // generated ticket ID
+			if (ticketID == null) {
+				// TODO: error messages
+				return;
+			}
+			// save new ticket to database
+			Ticket ticket = garage.getTicket(ticketID);
+			serverData.saveTicket(ticket);
+			// success message
+		}
+		
+		private void payTicket(String ticketID) { // pt
+			Ticket ticket = serverData.getTicket(ticketID);
+			if (ticketID == null) {
+				// TODO: error messages
+				return;
+			}
+			// update ticket
+			ticket.pay();
+			serverData.saveTicket(ticket);
+			// success message
+		}
+		
+		private void toggleGate() { // tg (customer guis send tg requests automatically)
+			// command logic
+			Gate gate = garage.getGate();
+			if (gate.isOpen()) {
+				gate.close(); // TODO: call GateHandler instead
+			} else {
+				gate.open();
+			}
+			// success message
+		}
+		
+		private void viewAvailability() { // va
+			int availabileSpaces = garage.getAvailableSpaces();
+			// success message
+			sendMessage(MessageType.Success, "va:"+availabileSpaces);
+			log.append(LogType.ACTION, "Sent available spaces to client "+client);
+		}
+		
+		// employee commands
+		
+		private void modifyPassword(String newPassword) { // mp
+			// input validation
+			if (!isValidPassword(newPassword)) {
+				sendMessage(MessageType.Fail, "mp:no_special_characters");
+				log.append(LogType.ERROR, "Unable to update "+employee.getID()+"'s password: needs special characters");
+				return;
+			}
+			// command logic
+			employee.setPassword(newPassword); // update password
+			serverData.saveEmployee(employee); // update employee file with new password
+			// success message
+			sendMessage(MessageType.Success, "mp:password_changed");
+			log.append(LogType.ACTION, employee.getID()+" has updated their password.");
+		}
+		
+		private void modifyGateTime(double newOpenTime) { // mg
+			// input validation
+			// command logic
+			garage.getGate().setOpenTime(newOpenTime);
+			serverData.saveGarage(garage); // save garage parameters with new gate opening time
+			// success message
+		}
+		
+		private void overrideTicket(String ticketID, double newFee) { // ot
+			// input validation
+			if (newFee < 0) {
+				// TODO: error messages
+				return;
+			}
+			Ticket ticket = serverData.getTicket(ticketID);
+			if (ticket == null) {
+				// TODO: error messages
+				return;
+			}
+			// command logic
+			ticket.overrideFee(newFee);
+			serverData.saveTicket(ticket);
+			// success message
+		}
+		
+		private void viewReport() { // vr
+			Report report = garage.viewReport();
+			serverData.saveReport(report); // save newly-updated report
+			// return report as string
+		}
+		
+		private void modifyRate(double newRate) { // mr
+			// input validation
+			if (newRate < 0) {
+				// TODO: error messages
+				return;
+			}
+			// update garage's rate
+			garage.setHourlyRate(newRate);
+			serverData.saveGarage(garage);
+			// success message
+		}
+		
+		private void viewActiveTickets() { // vv
+			String ticketIDs = "";
+			for (Ticket ticket : garage.getActiveTickets()) {
+				ticketIDs += ticket.getID()+",";
+			}
+			// return ticketIDs string
+		}
+		
+		private void viewCameraList() { // vc
+			String cameraIDs = "";
+			for (SecurityCamera camera : garage.getCameras()) {
+				cameraIDs += camera.getID()+",";
+			}
+			// return cameraIDs string
+		}
+		
+		private void viewFeed(String cameraID) { // vf
+			// find security camera from id
+			SecurityCamera camera = serverData.getSecurityCamera(cameraID);
+			if (camera == null) {
+				// TODO: error messages
+				return;
+			}
+			// return live feed in a message
 		}
 		
 		
