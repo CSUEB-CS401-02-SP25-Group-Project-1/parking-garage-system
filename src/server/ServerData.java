@@ -100,49 +100,74 @@ public class ServerData {
 	
 	// methods to save an individual object to file
 	
-	public void saveGarage(Garage garage) { 
-	    String savePath = Paths.get(getFullSubdir(GARAGE_SUBDIR), garage.getID()+".txt").toString();
+	public boolean saveGarage(Garage garage) { 
+		if (getGarage(garage.getID()) == null) {
+	    	garages.put(garage.getID(), garage); // add garage to database if it's not there already
+	    }
+		String savePath = Paths.get(getFullSubdir(GARAGE_SUBDIR), garage.getID()+".txt").toString();
 	    try (FileWriter saveFile = new FileWriter(savePath)) {
 	        saveFile.write(garage.toString());
 	    } catch (Exception e) {
 	        log.append(LogType.ERROR, "Unable to save garage "+garage.getID()+" to file: "+e);
+	        return false;
 	    }
+	    return true;
 	}
 
-	public void saveTicket(Ticket ticket) {
+	public boolean saveTicket(Ticket ticket) {
+		if (getTicket(ticket.getID()) == null) {
+	    	tickets.put(ticket.getID(), ticket); // add ticket to database if it's not there already
+	    }
 	    String savePath = Paths.get(getFullSubdir(TICKET_SUBDIR), ticket.getID()+".txt").toString();
 	    try (FileWriter saveFile = new FileWriter(savePath)) {
 	        saveFile.write(ticket.toString());
 	    } catch (Exception e) {
 	        log.append(LogType.ERROR, "Unable to save ticket "+ticket.getID()+" to file: "+e);
+	        return false;
 	    }
+	    return true;
 	}
 
-	public void saveReport(Report report) {
+	public boolean saveReport(Report report) {
+		if (getReport(report.getID()) == null) {
+	    	reports.put(report.getID(), report); // add report to database if it's not there already
+	    }
 	    String savePath = Paths.get(getFullSubdir(REPORT_SUBDIR), report.getID()+".txt").toString();
 	    try (FileWriter saveFile = new FileWriter(savePath)) {
 	        saveFile.write(report.toString());
 	    } catch (Exception e) {
 	        log.append(LogType.ERROR, "Unable to save report "+report.getID()+" to file: "+e);
+	        return false;
 	    }
+	    return true;
 	}
 
-	public void saveSecurityCamera(SecurityCamera camera) {
+	public boolean saveSecurityCamera(SecurityCamera camera) {
+		if (getSecurityCamera(camera.getID()) == null) {
+	    	cameras.put(camera.getID(), camera); // add camera to database if it's not there already
+	    }
 	    String savePath = Paths.get(getFullSubdir(CAMERA_SUBDIR), camera.getID()+".txt").toString();
 	    try (FileWriter saveFile = new FileWriter(savePath)) {
 	        saveFile.write(camera.toString());
 	    } catch (Exception e) {
 	        log.append(LogType.ERROR, "Unable to save camera "+camera.getID()+" to file: "+e);
+	        return false;
 	    }
+	    return true;
 	}
 
-	public void saveEmployee(Employee employee) {
+	public boolean saveEmployee(Employee employee) {
+		if (getEmployee(employee.getID()) == null) {
+	    	employees.put(employee.getID(), employee); // add employee to database if it's not there already
+	    }
 	    String savePath = Paths.get(getFullSubdir(EMPLOYEE_SUBDIR), employee.getID()+".txt").toString();
 	    try (FileWriter saveFile = new FileWriter(savePath)) {
 	        saveFile.write(employee.toString());
 	    } catch (Exception e) {
 	        log.append(LogType.ERROR, "Unable to save employee "+employee.getID()+" to file: "+e);
+	        return false;
 	    }
+	    return true;
 	}
 	
 	// helper methods
