@@ -132,6 +132,7 @@ public class Ticket implements TicketInterface{
 
 		// not overridden
 		// don't change fee
+		return true;
 	}
 
 	public String toString() {
