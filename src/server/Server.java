@@ -1,6 +1,6 @@
 package server;
 
-import server.*; // TODO: temp
+import mock.*; // TODO: temp
 import shared.*;
 import java.io.*;
 import java.net.*;
@@ -83,7 +83,7 @@ public class Server {
 		private void sendMessage(MessageType type, String text) {
 			try {
 				out.writeObject(new Message(type, "server", text));
-			} catch (IOException e) {
+			} catch (Exception e) {
 				log.append(LogType.ERROR, e+" while attempting to send message to client ("+client+")");
 			}
 		}
@@ -91,7 +91,7 @@ public class Server {
 		private void sendImageMessage(MessageType type, String text, ImageIcon image) { // for live security camera feed
 			try {
 				out.writeObject(new ImageMessage(type, "server", text, image));
-			} catch (IOException e) {
+			} catch (Exception e) {
 				log.append(LogType.ERROR, e+" while attempting to send image message to client ("+client+")");
 			}
 		}
@@ -124,7 +124,7 @@ public class Server {
 						sendMessage(MessageType.Fail, "init:invalid");
 						log.append(LogType.ERROR, client+" sent invalid init message!");
 					}
-				} catch (ClassNotFoundException | IOException e) {
+				} catch (Exception e) {
 					sendMessage(MessageType.Fail, "init:unknown");
 					log.append(LogType.ERROR, e+" while listening for init message");
 				}
@@ -354,7 +354,7 @@ public class Server {
 			Ticket ticket = serverData.getTicket(ticketID);
 			if (ticket == null) { // check if ticket exists in database
 				sendMessage(MessageType.Fail, "pt:ticket_not_found");
-				log.append(LogType.ERROR, "Unable to retrieve ticket "+ticket.getID()+" for client "+client+ "(ticket not found)", garage);
+				log.append(LogType.ERROR, "Unable to retrieve ticket "+ticketID+" for client "+client+ "(ticket not found)", garage);
 				return;
 			}
 			if (ticket.isPaid()) { // check if ticket hasn't been paid for yet
@@ -538,8 +538,8 @@ public class Server {
 		}
 		
 		private class GateHandler implements Runnable { // a class that keeps gate toggling logic running in another thread
-			private Gate gate;
-			private Log log;
+			private final Gate gate;
+			private final Log log;
 			
 			public GateHandler(Gate gate, Log log) {
 				this.gate = gate;
