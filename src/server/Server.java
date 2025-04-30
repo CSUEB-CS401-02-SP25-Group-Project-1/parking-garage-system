@@ -133,12 +133,116 @@ public class Server {
 			
 		}
 		
+		private boolean isRequestMsg(Message message) {
+			return (message.getType() == MessageType.Request);
+		}
+		
+		private boolean isLogoutMsg(Message message) {
+			return (message.getText().equalsIgnoreCase("lo"));
+		}
+		
+		public String[] getMessageParameters(Message message) {
+			return message.getText().split(":");
+		}
+		
+		public void runEmployeeCommand(String parameters[]) {
+			try {
+				String command = parameters[0];
+				switch (command) {
+				case "mp":
+					String newPassword = parameters[1]; 
+					modifyPassword(newPassword);
+					break;
+				case "mg":
+					Double newGateTime = Double.parseDouble(parameters[1]);
+					modifyGateTime(newGateTime);
+					break;
+				case "vr":
+					viewReport();
+					break;
+				case "mr":
+					Double newRate = Double.parseDouble(parameters[1]);
+					modifyRate(newRate);
+					break;
+				case "vv":
+					viewActiveTickets();
+					break;
+				case "vc":
+					viewCameraList();
+					break;
+				case "vf":
+					String cameraID = parameters[1];
+					viewFeed(cameraID);
+					break;
+				default:
+					runCustomerCommand(parameters); // roll into customer commands (common commands) if code doesn't match employee's
+				}
+			} catch (Exception e) {
+				sendMessage(MessageType.Fail, "invalid_parameters");
+			}
+		}
+		
+		public void runCustomerCommand(String parameters[]) {
+			try {
+				String command = parameters[0];
+				switch (command) {
+				case "gt":
+					generateTicket();
+					break;
+				case "va":
+					viewAvailability();
+					break;
+				case "pt":
+					String ticketID = parameters[1];
+					payTicket(ticketID);
+					break;
+				case "tg":
+					toggleGate();
+					break;
+				default:
+					sendMessage(MessageType.Fail, "unknown_command");
+					log.append(LogType.ERROR, client+" requested unknown command: "+command);
+				}
+			} catch (Exception e) {
+				sendMessage(MessageType.Fail, "invalid_parameters");
+				log.append(LogType.ERROR, client+" sent invalid message parameters!");
+			}
+		}
+		
 		private void handleEmployee() {
 			listenLogin(); // authenticate employee's login credentials before reading other messages
+			Message incoming = null;
+			do {
+				try {
+					incoming = (Message)in.readObject();
+					if (!isRequestMsg(incoming)) {
+						continue; // ignore non-request messages
+					}
+					String parameters[] = getMessageParameters(incoming);
+					runEmployeeCommand(parameters);
+				} catch (Exception e) {
+					sendMessage(MessageType.Fail, "unknown_error");
+					log.append(LogType.ERROR, "Unable to process message from client "+client);
+				}
+			} while (!isLogoutMsg(incoming)); // end loop if client requests to logout
 		}
 
 		private void handleCustomer() {
-			
+			Message incoming = null;
+			do {
+				try {
+					incoming = (Message)in.readObject();
+					if (!isRequestMsg(incoming)) {
+						continue; // ignore non-request messages
+					}
+					String parameters[] = getMessageParameters(incoming);
+					runCustomerCommand(parameters);
+				} catch (Exception e) {
+					sendMessage(MessageType.Fail, "unknown_error");
+					log.append(LogType.ERROR, "Unable to process message from client "+client);
+				}
+				
+			} while (!isLogoutMsg(incoming)); // end loop if client requests to logout
 		}
 		
 		// customer commands (includes common user commands)
