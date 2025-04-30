@@ -30,6 +30,7 @@ public class ServerData {
 	private HashMap<String, Report> reports = new HashMap<>();
 	private HashMap<String, SecurityCamera> cameras = new HashMap<>();
 	private HashMap<String, Employee> employees = new HashMap<>();
+	private HashMap<String, Employee> employeesByUsername = new HashMap<>(); // used to search employees by username rather than by id
 	
 	public ServerData(String rootDir, Log log) {
 		this.log = log;
@@ -86,6 +87,13 @@ public class ServerData {
 	public Employee getEmployee(String employeeID) {
 		if (employees.containsKey(employeeID)) {
 			return employees.get(employeeID);
+		}
+		return null;
+	}
+	
+	public Employee getEmployeeByUsername(String username) {
+		if (employeesByUsername.containsKey(username)) {
+			return employeesByUsername.get(username);
 		}
 		return null;
 	}
@@ -360,8 +368,9 @@ public class ServerData {
 	        }
 	        // assemble object
 	        Employee employee = new Employee(garage, username, password);
-	        // add employee to database
+	        // add employee to databases
 	        employees.put(employee.getID(), employee);
+	        employeesByUsername.put(employee.getUsername(), employee);
 	    } catch (Exception e) {
 	        log.append(LogType.ERROR, e+" while loading employee from "+employeeFile.getName()+". Skipping...");
 	    }
