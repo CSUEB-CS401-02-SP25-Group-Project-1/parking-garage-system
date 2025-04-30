@@ -22,7 +22,7 @@ public class Garage implements GarageInterface {
 		this.name = name;
 		this.hourlyRate = hourlyRate;
 		this.capacity = capacity;
-		gate = new Gate(gateOpenTime);
+		gate = new Gate(this, gateOpenTime);
 	}
 
 	public String getID() {

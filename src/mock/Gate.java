@@ -5,8 +5,10 @@ import interfaces.GateInterface;
 public class Gate implements GateInterface {
 	double openTime; // in seconds
 	boolean open = false;
+	Garage garage;
 	
-	public Gate(double openTime) {
+	public Gate(Garage garage, double openTime) {
+		this.garage = garage;
 		this.openTime = openTime;
 	}
 	
@@ -28,6 +30,10 @@ public class Gate implements GateInterface {
 	
 	public boolean isOpen() {
 		return open;
+	}
+	
+	public Garage getGarage() {
+		return garage;
 	}
 
 }
