@@ -258,6 +258,7 @@ public class Server {
 					toggleGate();
 					break;
 				case "bs":
+					ticketID = parameters[1];
 					viewBillingSummary(ticketID);
 					break;
 				default:
@@ -354,6 +355,22 @@ public class Server {
 			// success message
 			sendMessage(MessageType.Success, "va:"+availabileSpaces);
 			log.append(LogType.ACTION, "Sent available spaces to client "+client);
+		}
+		
+		private void viewBillingSummary(String ticketID) { // bs
+			// input validation
+			Ticket ticket = serverData.getTicket(ticketID);
+			if (ticket == null) {
+				sendMessage(MessageType.Fail, "bs:invalid_ticket_id");
+				log.append(LogType.ERROR, "Unable to return billing summary for ticket "+ticketID+ " to client "+client);
+				return;
+			}
+			// calculate fee in real time
+			ticket.calculateFee();
+			// return ticket data with newly-calculated fee
+			String payload = "bs:"+ticket.getID()+":"+ticket.getEntryTime()+":"+ticket.getExitTime()+":"+ticket.getFee();
+			sendMessage(MessageType.Success, payload);
+			log.append(LogType.ACTION, "Sent billing summary for ticket "+ticketID+" to client "+client);
 		}
 		
 		// employee commands
