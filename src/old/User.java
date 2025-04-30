@@ -1,11 +1,6 @@
-package mock;
+package ParkingLot;
 
-import java.util.Date;
-import interfaces.UserInterface;
-import server.Garage;
-import server.UserType;
-
-public class User implements UserInterface {
+public class User {
 	protected Garage garage;
 	protected UserType userType; 
 	
@@ -30,12 +25,12 @@ public class User implements UserInterface {
 	public UserType getType() {
 		return this.userType;
 	}
-
-	public String generateTicket() {	
-		return garage.generateTicket();
-	}
 	
-	public Receipt payTicket(String ticketID) {	
-		return garage.payTicket(ticketID);
+	public void printReceipt(Ticket ticket){
+		Ticket ticket = garage.getTicket(ticket);
+		if(ticket != null && ticket.isPaid() == true) {
+			Receipt receipt = new Receipt(ticket);
+			System.out.println("Receipt Total: \n" + receipt.toString());
+		}
 	}
 }

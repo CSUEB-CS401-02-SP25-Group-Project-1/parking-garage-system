@@ -2,8 +2,6 @@ package mock;
 
 import java.util.Date;
 import interfaces.EmployeeInterface;
-import server.Garage;
-import server.UserType;
 
 public class Employee extends User implements EmployeeInterface {
 	private static int count = 0;
@@ -16,7 +14,6 @@ public class Employee extends User implements EmployeeInterface {
 		this.username = username;
 		this.password = password;
 		this.garage = garage;
-		this.userType = UserType.Employee;
 	}
 
 	public String getID() {
@@ -36,27 +33,31 @@ public class Employee extends User implements EmployeeInterface {
 	}
 
 	public boolean overrideTicketFee(String ticketID, double newFee) {
-		// returns true if ticket was found and was overridden
-		// returns false otherwise
-		return false; // dummy value
+		Ticket ticket = garage.getTicket(ticketID);
+        	if (ticket != null && !ticket.isPaid()) {
+            		ticket.overrideFee(newFee);
+            		return true;
+        	}
+        	return false;
 	}
 
 	public Receipt getReceipt(String ticketID) {
-		// returns the receipt of a ticket
-		return new Receipt("TI600", "The Awesome Garage", new Date(), new Date(), 79.99); // dummy value
-	}
+        	Ticket ticket = garage.getTicket(ticketID);
+        	if (ticket != null && ticket.isPaid()) {
+            		return new Receipt(ticket.getID(), garage.getName(), 
+                        	ticket.getEntryTime(), ticket.getExitTime(), 
+                        	ticket.getFee());
+        	}
+        	return null;
+    	}
 
 	public Report getGarageReport() {
 		// returns a generated report of the garage
-		return new Report(garage); // dummy value
+		return garage.viewReport();
 	}
 
 	public void setGarageHourlyRate(double newRate) {
 		garage.setHourlyRate(newRate);
-	}
-	
-	public String toString() {
-		return garage.getID()+","+username+","+password;
 	}
 
 }
