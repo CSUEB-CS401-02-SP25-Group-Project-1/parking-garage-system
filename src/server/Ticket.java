@@ -1,7 +1,7 @@
 package server;
 
 import mock.*;
-import server.*; // in case Garage ends up in /server
+import interfaces.TicketInterface;
 
 import java.util.Date;
 
