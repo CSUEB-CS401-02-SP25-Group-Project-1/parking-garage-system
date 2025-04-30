@@ -178,7 +178,7 @@ public class Report implements ReportInterface {
 
 		while (now - earnings.get(i).getDate().getTime() <= ms
 				&& i >= 0) {
-			revenue += earnings.get(0).getRevenue();
+			revenue += earnings.get(i).getRevenue();
 			i--;
 		}
 		
