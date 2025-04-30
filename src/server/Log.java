@@ -6,6 +6,8 @@ import java.nio.file.Paths;
 import java.text.*;
 import java.util.*;
 
+import mock.Garage;
+
 public class Log {
 	private String path;
 	private BufferedWriter fileWriter; // buffered so that new entries are written to file immediately
@@ -30,11 +32,18 @@ public class Log {
 		return path;
 	}
 	
-	public void append(LogType logType, String text) { // add new entry to log (and also writes it to file)
+	public void append(LogType logType, String text) { // add new entry to log (and also writes it to file and prints it to console)
+		append(logType, text, null);
+	}
+	
+	public void append(LogType logType, String text, Garage garage) { 
 		String entry = format(logType, text);
 		entries.add(entry);
 		writeEntry(entry);
 		System.out.println(entry); // also prints entry to console
+		if (garage != null) {
+			garage.addLogEntry(entry); // also sends log to garage if specified
+		}
 	}
 	
 	public void append(String text) { // append method without specifying a log type

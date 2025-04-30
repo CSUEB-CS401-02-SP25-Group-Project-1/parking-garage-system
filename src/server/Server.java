@@ -50,7 +50,7 @@ public class Server {
 		}
 		
 		public void run() {
-			log.append(client.getInetAddress().getHostAddress()+" has connected"); // TODO: maybe include client id/type too?
+			log.append(client +" has connected");
 			try {
 				out = new ObjectOutputStream(client.getOutputStream());
 				in = new ObjectInputStream(client.getInputStream());
@@ -60,8 +60,15 @@ public class Server {
 				} else { 
 					handleCustomer(); // handle client as customer instead
 				}
-			} catch (IOException e) {
-				log.append(LogType.ERROR, e+" in client communication"); // TODO: identify which client caused this error (ip or some other id)
+			} catch (Exception e) {
+				log.append(LogType.ERROR, e+" when communicating with client "+client);
+			} finally {
+				try {
+					out.close();
+					in.close();
+				} catch (IOException e) {
+					log.append(e+": Unable to close connection for "+client);
+				}			
 			}
 		}
 		
@@ -141,8 +148,12 @@ public class Server {
 			return (message.getText().equalsIgnoreCase("lo"));
 		}
 		
-		public String[] getMessageParameters(Message message) {
+		private String[] getMessageParameters(Message message) {
 			return message.getText().split(":");
+		}
+		
+		private boolean isValidPassword(String password) {
+			return password.matches(".*[^a-zA-Z0-9].*"); // checks if password contains at least one special character
 		}
 		
 		public void runEmployeeCommand(String parameters[]) {
@@ -174,6 +185,10 @@ public class Server {
 					String cameraID = parameters[1];
 					viewFeed(cameraID);
 					break;
+				case "ot":
+					String ticketID = parameters[1];
+					Double newFee = Double.parseDouble(parameters[2]);
+					overrideTicket(ticketID, newFee);
 				default:
 					runCustomerCommand(parameters); // roll into customer commands (common commands) if code doesn't match employee's
 				}
