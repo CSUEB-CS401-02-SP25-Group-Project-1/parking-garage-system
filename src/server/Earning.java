@@ -1,8 +1,10 @@
 package server;
 
+import interfaces.EarningInterface;
+
 import java.util.Date;
 
-public class Earning {
+public class Earning implements EarningInterface{
 	// associates time customer left to amount they paid
 	private Date date;
 	private double revenue;
