@@ -50,17 +50,17 @@ public class GarageTest {
 		}
 
 		// if any tickets have been added at all
-		assertTrue(garage.getTicket(0) != null);
+		assertTrue(garage.getTicket("T0") != null);
 
 		// test if garage has been filled
 		assertTrue(garage.isFull());
 
 		// if the returned ticket is accurate
-		assertEquals(buffer.get(0), garage.getTicket(0));
+		assertEquals(buffer.get(0), garage.getTicket("T0"));
 		// and a few others
-		assertEquals(buffer.get(5), garage.getTicket(5));
-		assertEquals(buffer.get(10), garage.getTicket(10));
-		assertEquals(buffer.get(15), garage.getTicket(15));
+		assertEquals(buffer.get(5), garage.getTicket("T5"));
+		assertEquals(buffer.get(10), garage.getTicket("T10"));
+		assertEquals(buffer.get(15), garage.getTicket("T15"));
 
 
 		// test payTicket() by paying off every ticket
