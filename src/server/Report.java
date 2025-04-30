@@ -164,8 +164,7 @@ public class Report implements ReportInterface {
 		}
 
 		for (Earning earning : earnings) {
-			earnings_s += earning.getDate().getTime() + ",";
-			earnings_s += earning.getRevenue() + "\\|";
+			earnings_s += earning.toString() + "\\|";
 		}
 		return garageID + "\n" + entries_s + "\n" + earnings_s + "\n";
 	}
