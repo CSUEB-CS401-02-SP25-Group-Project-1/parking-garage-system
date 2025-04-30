@@ -2,8 +2,8 @@ package interfaces;
 
 import java.util.ArrayList;
 import java.util.Date;
-import server.Earning;
-import server.Garage;
+import mock.Earning;
+import mock.Garage;
 
 public interface ReportInterface {
 	void addEntryTime(Date entryTime); // adds entry time to list, but does not create new Earning object
