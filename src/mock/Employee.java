@@ -2,7 +2,6 @@ package mock;
 
 import java.util.Date;
 import interfaces.EmployeeInterface;
-import server.Garage;
 import server.UserType;
 
 public class Employee extends User implements EmployeeInterface {

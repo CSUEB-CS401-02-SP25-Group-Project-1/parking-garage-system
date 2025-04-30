@@ -3,7 +3,6 @@ package mock;
 import java.util.ArrayList;
 import java.util.Date;
 import interfaces.ReportInterface;
-import server.Garage;
 
 public class Report implements ReportInterface {
 	private static int count = 0;

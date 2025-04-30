@@ -1,11 +1,8 @@
-package server;
+package mock;
 
 import java.util.ArrayList;
 import java.util.Date;
 import interfaces.GarageInterface;
-import mock.Report;
-import mock.SecurityCamera;
-import mock.Ticket;
 
 public class Garage implements GarageInterface {
 	private static int count = 0;
@@ -70,7 +67,6 @@ public class Garage implements GarageInterface {
 		return null;
 	}
 	
-	@Override
 	public void loadTicket(Ticket ticket) { // used by server to load existing tickets to both arrays
 		if (!ticket.isPaid()) {
 			activeTickets.add(ticket);
@@ -79,64 +75,40 @@ public class Garage implements GarageInterface {
 	}
 	
 	public Ticket getTicket(String ticketID) { // returns ticket from all tickets list based on its ticket id
-		for(int i = 0; i < this.allTickets.size(); i++) {
-			if(this.allTickets.get(i).getID().equalsIgnoreCase(ticketID))
-				return this.allTickets.get(i);
-		}
-		return null;
+		return null; // dummy value
 	}
 
 	public Receipt payTicket(String ticketID) { // returns receipt if successful
-		//Find ticket by ID
-		Ticket ticket = getTicket(ticketID);
+		// do logic here for finding ticket based on ticket ID
+		// attempt to process payment
+		// if payment went through, create a new receipt
+		// if ticket was already paid for, return null instead
 		
-		//Return null if the ticket is already paid
-		if(ticket.isPaid()) {
-			return null;
-		}
-		
-		//Mark ticket paid and remove from active tickets list
-		ticket.pay();
-		this.activeTickets.remove(ticket);
-		
-		//Create and return new receipt of ticket payment
-		return new Receipt(ticket);
+		return new Receipt("TI602", "The Awesome Garage", new Date(), new Date(), 599.99); // dummy value
 	}
 	
-	@Override
 	public void loadReport(Report report) { // used by server to load report from file
 		this.report = report;
 	}
 
 	public Report viewReport() {
-		return this.report;
+		return null; // dummy value
 	}
 
-	@Override
 	public boolean addCamera(SecurityCamera newCamera) {
 		// add camera to garage's camera list if camera hasn't been added yet
-		int camCount = this.cameras.size();
-		cameras.add(newCamera);
-		
 		// return true if added successfully
-		if(cameras.size() > camCount)
-			return true;
-		
 		// return false if camera couldn't be added (duplicate cameras)
-		return false;
+		
+		cameras.add(newCamera);
+		return true; // dummy value
 	}
 
 	public boolean removeCamera(String cameraID) {
 		// remove camera based on its camera ID
-		for(int i = 0; i < this.cameras.size(); i++) {
-			// return true if camera was successfully removed
-			if(this.cameras.get(i).getID().equalsIgnoreCase(cameraID)) {
-				this.cameras.remove(i);
-				return true;
-			}
-		}
-	
+		// return true if camera was successfully removed
 		// return false if no camera with such ID was found
+		
 		return true; // dummy value
 	}
 

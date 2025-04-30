@@ -19,14 +19,6 @@ public class Receipt implements ReceiptInterface {
 		this.paymentAmount = paymentAmount;
 	}
 	
-	public Receipt(Ticket ticket) {
-		this.ticketID = ticket.getID();
-		this.garageName = ticket.getGarage().getName();
-		this.entryTime = ticket.getEntryTime();
-		this.exitTime = ticket.getExitTime();
-		this.paymentAmount = ticket.getFee();
-	}
-	
 	public String toString() {
 		return "RECEIPT" // dummy value
 				+ "garage name"
