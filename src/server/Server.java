@@ -230,6 +230,7 @@ public class Server {
 					String ticketID = parameters[1];
 					Double newFee = Double.parseDouble(parameters[2]);
 					overrideTicket(ticketID, newFee);
+					break;
 				default:
 					runCustomerCommand(parameters); // roll into customer commands (common commands) if code doesn't match employee's
 				}
@@ -255,6 +256,9 @@ public class Server {
 					break;
 				case "tg":
 					toggleGate();
+					break;
+				case "bs":
+					viewBillingSummary(ticketID);
 					break;
 				default:
 					sendMessage(MessageType.Fail, "unknown_command");
