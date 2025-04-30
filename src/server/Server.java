@@ -1,6 +1,6 @@
 package server;
 
-import mock.*; // TODO: temp
+import server.*; // TODO: temp
 import shared.*;
 import java.io.*;
 import java.net.*;
