@@ -5,7 +5,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.*;
 import java.util.*;
-
 import server.Garage;
 
 public class Log {

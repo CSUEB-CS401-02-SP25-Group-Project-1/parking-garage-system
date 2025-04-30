@@ -9,6 +9,7 @@ public class GateHandler implements Runnable { // a class that keeps gate toggli
 	public GateHandler(Gate gate, Log log) {
 		this.gate = gate;
 		this.log = log;
+		
 	}
 	
 	public void run() {
