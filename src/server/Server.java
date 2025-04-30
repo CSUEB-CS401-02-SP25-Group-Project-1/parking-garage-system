@@ -292,7 +292,7 @@ public class Server {
 			while (true) {
 				try {
 					incoming = (Message)in.readObject();
-					if (!isLogoutMsg(incoming)) { 
+					if (isLogoutMsg(incoming)) { 
 						break; // end loop if client requests to logout
 					}
 					if (!isRequestMsg(incoming)) {
@@ -312,7 +312,7 @@ public class Server {
 			while (true) {
 				try {
 					incoming = (Message)in.readObject();
-					if (!isLogoutMsg(incoming)) { 
+					if (isLogoutMsg(incoming)) { 
 						break; // end loop if client requests to logout
 					}
 					if (!isRequestMsg(incoming)) {
@@ -348,7 +348,7 @@ public class Server {
 		private void payTicket(String ticketID) { // pt
 			// input validation
 			Ticket ticket = serverData.getTicket(ticketID);
-			if (ticketID == null) { // check if ticket exists in database
+			if (ticket == null) { // check if ticket exists in database
 				sendMessage(MessageType.Fail, "pt:ticket_not_found");
 				log.append(LogType.ERROR, "Unable to retrieve ticket "+ticket.getID()+" for client "+client+ "(ticket not found)", garage);
 				return;
