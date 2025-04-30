@@ -231,6 +231,9 @@ public class Server {
 					Double newFee = Double.parseDouble(parameters[2]);
 					overrideTicket(ticketID, newFee);
 					break;
+				case "vl":
+					viewLogs();
+					break;
 				default:
 					runCustomerCommand(parameters); // roll into customer commands (common commands) if code doesn't match employee's
 				}
@@ -318,36 +321,49 @@ public class Server {
 		private void generateTicket() { // gt
 			String ticketID = garage.generateTicket(); // generated ticket ID
 			if (ticketID == null) {
-				// TODO: error messages
+				sendMessage(MessageType.Fail, "gt:unavailable_space");
+				log.append(LogType.ERROR, "Unable to generate ticket for "+client+ "(no space in garage "+garage.getID()+")", garage);
 				return;
 			}
 			// save new ticket to database
 			Ticket ticket = garage.getTicket(ticketID);
 			serverData.saveTicket(ticket);
 			// success message
+			sendMessage(MessageType.Success, "gt:"+ticket.getID());
+			log.append(LogType.ENTRY, "Generated ticket "+ticket.getID()+" for client "+client, garage);
 		}
 		
 		private void payTicket(String ticketID) { // pt
+			// input validation
 			Ticket ticket = serverData.getTicket(ticketID);
-			if (ticketID == null) {
-				// TODO: error messages
+			if (ticketID == null) { // check if ticket exists in database
+				sendMessage(MessageType.Fail, "pt:ticket_not_found");
+				log.append(LogType.ERROR, "Unable to retrieve ticket "+ticket.getID()+" for client "+client+ "(ticket not found)", garage);
+				return;
+			}
+			if (!ticket.isPaid()) { // check if ticket hasn't been paid for yet
+				sendMessage(MessageType.Fail, "pt:already_paid");
+				log.append(LogType.ERROR, "Unable to fulfill payment for ticket "+ticket.getID()+" for client "+client+ "(already paid)", garage);
 				return;
 			}
 			// update ticket
 			ticket.pay();
 			serverData.saveTicket(ticket);
-			// success message
+			// return receipt
+			sendMessage(MessageType.Success, "pt:"+new Receipt(ticket.getID(), garage.getName(),
+						ticket.getEntryTime(), ticket.getExitTime(), ticket.getFee())); 
+						// clients will have to discern that this is a human-readable string after the "pt:" prefix
+			log.append(LogType.ACTION, "Sent receipt of paid ticket "+ticket.getID()+" to client "+client, garage);
 		}
 		
 		private void toggleGate() { // tg (customer guis send tg requests automatically)
 			// command logic
 			Gate gate = garage.getGate();
-			if (gate.isOpen()) {
-				gate.close(); // TODO: call GateHandler instead
-			} else {
-				gate.open();
-			}
+			GateHandler gh = new GateHandler(gate, log);
+			new Thread(gh).start(); // gate logic will run in a new thread
 			// success message
+			sendMessage(MessageType.Success, "tg:toggled");
+			log.append(LogType.ACTION, "Toggled gate for client "+client, garage);
 		}
 		
 		private void viewAvailability() { // va
@@ -367,10 +383,18 @@ public class Server {
 			}
 			// calculate fee in real time
 			ticket.calculateFee();
+			serverData.saveTicket(ticket); // save calculated fee to file
 			// return ticket data with newly-calculated fee
 			String payload = "bs:"+ticket.getID()+":"+ticket.getEntryTime()+":"+ticket.getExitTime()+":"+ticket.getFee();
 			sendMessage(MessageType.Success, payload);
 			log.append(LogType.ACTION, "Sent billing summary for ticket "+ticketID+" to client "+client);
+		}
+		
+		private void viewGarageName() { // gn
+			String name = garage.getName();
+			// success message
+			sendMessage(MessageType.Success, "gn:"+name); 
+						// clients will have to discern this is a human-readable string after the "gn:" prefix
 		}
 		
 		// employee commands
@@ -379,7 +403,7 @@ public class Server {
 			// input validation
 			if (!isValidPassword(newPassword)) {
 				sendMessage(MessageType.Fail, "mp:no_special_characters");
-				log.append(LogType.ERROR, "Unable to update "+employee.getID()+"'s password: needs special characters");
+				log.append(LogType.ERROR, "Unable to update "+employee.getUsername()+"'s password (needs special characters)", garage);
 				return;
 			}
 			// command logic
@@ -387,15 +411,22 @@ public class Server {
 			serverData.saveEmployee(employee); // update employee file with new password
 			// success message
 			sendMessage(MessageType.Success, "mp:password_changed");
-			log.append(LogType.ACTION, employee.getID()+" has updated their password.");
+			log.append(LogType.ACTION, employee.getUsername()+" has updated their password", garage);
 		}
 		
 		private void modifyGateTime(double newOpenTime) { // mg
 			// input validation
+			if (newOpenTime < 0) {
+				sendMessage(MessageType.Fail, "mg:invalid_time");
+				log.append(LogType.ERROR, "Unable to update garage "+garage.getID()+"'s gate opening time for employee "+employee.getID()+" (invalid time", garage);
+				return;
+			}
 			// command logic
 			garage.getGate().setOpenTime(newOpenTime);
 			serverData.saveGarage(garage); // save garage parameters with new gate opening time
 			// success message
+			sendMessage(MessageType.Success, "mg:time_updated");
+			log.append(LogType.ACTION, employee.getUsername()+" has updated the gate opening time for garage "+garage.getID(), garage);
 		}
 		
 		private void overrideTicket(String ticketID, double newFee) { // ot
@@ -457,6 +488,10 @@ public class Server {
 				return;
 			}
 			// return live feed in a message
+		}
+		
+		private void viewLogs() { // vl
+			
 		}
 		
 		private class GateHandler implements Runnable { // a class that keeps gate toggling logic running in another thread

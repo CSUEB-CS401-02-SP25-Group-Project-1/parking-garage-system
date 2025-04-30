@@ -100,7 +100,7 @@ public class ServerData {
 	
 	// methods to save an individual object to file
 	
-	public boolean saveGarage(Garage garage) { 
+	public void saveGarage(Garage garage) { 
 		if (getGarage(garage.getID()) == null) {
 	    	garages.put(garage.getID(), garage); // add garage to database if it's not there already
 	    }
@@ -109,12 +109,10 @@ public class ServerData {
 	        saveFile.write(garage.toString());
 	    } catch (Exception e) {
 	        log.append(LogType.ERROR, "Unable to save garage "+garage.getID()+" to file: "+e);
-	        return false;
 	    }
-	    return true;
 	}
 
-	public boolean saveTicket(Ticket ticket) {
+	public void saveTicket(Ticket ticket) {
 		if (getTicket(ticket.getID()) == null) {
 	    	tickets.put(ticket.getID(), ticket); // add ticket to database if it's not there already
 	    }
@@ -123,12 +121,10 @@ public class ServerData {
 	        saveFile.write(ticket.toString());
 	    } catch (Exception e) {
 	        log.append(LogType.ERROR, "Unable to save ticket "+ticket.getID()+" to file: "+e);
-	        return false;
 	    }
-	    return true;
 	}
 
-	public boolean saveReport(Report report) {
+	public void saveReport(Report report) {
 		if (getReport(report.getID()) == null) {
 	    	reports.put(report.getID(), report); // add report to database if it's not there already
 	    }
@@ -137,12 +133,10 @@ public class ServerData {
 	        saveFile.write(report.toString());
 	    } catch (Exception e) {
 	        log.append(LogType.ERROR, "Unable to save report "+report.getID()+" to file: "+e);
-	        return false;
 	    }
-	    return true;
 	}
 
-	public boolean saveSecurityCamera(SecurityCamera camera) {
+	public void saveSecurityCamera(SecurityCamera camera) {
 		if (getSecurityCamera(camera.getID()) == null) {
 	    	cameras.put(camera.getID(), camera); // add camera to database if it's not there already
 	    }
@@ -151,12 +145,10 @@ public class ServerData {
 	        saveFile.write(camera.toString());
 	    } catch (Exception e) {
 	        log.append(LogType.ERROR, "Unable to save camera "+camera.getID()+" to file: "+e);
-	        return false;
 	    }
-	    return true;
 	}
 
-	public boolean saveEmployee(Employee employee) {
+	public void saveEmployee(Employee employee) {
 		if (getEmployee(employee.getID()) == null) {
 	    	employees.put(employee.getID(), employee); // add employee to database if it's not there already
 	    	employeesByUsername.put(employee.getUsername(), employee);
@@ -166,9 +158,7 @@ public class ServerData {
 	        saveFile.write(employee.toString());
 	    } catch (Exception e) {
 	        log.append(LogType.ERROR, "Unable to save employee "+employee.getID()+" to file: "+e);
-	        return false;
 	    }
-	    return true;
 	}
 	
 	// helper methods
