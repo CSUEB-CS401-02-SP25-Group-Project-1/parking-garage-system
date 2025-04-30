@@ -28,8 +28,10 @@ public class Server {
 				new Thread(ch).start(); // client is handled in new thread
 			}
 		// exception handling
-		} catch (IOException e) {
+		} catch (Exception e) {
 			log.append(LogType.ERROR, e+" in client reception"); // log error message to file
+		} finally {
+			serverData.saveAll(); // save all data when terminating server
 		}
 	}
 	
@@ -137,7 +139,46 @@ public class Server {
 		}
 		
 		private void listenLogin() { // li; retrieves employee object after successful login
-			
+			while (true) {
+				Message incoming;
+				try {
+					incoming = (Message)in.readObject();
+					if (!isRequestMsg(incoming)) {
+						continue; // ignore non-request messages
+					}
+					String parameters[] = incoming.getText().split(":");
+					String command = parameters[0];
+					String username = parameters[1];
+					String password = parameters[2];
+					if (!command.equalsIgnoreCase(command)) {
+						continue; // reject non-login requests
+					}
+					if (!isValidCredentials(username, password)) {
+						sendMessage(MessageType.Fail, "li:invalid_credentials");
+						log.append(LogType.ERROR, "Client "+client+" submitted invalid login credentials!");
+						continue; // deny invalid credentials
+					}
+					// successful login
+					employee = serverData.getEmployeeByUsername(username); // associate employee account with connection
+					sendMessage(MessageType.Success, "li:successful");
+					log.append(LogType.ACTION, "Employee "+employee.getUsername()+" logged in at "+client, garage);
+					return;
+				} catch (Exception e) {
+					sendMessage(MessageType.Fail, "li:unknown_error");
+					log.append(LogType.ERROR, e+": Unable to process login request for client "+client);
+				}
+			}
+		}
+		
+		private boolean isValidCredentials(String username, String password) {
+			Employee employee = serverData.getEmployeeByUsername(username);
+			if (employee == null) {
+				return false;
+			}
+			if (!employee.getPassword().equals(password)) {
+				return false;
+			}
+			return true;
 		}
 		
 		private boolean isRequestMsg(Message message) {
@@ -194,6 +235,7 @@ public class Server {
 				}
 			} catch (Exception e) {
 				sendMessage(MessageType.Fail, "invalid_parameters");
+				log.append(LogType.ERROR, client+" sent invalid message parameters!");
 			}
 		}
 		
