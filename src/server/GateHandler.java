@@ -1,6 +1,6 @@
 package server;
 
-import server.Gate;
+import mock.Gate;
 
 public class GateHandler implements Runnable { // a class that keeps gate toggling logic running in another thread
 	private final Gate gate;
@@ -9,6 +9,7 @@ public class GateHandler implements Runnable { // a class that keeps gate toggli
 	public GateHandler(Gate gate, Log log) {
 		this.gate = gate;
 		this.log = log;
+		
 	}
 	
 	public void run() {
