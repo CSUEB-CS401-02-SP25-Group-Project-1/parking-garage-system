@@ -150,7 +150,7 @@ public class Server {
 					String command = parameters[0];
 					String username = parameters[1];
 					String password = parameters[2];
-					if (!command.equalsIgnoreCase(command)) {
+					if (!command.equalsIgnoreCase("li")) {
 						continue; // reject non-login requests
 					}
 					if (!isValidCredentials(username, password)) {
