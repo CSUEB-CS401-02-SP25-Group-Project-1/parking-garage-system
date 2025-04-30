@@ -212,9 +212,12 @@ public class Server {
 		private void handleEmployee() {
 			listenLogin(); // authenticate employee's login credentials before reading other messages
 			Message incoming = null;
-			do {
+			while (true) {
 				try {
 					incoming = (Message)in.readObject();
+					if (!isLogoutMsg(incoming)) { 
+						break; // end loop if client requests to logout
+					}
 					if (!isRequestMsg(incoming)) {
 						continue; // ignore non-request messages
 					}
@@ -224,14 +227,17 @@ public class Server {
 					sendMessage(MessageType.Fail, "unknown_error");
 					log.append(LogType.ERROR, "Unable to process message from client "+client);
 				}
-			} while (!isLogoutMsg(incoming)); // end loop if client requests to logout
+			} 
 		}
 
 		private void handleCustomer() {
 			Message incoming = null;
-			do {
+			while (true) {
 				try {
 					incoming = (Message)in.readObject();
+					if (!isLogoutMsg(incoming)) { 
+						break; // end loop if client requests to logout
+					}
 					if (!isRequestMsg(incoming)) {
 						continue; // ignore non-request messages
 					}
@@ -242,7 +248,7 @@ public class Server {
 					log.append(LogType.ERROR, "Unable to process message from client "+client);
 				}
 				
-			} while (!isLogoutMsg(incoming)); // end loop if client requests to logout
+			}
 		}
 		
 		// customer commands (includes common user commands)
