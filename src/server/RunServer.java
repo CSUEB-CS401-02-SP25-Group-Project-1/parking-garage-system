@@ -6,12 +6,14 @@ public class RunServer {
 		String logPrefix = "server_";
 		String logsDir = "/logs/";
 		String dataDir = "/data/";
+		boolean allowDataSaving = true;
 		if (args.length == 4) {
 			port = Integer.parseInt(args[0]);
 			logPrefix = args[1];
 			logsDir = args[2];
 			dataDir = args[3];
+			allowDataSaving = Boolean.parseBoolean(args[4]);
 		}
-		new Thread(new Server(port, logPrefix, logsDir, dataDir)).start();
+		new Thread(new Server(port, logPrefix, logsDir, dataDir, allowDataSaving)).start();
 	}
 }

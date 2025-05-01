@@ -22,6 +22,7 @@ public class ServerData {
 	private final String EMPLOYEE_SUBDIR = "/employees/"; // "EM#.txt"
 	private String rootDir;
 	private final Log log;
+	private boolean allowSaving; // used for debugging
 	
 	// loaded server data
 	// hash tables for efficiency (sorry!)
@@ -32,8 +33,9 @@ public class ServerData {
 	private HashMap<String, Employee> employees = new HashMap<>();
 	private HashMap<String, Employee> employeesByUsername = new HashMap<>(); // used to search employees by username rather than by id
 	
-	public ServerData(String rootDir, Log log) {
+	public ServerData(String rootDir, Log log, boolean allowSaving) {
 		this.log = log;
+		determineSaving(allowSaving);
 		assignRoot(rootDir);
 		initFolders();
 	}
@@ -47,11 +49,13 @@ public class ServerData {
 	}
 	
 	public void saveAll() { // useful for when server is about to terminate
-		saveAllGarages();
-		saveAllTickets();
-		saveAllReports();
-		saveAllCameras();
-		saveAllEmployees();
+		if (allowSaving) {
+			saveAllGarages();
+			saveAllTickets();
+			saveAllReports();
+			saveAllCameras();
+			saveAllEmployees();
+		}
 	}
 	
 	// methods for retrieving an object based on their id
@@ -104,6 +108,10 @@ public class ServerData {
 		if (getGarage(garage.getID()) == null) {
 	    	garages.put(garage.getID(), garage); // add garage to database if it's not there already
 	    }
+		if (!allowSaving) {
+			return; // don't save if saving is disabled
+		}
+		// actual saving logic
 		String savePath = Paths.get(getFullSubdir(GARAGE_SUBDIR), garage.getID()+".txt").toString();
 	    try (FileWriter saveFile = new FileWriter(savePath)) {
 	        saveFile.write(garage.toString());
@@ -116,6 +124,10 @@ public class ServerData {
 		if (getTicket(ticket.getID()) == null) {
 	    	tickets.put(ticket.getID(), ticket); // add ticket to database if it's not there already
 	    }
+		if (!allowSaving) {
+			return; // don't save if saving is disabled
+		}
+		// actual saving logic
 	    String savePath = Paths.get(getFullSubdir(TICKET_SUBDIR), ticket.getID()+".txt").toString();
 	    try (FileWriter saveFile = new FileWriter(savePath)) {
 	        saveFile.write(ticket.toString());
@@ -128,6 +140,10 @@ public class ServerData {
 		if (getReport(report.getID()) == null) {
 	    	reports.put(report.getID(), report); // add report to database if it's not there already
 	    }
+		if (!allowSaving) {
+			return; // don't save if saving is disabled
+		}
+		// actual saving logic
 	    String savePath = Paths.get(getFullSubdir(REPORT_SUBDIR), report.getID()+".txt").toString();
 	    try (FileWriter saveFile = new FileWriter(savePath)) {
 	        saveFile.write(report.toString());
@@ -140,6 +156,10 @@ public class ServerData {
 		if (getSecurityCamera(camera.getID()) == null) {
 	    	cameras.put(camera.getID(), camera); // add camera to database if it's not there already
 	    }
+		if (!allowSaving) {
+			return; // don't save if saving is disabled
+		}
+		// actual saving logic
 	    String savePath = Paths.get(getFullSubdir(CAMERA_SUBDIR), camera.getID()+".txt").toString();
 	    try (FileWriter saveFile = new FileWriter(savePath)) {
 	        saveFile.write(camera.toString());
@@ -152,6 +172,10 @@ public class ServerData {
 		if (getEmployee(employee.getID()) == null) {
 	    	addEmployeeToDatabases(employee);
 	    }
+		if (!allowSaving) {
+			return; // don't save if saving is disabled
+		}
+		// actual saving logic
 	    String savePath = Paths.get(getFullSubdir(EMPLOYEE_SUBDIR), employee.getID()+".txt").toString();
 	    try (FileWriter saveFile = new FileWriter(savePath)) {
 	        saveFile.write(employee.toString());
@@ -161,6 +185,13 @@ public class ServerData {
 	}
 	
 	// helper methods
+	private void determineSaving(boolean allowSaving) {
+		this.allowSaving = allowSaving;
+		if (!this.allowSaving) {
+			log.append(LogType.ACTION, "File saving is disabled! Server data will not be saved!");
+		}
+	}
+
 	private void addEmployeeToDatabases(Employee employee) {
 		employees.put(employee.getID(), employee);
 		employeesByUsername.put(employee.getUsername(), employee);

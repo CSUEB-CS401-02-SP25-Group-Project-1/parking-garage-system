@@ -1,15 +1,43 @@
 package tests;
 
 import static org.junit.Assert.*;
-import org.junit.*;
+import java.nio.file.Paths;
+import org.junit.jupiter.api.*;
+import server.Server;
 
 public class ServerResponseTest { // tests all server responses from given client messages (sent by test employee)
+	Server server;
+
+	// setup server before conducting tests
+	@BeforeEach
+	public void setup() {
+		startServer();
+		server.waitUntilReady();
+	}
+
+	// helper methods for setup
+	private void startServer() {
+		server = new Server(7777, "debug_", 
+		Paths.get("debug", "logs").toString(), Paths.get("debug", "data").toString(),
+		false); // server data will not be saved for these tests
+		new Thread(server).start();
+	}
+
+	// stop server after testing concluded
+	@AfterEach
+	public void stopServer() { 
+		server.stop();
+	}
+
+	// actual tests
 	@Test
+	@Order(1) // this is the first test
 	public void InitTest() {
 		
 	}
 	
 	@Test
+	@Order(2) // second test
 	public void EmployeeLoginTest() {
 		
 	}
@@ -85,6 +113,7 @@ public class ServerResponseTest { // tests all server responses from given clien
 	}
 	
 	@Test
+	@Order(Integer.MAX_VALUE) // last test
 	public void LogoutTest() {
 		
 	}
