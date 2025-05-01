@@ -17,6 +17,7 @@ import shared.MessageType;
 
 public class ClientHandler implements Runnable {
 	private final Socket client;
+	private final String clientIP;
 	private final Log log;
 	private boolean isEmployee;
 	private Employee employee; // employee object needed to execute employee-only commands (provided upon login)
@@ -27,12 +28,13 @@ public class ClientHandler implements Runnable {
 	
 	public ClientHandler(Socket client, Log log, ServerData serverData) {
 		this.client = client;
+		this.clientIP = client.getInetAddress().getHostAddress();
 		this.log = log;
 		this.serverData = serverData;
 	}
 	
 	public void run() {
-		log.append(client +" has connected");
+		log.append(clientIP+" has connected");
 		try {
 			out = new ObjectOutputStream(client.getOutputStream());
 			in = new ObjectInputStream(client.getInputStream());
@@ -43,16 +45,16 @@ public class ClientHandler implements Runnable {
 				handleCustomer(); // handle client as customer instead
 			}
 		} catch (Exception e) {
-			log.append(LogType.ERROR, e+" when communicating with client "+client);
+			log.append(LogType.ERROR, e+" while communicating with client "+clientIP);
 		} finally {
 			sendMessage(MessageType.Success, "lo:signed_out");
 			try {
 				out.close();
 				in.close();
 				client.close();
-				log.append(LogType.ACTION, client+" has logged out", garage);
+				log.append(LogType.ACTION, clientIP+" has logged out", garage);
 			} catch (Exception e) {
-				log.append(LogType.ERROR, e+" when singing out client "+client);
+				log.append(LogType.ERROR, e+" while signing out client "+clientIP);
 			}
 			
 		}
@@ -63,7 +65,7 @@ public class ClientHandler implements Runnable {
 		try {
 			out.writeObject(new Message(type, "server", text));
 		} catch (Exception e) {
-			log.append(LogType.ERROR, e+" while attempting to send message to client ("+client+")");
+			log.append(LogType.ERROR, e+" while attempting to send message to client "+clientIP);
 		}
 	}
 	
@@ -71,7 +73,7 @@ public class ClientHandler implements Runnable {
 		try {
 			out.writeObject(new ImageMessage(type, "server", text, image));
 		} catch (Exception e) {
-			log.append(LogType.ERROR, e+" while attempting to send image message to client ("+client+")");
+			log.append(LogType.ERROR, e+" while attempting to send image message to client ("+clientIP+")");
 		}
 	}
 	
@@ -88,7 +90,7 @@ public class ClientHandler implements Runnable {
 					garage = serverData.getGarage(garageID);
 					if (garage == null) { // if no garage was found
 						sendMessage(MessageType.Fail, "init:nonexistent_garage");
-						log.append(LogType.ERROR, client+" requested nonexistent garage!");
+						log.append(LogType.ERROR, clientIP+" requested nonexistent garage!");
 						continue;
 					}
 					// assign role
@@ -101,7 +103,7 @@ public class ClientHandler implements Runnable {
 					}
 				} else {
 					sendMessage(MessageType.Fail, "init:invalid");
-					log.append(LogType.ERROR, client+" sent invalid init message!");
+					log.append(LogType.ERROR, clientIP+" sent invalid init message!");
 				}
 			} catch (Exception e) {
 				sendMessage(MessageType.Fail, "init:unknown");
@@ -147,17 +149,17 @@ public class ClientHandler implements Runnable {
 				}
 				if (!isValidCredentials(username, password)) {
 					sendMessage(MessageType.Fail, "li:invalid_credentials");
-					log.append(LogType.ERROR, "Client "+client+" submitted invalid login credentials!");
+					log.append(LogType.ERROR, "Client "+clientIP+" submitted invalid login credentials!");
 					continue; // deny invalid credentials
 				}
 				// successful login
 				employee = serverData.getEmployeeByUsername(username); // associate employee account with connection
 				sendMessage(MessageType.Success, "li:successful");
-				log.append(LogType.ACTION, "Employee "+employee.getUsername()+" logged in at "+client, garage);
+				log.append(LogType.ACTION, "Employee "+employee.getUsername()+" logged in at "+clientIP, garage);
 				return;
 			} catch (Exception e) {
 				sendMessage(MessageType.Fail, "li:unknown_error");
-				log.append(LogType.ERROR, e+": Unable to process login request for client "+client);
+				log.append(LogType.ERROR, e+": Unable to process login request for client "+clientIP);
 			}
 		}
 	}
@@ -231,7 +233,7 @@ public class ClientHandler implements Runnable {
 			}
 		} catch (Exception e) {
 			sendMessage(MessageType.Fail, "invalid_parameters");
-			log.append(LogType.ERROR, client+" sent invalid message parameters!");
+			log.append(LogType.ERROR, clientIP+" sent invalid message parameters!");
 		}
 	}
 	
@@ -261,11 +263,11 @@ public class ClientHandler implements Runnable {
 				break;
 			default:
 				sendMessage(MessageType.Fail, "unknown_command");
-				log.append(LogType.ERROR, client+" requested unknown command: "+command);
+				log.append(LogType.ERROR, clientIP+" requested unknown command: "+command);
 			}
 		} catch (Exception e) {
 			sendMessage(MessageType.Fail, "invalid_parameters");
-			log.append(LogType.ERROR, client+" sent invalid message parameters!");
+			log.append(LogType.ERROR, clientIP+" sent invalid message parameters!");
 		}
 	}
 	
@@ -285,7 +287,7 @@ public class ClientHandler implements Runnable {
 				runEmployeeCommand(parameters);
 			} catch (Exception e) {
 				sendMessage(MessageType.Fail, "unknown_error");
-				log.append(LogType.ERROR, "Unable to process message from client "+client);
+				log.append(LogType.ERROR, "Unable to process message from client "+clientIP);
 			}
 		} 
 	}
@@ -305,7 +307,7 @@ public class ClientHandler implements Runnable {
 				runCustomerCommand(parameters);
 			} catch (Exception e) {
 				sendMessage(MessageType.Fail, "unknown_error");
-				log.append(LogType.ERROR, "Unable to process message from client "+client);
+				log.append(LogType.ERROR, "Unable to process message from client "+clientIP);
 			}
 			
 		}
@@ -317,7 +319,7 @@ public class ClientHandler implements Runnable {
 		String ticketID = garage.generateTicket(); // generated ticket ID
 		if (ticketID == null) {
 			sendMessage(MessageType.Fail, "gt:unavailable_space");
-			log.append(LogType.ERROR, "Unable to generate ticket for "+client+ "(no space in garage "+garage.getID()+")", garage);
+			log.append(LogType.ERROR, "Unable to generate ticket for "+clientIP+ "(no space in garage "+garage.getID()+")", garage);
 			return;
 		}
 		// save new ticket to database
@@ -325,7 +327,7 @@ public class ClientHandler implements Runnable {
 		serverData.saveTicket(ticket);
 		// success message
 		sendMessage(MessageType.Success, "gt:"+ticket.getID());
-		log.append(LogType.ENTRY, "Generated ticket "+ticket.getID()+" for client "+client, garage);
+		log.append(LogType.ENTRY, "Generated ticket "+ticket.getID()+" for client "+clientIP, garage);
 	}
 	
 	private void payTicket(String ticketID) { // pt
@@ -333,12 +335,12 @@ public class ClientHandler implements Runnable {
 		Ticket ticket = serverData.getTicket(ticketID);
 		if (ticket == null) { // check if ticket exists in database
 			sendMessage(MessageType.Fail, "pt:ticket_not_found");
-			log.append(LogType.ERROR, "Unable to retrieve ticket "+ticketID+" for client "+client+ "(ticket not found)", garage);
+			log.append(LogType.ERROR, "Unable to retrieve ticket "+ticketID+" for client "+clientIP+ "(ticket not found)", garage);
 			return;
 		}
 		if (ticket.isPaid()) { // check if ticket hasn't been paid for yet
 			sendMessage(MessageType.Fail, "pt:already_paid");
-			log.append(LogType.ERROR, "Unable to fulfill payment for ticket "+ticket.getID()+" for client "+client+ "(already paid)", garage);
+			log.append(LogType.ERROR, "Unable to fulfill payment for ticket "+ticket.getID()+" for client "+clientIP+ "(already paid)", garage);
 			return;
 		}
 		// update ticket
@@ -348,7 +350,7 @@ public class ClientHandler implements Runnable {
 		sendMessage(MessageType.Success, "pt:"+new Receipt(ticket.getID(), garage.getName(),
 					ticket.getEntryTime(), ticket.getExitTime(), ticket.getFee())); 
 					// clients will have to discern that this is a human-readable string after the "pt:" prefix
-		log.append(LogType.ACTION, "Sent receipt of paid ticket "+ticket.getID()+" to client "+client, garage);
+		log.append(LogType.ACTION, "Sent receipt of paid ticket "+ticket.getID()+" to client "+clientIP, garage);
 	}
 	
 	private void toggleGate() { // tg (customer guis send tg requests automatically)
@@ -358,14 +360,14 @@ public class ClientHandler implements Runnable {
 		new Thread(gh).start(); // gate logic will run in a new thread
 		// success message
 		sendMessage(MessageType.Success, "tg:toggled");
-		log.append(LogType.ACTION, "Toggled gate for client "+client, garage);
+		log.append(LogType.ACTION, "Toggled gate for client "+clientIP, garage);
 	}
 	
 	private void viewAvailability() { // va
 		int availabileSpaces = garage.getAvailableSpaces();
 		// success message
 		sendMessage(MessageType.Success, "va:"+availabileSpaces);
-		log.append("Sent available spaces to client "+client);
+		log.append("Sent available spaces to client "+clientIP);
 	}
 	
 	private void viewBillingSummary(String ticketID) { // bs
@@ -373,7 +375,7 @@ public class ClientHandler implements Runnable {
 		Ticket ticket = serverData.getTicket(ticketID);
 		if (ticket == null) {
 			sendMessage(MessageType.Fail, "bs:invalid_ticket_id");
-			log.append(LogType.ERROR, "Unable to return billing summary for ticket "+ticketID+ " to client "+client);
+			log.append(LogType.ERROR, "Unable to return billing summary for ticket "+ticketID+ " to client "+clientIP);
 			return;
 		}
 		// calculate fee in real time
@@ -382,7 +384,7 @@ public class ClientHandler implements Runnable {
 		// return ticket data with newly-calculated fee
 		String payload = "bs:"+ticket.getID()+":"+ticket.getEntryTime()+":"+ticket.getExitTime()+":"+ticket.getFee();
 		sendMessage(MessageType.Success, payload);
-		log.append("Sent billing summary for ticket "+ticketID+" to client "+client);
+		log.append("Sent billing summary for ticket "+ticketID+" to client "+clientIP);
 	}
 	
 	private void viewGarageName() { // gn

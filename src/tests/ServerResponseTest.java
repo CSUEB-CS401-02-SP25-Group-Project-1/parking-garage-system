@@ -1,33 +1,85 @@
 package tests;
 
 import static org.junit.Assert.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 import java.nio.file.Paths;
 import org.junit.jupiter.api.*;
 import server.Server;
+import shared.Message;
+import shared.MessageType;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ServerResponseTest { // tests all server responses from given client messages (sent by test employee)
+	final int SERVER_PORT = 7777;
 	Server server;
+	Socket client;
+	ObjectOutputStream clientOut;
+	ObjectInputStream clientIn;
 
 	// setup server and client before conducting tests
-	@BeforeEach
+	@BeforeAll
 	public void setup() {
 		startServer();
 		server.waitUntilReady();
-		// TODO: setup client here
+		startClient();
 	}
 
-	// helper methods for setup
+	// stop client and server after testing concluded
+	@AfterAll
+	public void teardown() { 
+		stopClient();
+		server.stop();
+	}
+
+	// helper methods
 	private void startServer() {
-		server = new Server(7777, "debug_", 
+		server = new Server(SERVER_PORT, "debug_", 
 		Paths.get("debug", "logs").toString(), Paths.get("debug", "data").toString(),
 		false); // server data will not be saved for these tests
 		new Thread(server).start();
 	}
 
-	// stop server after testing concluded
-	@AfterEach
-	public void stopServer() { 
-		server.stop();
+	private void startClient() {
+		try {
+			client = new Socket("localhost", SERVER_PORT);
+			clientOut = new ObjectOutputStream(client.getOutputStream());
+			clientIn = new ObjectInputStream(client.getInputStream());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void stopClient() {
+		try {
+			clientOut.close();
+			clientIn.close();
+			client.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void sendMessage(MessageType type, String text) { // sends message to server from client
+		Message message = new Message(type, "testEmployee", text);
+		try {
+			clientOut.writeObject(message);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private Message awaitMessage() { // client waits for message from server
+		Message message = null;
+		try {
+			message = (Message)clientIn.readObject();
+		} catch (ClassNotFoundException | IOException e) {
+			e.printStackTrace();
+		}
+		return message;
 	}
 
 	// actual tests
@@ -118,5 +170,4 @@ public class ServerResponseTest { // tests all server responses from given clien
 	public void LogoutTest() {
 		
 	}
-	
 }
