@@ -5,7 +5,7 @@ public class RunServer {
 		int port = 7777;
 		String logPrefix = "server_";
 		String logsDir = "/logs/";
-		String dataDir = "/data";
+		String dataDir = "/data/";
 		if (args.length == 4) {
 			port = Integer.parseInt(args[0]);
 			logPrefix = args[1];

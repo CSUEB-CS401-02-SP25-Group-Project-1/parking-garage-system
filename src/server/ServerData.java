@@ -159,23 +159,6 @@ public class ServerData {
 	        log.append(LogType.ERROR, "Unable to save employee "+employee.getID()+" to file: "+e);
 	    }
 	}
-
-	// debugging methods for manually loading an object to the database
-	public void addGarageObject(Garage garage) {
-		garages.put(garage.getID(), garage);
-	}
-
-	public void addTicketObject(Ticket ticket) {
-		tickets.put(ticket.getID(), ticket);
-	}
-
-	public void addReportObject(Report report) {
-		reports.put(report.getID(), report);
-	}
-
-	public void addEmployeeObject(Employee employee) {
-		addEmployeeToDatabases(employee);
-	}
 	
 	// helper methods
 	private void addEmployeeToDatabases(Employee employee) {

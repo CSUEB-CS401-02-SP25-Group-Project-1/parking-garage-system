@@ -57,10 +57,6 @@ public class Server implements Runnable {
 		serverData.saveAll(); // save all data
 	}
 
-	public ServerData getServerData() { // gets server data for debugging purposes
-		return serverData;
-	}
-
 	// helper methods
 	private void closeServerSocket() {
 		try {

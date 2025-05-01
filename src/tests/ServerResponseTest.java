@@ -3,7 +3,7 @@ package tests;
 import static org.junit.Assert.*;
 import org.junit.*;
 
-public class ServerResponseTest { // tests all server responses from given client message (sent by test employee)
+public class ServerResponseTest { // tests all server responses from given client messages (sent by test employee)
 	@Test
 	public void InitTest() {
 		
