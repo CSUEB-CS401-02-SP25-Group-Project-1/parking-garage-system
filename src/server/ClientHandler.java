@@ -34,7 +34,7 @@ public class ClientHandler implements Runnable {
 	}
 	
 	public void run() {
-		log.append(clientIP+" has connected");
+		log.append("client "+clientIP+" has connected");
 		try {
 			out = new ObjectOutputStream(client.getOutputStream());
 			in = new ObjectInputStream(client.getInputStream());
@@ -99,6 +99,7 @@ public class ClientHandler implements Runnable {
 						isEmployee = true;
 					case "cu": // case "em" is supposed to fall into "cu" (no break statement)
 						sendMessage(MessageType.Success, "init:assigned_"+role);
+						log.append(LogType.ACTION, "Identified client "+clientIP+" as "+role);
 						return;
 					}
 				} else {

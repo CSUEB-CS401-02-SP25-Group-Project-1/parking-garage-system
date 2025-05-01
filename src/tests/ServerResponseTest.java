@@ -63,8 +63,8 @@ public class ServerResponseTest { // tests all server responses from given clien
 		}
 	}
 
-	private void sendMessage(MessageType type, String text) { // sends message to server from client
-		Message message = new Message(type, "testEmployee", text);
+	private void sendMessage(String text) { // sends message to server from client
+		Message message = new Message(MessageType.Request, "testEmployee", text);
 		try {
 			clientOut.writeObject(message);
 		} catch (IOException e) {
@@ -72,7 +72,7 @@ public class ServerResponseTest { // tests all server responses from given clien
 		}
 	}
 
-	private Message awaitMessage() { // client waits for message from server
+	private Message getMessage() { // client waits for message from server
 		Message message = null;
 		try {
 			message = (Message)clientIn.readObject();
@@ -86,7 +86,20 @@ public class ServerResponseTest { // tests all server responses from given clien
 	@Test
 	@Order(1) // this is the first test (needed for server to identify client)
 	public void InitTest() {
-		
+		// server returns "invalid init" message if client sends invalid parameters
+		sendMessage("foo:bar");
+		Message response = getMessage();
+		assertEquals("init:invalid", response.getText());
+
+		// server returns "nonexistent garage" message if their requested garage is not in database
+		sendMessage("init:GA999:em");
+		response = getMessage();
+		assertEquals("init:nonexistent_garage", response.getText());
+
+		// server assigns client their requested role if their requested garage exists
+		sendMessage("init:GA0:em");
+		response = getMessage();
+		assertEquals("init:assigned_em", response.getText());
 	}
 	
 	@Test
