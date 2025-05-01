@@ -61,7 +61,7 @@ public class Server implements Runnable {
 		serverData.saveAll(); // save all data
 	}
 
-	public void waitUntilReady() { // useful for programs waiting until server is ready to talk
+	public void waitUntilReady() { // for debugging: waits until server is ready to talk
 		while (!isReady) {
 			try {
 				Thread.sleep(10);
