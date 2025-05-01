@@ -30,7 +30,6 @@ import java.io.Serializable;
 //	`va`	:	view amount	: viewer sees # of cars in garage
 //
 
-@SuppressWarnings("serial")
 public class Message implements Serializable {
 	private MessageType messageType;
 	private String from;

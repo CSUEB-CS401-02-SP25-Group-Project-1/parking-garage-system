@@ -150,8 +150,7 @@ public class ServerData {
 
 	public void saveEmployee(Employee employee) {
 		if (getEmployee(employee.getID()) == null) {
-	    	employees.put(employee.getID(), employee); // add employee to database if it's not there already
-	    	employeesByUsername.put(employee.getUsername(), employee);
+	    	addEmployeeToDatabases(employee);
 	    }
 	    String savePath = Paths.get(getFullSubdir(EMPLOYEE_SUBDIR), employee.getID()+".txt").toString();
 	    try (FileWriter saveFile = new FileWriter(savePath)) {
@@ -160,8 +159,30 @@ public class ServerData {
 	        log.append(LogType.ERROR, "Unable to save employee "+employee.getID()+" to file: "+e);
 	    }
 	}
+
+	// debugging methods for manually loading an object to the database
+	public void addGarageObject(Garage garage) {
+		garages.put(garage.getID(), garage);
+	}
+
+	public void addTicketObject(Ticket ticket) {
+		tickets.put(ticket.getID(), ticket);
+	}
+
+	public void addReportObject(Report report) {
+		reports.put(report.getID(), report);
+	}
+
+	public void addEmployeeObject(Employee employee) {
+		addEmployeeToDatabases(employee);
+	}
 	
 	// helper methods
+	private void addEmployeeToDatabases(Employee employee) {
+		employees.put(employee.getID(), employee);
+		employeesByUsername.put(employee.getUsername(), employee);
+	}
+
 	private void saveAllGarages() {
 		for (String garageID : garages.keySet()) {
 			Garage garage = garages.get(garageID);
@@ -385,8 +406,7 @@ public class ServerData {
 	        // assemble object
 	        Employee employee = new Employee(garage, username, password);
 	        // add employee to databases
-	        employees.put(employee.getID(), employee);
-	        employeesByUsername.put(employee.getUsername(), employee);
+	        addEmployeeToDatabases(employee);
 	    } catch (Exception e) {
 	        log.append(LogType.ERROR, e+" while loading employee from "+employeeFile.getName()+". Skipping...");
 	    }

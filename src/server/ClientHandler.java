@@ -365,7 +365,7 @@ public class ClientHandler implements Runnable {
 		int availabileSpaces = garage.getAvailableSpaces();
 		// success message
 		sendMessage(MessageType.Success, "va:"+availabileSpaces);
-		log.append(LogType.ACTION, "Sent available spaces to client "+client);
+		log.append("Sent available spaces to client "+client);
 	}
 	
 	private void viewBillingSummary(String ticketID) { // bs
@@ -382,7 +382,7 @@ public class ClientHandler implements Runnable {
 		// return ticket data with newly-calculated fee
 		String payload = "bs:"+ticket.getID()+":"+ticket.getEntryTime()+":"+ticket.getExitTime()+":"+ticket.getFee();
 		sendMessage(MessageType.Success, payload);
-		log.append(LogType.ACTION, "Sent billing summary for ticket "+ticketID+" to client "+client);
+		log.append("Sent billing summary for ticket "+ticketID+" to client "+client);
 	}
 	
 	private void viewGarageName() { // gn

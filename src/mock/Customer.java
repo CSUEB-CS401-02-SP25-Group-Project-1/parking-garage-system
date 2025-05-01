@@ -1,9 +1,8 @@
 package mock;
 
-import interfaces.UserInterface;
 import server.UserType;
 
-public class Customer extends User implements UserInterface {
+public class Customer extends User {
 	
 	public Customer() {
 		this.garage = null;
