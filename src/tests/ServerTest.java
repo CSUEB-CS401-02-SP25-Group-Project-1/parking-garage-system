@@ -3,14 +3,90 @@ package tests;
 import static org.junit.Assert.*;
 import org.junit.*;
 
-public class ServerTest { // server must be ran first before running these test clients
+public class ServerTest { 
 	@Test
-	public void CustomerInteractionTest() {
+	public void InitTest() {
 		
 	}
 	
 	@Test
-	public void EmployeeInteractionTest() {
+	public void EmployeeLoginTest() {
 		
 	}
+	
+	@Test
+	public void GenerateTicketTest() {
+		
+	}
+	
+	@Test
+	public void ViewAvailableSpacesTest() {
+		
+	}
+	
+	@Test
+	public void PayTicketTest() {
+		
+	}
+	
+	@Test
+	public void ToggleGateTest() {
+		
+	}
+	
+	@Test
+	public void ViewBillingSummaryTest() {
+		
+	}
+	
+	@Test
+	public void GetGarageNameTest() {
+		
+	}
+	
+	@Test
+	public void ChangePasswordTest() {
+		
+	}
+	
+	@Test
+	public void ModifyGateOpenTimeTest() {
+		
+	}
+	
+	@Test
+	public void OverrideTicketTest() {
+		
+	}
+	
+	@Test
+	public void ViewReportTest() {
+		
+	}
+	
+	@Test
+	public void ModifyRateTest() {
+		
+	}
+	
+	@Test
+	public void ViewActiveTicketsTest() {
+		
+	}
+	
+	@Test
+	public void ViewCameraIDsTest() {
+		
+	}
+	
+	@Test
+	public void ViewGarageLogsTest() {
+		
+	}
+	
+	@Test
+	public void LogoutTest() {
+		
+	}
+	
 }
