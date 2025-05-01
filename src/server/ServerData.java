@@ -188,7 +188,7 @@ public class ServerData {
 	private void determineSaving(boolean allowSaving) {
 		this.allowSaving = allowSaving;
 		if (!this.allowSaving) {
-			log.append(LogType.ACTION, "File saving is disabled! Server data will not be saved!");
+			log.append(LogType.WARNING, "File saving is disabled! Server data will not be saved!");
 		}
 	}
 
