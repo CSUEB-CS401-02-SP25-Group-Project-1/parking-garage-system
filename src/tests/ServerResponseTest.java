@@ -8,11 +8,12 @@ import server.Server;
 public class ServerResponseTest { // tests all server responses from given client messages (sent by test employee)
 	Server server;
 
-	// setup server before conducting tests
+	// setup server and client before conducting tests
 	@BeforeEach
 	public void setup() {
 		startServer();
 		server.waitUntilReady();
+		// TODO: setup client here
 	}
 
 	// helper methods for setup
