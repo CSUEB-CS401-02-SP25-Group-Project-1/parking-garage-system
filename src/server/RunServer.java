@@ -12,6 +12,6 @@ public class RunServer {
 			logsDir = args[2];
 			dataDir = args[3];
 		}
-		new Thread(new Server(port, logPrefix, logsDir, dataDir)).run();
+		new Thread(new Server(port, logPrefix, logsDir, dataDir)).start();
 	}
 }
