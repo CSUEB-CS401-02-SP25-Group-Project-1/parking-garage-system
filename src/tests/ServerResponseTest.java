@@ -31,13 +31,13 @@ public class ServerResponseTest { // tests all server responses from given clien
 
 	// actual tests
 	@Test
-	@Order(1) // this is the first test
+	@Order(1) // this is the first test (needed for server to identify client)
 	public void InitTest() {
 		
 	}
 	
 	@Test
-	@Order(2) // second test
+	@Order(2) // second test (needed to sign in after init)
 	public void EmployeeLoginTest() {
 		
 	}
