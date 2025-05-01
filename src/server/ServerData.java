@@ -95,9 +95,10 @@ public class ServerData {
 		return null;
 	}
 	
-	public Employee getEmployeeByUsername(String username) {
-		if (employeesByUsername.containsKey(username)) {
-			return employeesByUsername.get(username);
+	public Employee getEmployeeByUsername(String garageID, String username) {
+		String key = garageID+":"+username;
+		if (employeesByUsername.containsKey(key)) {
+			return employeesByUsername.get(key);
 		}
 		return null;
 	}
@@ -205,7 +206,7 @@ public class ServerData {
 
 	private void addEmployeeToDatabases(Employee employee) {
 		employees.put(employee.getID(), employee);
-		employeesByUsername.put(employee.getUsername(), employee);
+		employeesByUsername.put(employee.getGarage().getID()+":"+employee.getUsername(), employee); // garageID:username
 	}
 
 	private void saveAllGarages() {

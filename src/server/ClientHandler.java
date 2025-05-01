@@ -154,9 +154,9 @@ public class ClientHandler implements Runnable {
 					continue; // deny invalid credentials
 				}
 				// successful login
-				employee = serverData.getEmployeeByUsername(username); // associate employee account with connection
+				employee = serverData.getEmployeeByUsername(garage.getID(), username); // associate employee account with connection
 				sendMessage(MessageType.Success, "li:successful");
-				log.append(LogType.ACTION, "Employee "+employee.getUsername()+" logged in at "+clientIP, garage);
+				log.append(LogType.ACTION, "Employee "+employee.getUsername()+" ("+clientIP+") logged into garage "+garage.getID(), garage);
 				return;
 			} catch (Exception e) {
 				sendMessage(MessageType.Fail, "li:unknown_error");
@@ -166,7 +166,7 @@ public class ClientHandler implements Runnable {
 	}
 	
 	private boolean isValidCredentials(String username, String password) {
-		Employee employee = serverData.getEmployeeByUsername(username);
+		Employee employee = serverData.getEmployeeByUsername(garage.getID(), username);
 		if (employee == null) {
 			return false;
 		}

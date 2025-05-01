@@ -105,7 +105,19 @@ public class ServerResponseTest { // tests all server responses from given clien
 	@Test
 	@Order(2) // second test (needed to sign in after init)
 	public void EmployeeLoginTest() {
-		
+		// server sends "invalid credentials" message if client's provided credentials do not match those in database
+		sendMessage("li:asdf:ghjk");
+		Message response = getMessage();
+		assertEquals("li:invalid_credentials", response.getText());
+
+		sendMessage("li:test_employee:ghjk"); // with correct username
+		response = getMessage();
+		assertEquals("li:invalid_credentials", response.getText());
+
+		// server sends "success" response if client's credentials match those in database
+		sendMessage("li:test_employee:test_password");
+		response = getMessage();
+		assertEquals("li:successful", response.getText());
 	}
 	
 	@Test
