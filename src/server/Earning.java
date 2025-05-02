@@ -11,7 +11,7 @@ public class Earning implements EarningInterface {
 		this.date = date;
 		this.revenue = revenue;
 	}
-	
+
 	public Date getDate() {
 		return date;
 	}

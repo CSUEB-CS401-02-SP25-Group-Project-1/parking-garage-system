@@ -121,17 +121,17 @@ public class Ticket implements TicketInterface{
 		fee = garage.getHourlyRate() * hours_in_garage;
 	}
 
-	public void pay() {
-		// payment processing done at client end?
+	public boolean pay(float amount) {
 		// fee has been calculated and returned with getFee()
-		// this method serves as a softer version of override()
-		if (isPaid || isOverridden) {return;}
+		if (isPaid || isOverridden) {return false;}
 
+		if (amount < fee) {return false;} // payment validation
 		exitTime = new Date();
 		isPaid = true;
 
 		// not overridden
 		// don't change fee
+		return true;
 	}
 
 	public String toString() {

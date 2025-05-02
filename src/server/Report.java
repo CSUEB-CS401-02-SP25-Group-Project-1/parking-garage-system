@@ -81,6 +81,7 @@ public class Report implements ReportInterface {
 	public ArrayList<Earning> getEarnings() {return earnings;}
 	public Garage getGarage() {return garage;}
 	public String getID() {return id;}
+	public int getCurrentlyParkedNum() {return currentlyParked;}
 
 	// methods
 	public double getRevenueThisHour() {
@@ -163,8 +164,7 @@ public class Report implements ReportInterface {
 		}
 
 		for (Earning earning : earnings) {
-			earnings_s += earning.getDate().getTime() + ",";
-			earnings_s += earning.getRevenue() + "\\|";
+			earnings_s += earning.toString() + "\\|";
 		}
 		return garageID + "\n" + entries_s + "\n" + earnings_s + "\n";
 	}
@@ -176,9 +176,9 @@ public class Report implements ReportInterface {
 		int i = earnings.size() - 1;
 		long now = (new Date()).getTime();
 
-		while (now - earnings.get(0).getDate().getTime() <= ms
+		while (now - earnings.get(i).getDate().getTime() <= ms
 				&& i >= 0) {
-			revenue += earnings.get(0).getRevenue();
+			revenue += earnings.get(i).getRevenue();
 			i--;
 		}
 		
