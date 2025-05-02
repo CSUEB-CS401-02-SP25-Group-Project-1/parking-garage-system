@@ -443,10 +443,15 @@ public class ClientHandler implements Runnable {
 			log.append(LogType.ERROR, "Unable to override ticket "+ticketID+" for employee "+employee.getUsername()+" (invalid value)", garage);
 			return;
 		}
-		Ticket ticket = serverData.getTicket(ticketID);
+		Ticket ticket = garage.getTicket(ticketID);
 		if (ticket == null) {
 			sendMessage(MessageType.Fail, "ot:ticket_not_found");
 			log.append(LogType.ERROR, "Unable to override ticket "+ticketID+" for employee "+employee.getUsername()+" (ticket not found)", garage);
+			return;
+		}
+		if (ticket.isPaid()) {
+			sendMessage(MessageType.Fail, "ot:already_paid");
+			log.append(LogType.ERROR, "Unable to override ticket "+ticketID+" for employee "+employee.getUsername()+" (ticket already paid)", garage);
 			return;
 		}
 		// command logic
@@ -506,9 +511,9 @@ public class ClientHandler implements Runnable {
 	
 	private void viewFeed(String cameraID) { // vf
 		// find security camera from id
-		SecurityCamera camera = serverData.getSecurityCamera(cameraID);
+		SecurityCamera camera = garage.getCamera(cameraID);
 		if (camera == null) {
-			sendMessage(MessageType.Fail, "vf:camera_not_found");
+			sendImageMessage(MessageType.Fail, "vf:camera_not_found", null);
 			log.append(LogType.ERROR, "Unable to send live feed of camera "+cameraID+" to employee "+employee.getUsername()+" (camera not found)", garage);
 			return;
 		}

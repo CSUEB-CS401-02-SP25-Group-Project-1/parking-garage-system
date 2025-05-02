@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import org.junit.jupiter.api.*;
 import server.Server;
+import shared.ImageMessage;
 import shared.Message;
 import shared.MessageType;
 
@@ -78,6 +79,16 @@ public class ServerResponseTest { // tests all server responses from given clien
 		Message message = null;
 		try {
 			message = (Message)clientIn.readObject();
+		} catch (ClassNotFoundException | IOException e) {
+			e.printStackTrace();
+		}
+		return message;
+	}
+
+	private ImageMessage getImageMessage() {
+		ImageMessage message = null;
+		try {
+			message = (ImageMessage)clientIn.readObject();
 		} catch (ClassNotFoundException | IOException e) {
 			e.printStackTrace();
 		}
@@ -280,37 +291,103 @@ public class ServerResponseTest { // tests all server responses from given clien
 	
 	@Test
 	public void OverrideTicketTest() {
-		
+		// server should accept overrides of active tickets
+		sendMessage("ot:TI25:49.99");
+		Message response = getMessage();
+		assertEquals("ot:overridden_ticket", response.getText());
+
+		// server should return "ticket not found" message
+		sendMessage("ot:TI999:5.00");
+		response = getMessage();
+		assertEquals("ot:ticket_not_found", response.getText());
+
+		// server should reject invalid fee values
+		sendMessage("ot:TI25:-35");
+		response = getMessage();
+		assertEquals("ot:invalid_fee", response.getText());
+
+		// server should reject if a ticket has already been paid for
+		sendMessage("ot:TI2:300.00");
+		response = getMessage();
+		assertEquals("ot:already_paid", response.getText());
 	}
 	
 	@Test
 	public void ViewReportTest() {
-		
+		// server should return human-readable report of garage
+		sendMessage("vr");
+		Message response = getMessage();
+		assertTrue(response.getText().startsWith("vr:"));
 	}
 	
 	@Test
 	public void ModifyRateTest() {
-		
+		// server should accept integers
+		sendMessage("mr:100");
+		Message response = getMessage();
+		assertEquals("mr:modified_rate", response.getText());
+
+		// server should accept floating point numbers
+		sendMessage("mr:79.99");
+		response = getMessage();
+		assertEquals("mr:modified_rate", response.getText());
+
+		// server should reject negative values
+		sendMessage("mr:-50.01");
+		response = getMessage();
+		assertEquals("mr:invalid_rate", response.getText());
 	}
 	
 	@Test
 	public void ViewActiveTicketsTest() {
-		
+		// server should return all active ticket ids in garage
+		sendMessage("vv");
+		Message response = getMessage();
+		String split[] = response.getText().substring("vv:".length()).split(",");
+		assertEquals(15 + 1, split.length); // should be 15 active tickets + 1 comma
 	}
 	
 	@Test
 	public void ViewCameraIDsTest() {
-		
+		// server should return the ids of all cameras in garage
+		sendMessage("vc");
+		Message response = getMessage();
+		assertTrue(response.getText().startsWith("vc:") && response.getText().contains(","));
+
+		// server should not return any ids of cameras from other garages
+		sendMessage("vc");
+		response = getMessage();
+		assertFalse(response.getText().contains("SC1"));
+	}
+
+	@Test
+	public void ViewCameraFeedTest() {
+		// server should return "camera not found" message if camera has not been found
+		sendMessage("vf:SC99");
+		ImageMessage response = getImageMessage();
+		assertEquals("vf:camera_not_found", response.getText());
+
+		// server should return message containing the live camera feed
+		sendMessage("vf:SC0");
+		response = getImageMessage();
+		assertEquals("vf:image", response.getText());
+		assertFalse(response.getImage() == null);
 	}
 	
 	@Test
 	public void ViewGarageLogsTest() {
-		
+		// server should return all logs associated with garage in a single human-readable string
+		sendMessage("vl");
+		Message response = getMessage();
+		assertTrue(response.getText().startsWith("vl:") && response.getText().contains("\n")); // log entries are seperated by newlines
 	}
 	
 	@Test
 	@Order(Integer.MAX_VALUE) // last test
 	public void LogoutTest() {
-		
+		// server should acknowledge client logout
+		sendMessage("lo");
+		Message response = getMessage();
+		assertEquals("lo:signed_out", response.getText());
 	}
 }

@@ -105,7 +105,7 @@ public class Garage implements GarageInterface {
 	}
 
 	public Report viewReport() {
-		return null; // dummy value
+		return new Report(this);
 	}
 
 	public boolean addCamera(SecurityCamera newCamera) {
@@ -127,6 +127,15 @@ public class Garage implements GarageInterface {
 
 	public ArrayList<SecurityCamera> getCameras() {
 		return cameras;
+	}
+
+	public SecurityCamera getCamera(String cameraID) {
+		for (SecurityCamera camera : cameras) {
+			if (camera.getID().equals(cameraID)) {
+				return camera;
+			}
+		}
+		return null;
 	}
 
 	public void addLogEntry(String logEntry) {
