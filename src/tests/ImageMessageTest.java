@@ -8,7 +8,7 @@ import shared.ImageMessage;
 
 public class ImageMessageTest {
     @Test
-    public void ImageTest() {
+    public void testImage() {
         ImageIcon image = new ImageIcon(Paths.get("live-feed", "feed_1.jpg").toString());
         ImageMessage temp = new ImageMessage(null, null, null, image);
         assertTrue(temp.getImage().equals(image));
