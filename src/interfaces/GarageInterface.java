@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import mock.Gate;
 import mock.Receipt;
 import mock.Report;
-import mock.SecurityCamera;
+import server.SecurityCamera;
 import mock.Ticket;
 
 public interface GarageInterface {

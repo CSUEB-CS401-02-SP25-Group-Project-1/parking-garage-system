@@ -371,7 +371,7 @@ public class ServerResponseTest { // tests all server responses from given clien
 		sendMessage("vf:SC0");
 		response = getImageMessage();
 		assertEquals("vf:image", response.getText());
-		assertFalse(response.getImage() == null); // actual image should be returned by server
+		assertNotNull(response.getImage()); // actual image should be returned by server
 	}
 	
 	@Test

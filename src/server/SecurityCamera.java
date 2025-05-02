@@ -32,7 +32,11 @@ public class SecurityCamera {
         String fullDir = Paths.get(System.getProperty("user.dir"), FEED_DIR).toString();
         File feedFolder = new File(fullDir);
         int cameraNum = Integer.parseInt(id.substring("SC".length()));
-        String imagePath = Paths.get(fullDir, "feed_"+(cameraNum % feedFolder.listFiles().length)).toString();
+        String imagePath = Paths.get(fullDir, "feed_"+(cameraNum % feedFolder.listFiles().length)+".jpg").toString();
+		File imageFile = new File(imagePath);
+		if (!imageFile.exists()) {
+			return null;
+		}
         return new ImageIcon(imagePath);
     }
 }

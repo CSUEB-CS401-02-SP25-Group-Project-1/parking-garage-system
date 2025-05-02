@@ -9,7 +9,6 @@ import mock.Garage;
 import mock.Gate;
 import mock.Receipt;
 import mock.Report;
-import mock.SecurityCamera;
 import mock.Ticket;
 import shared.ImageMessage;
 import shared.Message;
@@ -64,6 +63,7 @@ public class ClientHandler implements Runnable {
 	private void sendMessage(MessageType type, String text) {
 		try {
 			out.writeObject(new Message(type, "server", text));
+			out.flush();
 		} catch (Exception e) {
 			log.append(LogType.ERROR, e+" while attempting to send message to client "+clientIP);
 		}
@@ -72,6 +72,7 @@ public class ClientHandler implements Runnable {
 	private void sendImageMessage(MessageType type, String text, ImageIcon image) { // for live security camera feed
 		try {
 			out.writeObject(new ImageMessage(type, "server", text, image));
+			out.flush();
 		} catch (Exception e) {
 			log.append(LogType.ERROR, e+" while attempting to send image message to client ("+clientIP+")");
 		}
@@ -518,7 +519,13 @@ public class ClientHandler implements Runnable {
 			return;
 		}
 		// return live feed in an image message
-		sendImageMessage(MessageType.Success, "vf:image", camera.view());
+		ImageIcon liveFeed = camera.view();
+		if (liveFeed == null) {
+			sendImageMessage(MessageType.Fail, "vf:feed_unavailable", null);
+			log.append(LogType.ERROR, "Unable to send live feed of camera "+cameraID+" to employee "+employee.getUsername()+" (feed unavailable)", garage);
+			return;
+		}
+		sendImageMessage(MessageType.Success, "vf:image", liveFeed);
 		log.append(LogType.ACTION, "Sent live feed of camera "+camera.getID()+" to employee "+employee.getUsername(), garage);
 	}
 	

@@ -11,7 +11,6 @@ import mock.Earning;
 import mock.Employee;
 import mock.Garage;
 import mock.Report;
-import mock.SecurityCamera;
 import mock.Ticket;
 
 public class ServerData {
