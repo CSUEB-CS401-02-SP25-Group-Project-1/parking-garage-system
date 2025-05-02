@@ -1,6 +1,7 @@
 package tests;
 
 import mock.*;
+import server.User;
 
 import org.junit.*;
 
