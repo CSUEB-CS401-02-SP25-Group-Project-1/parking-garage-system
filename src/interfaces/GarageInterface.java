@@ -27,6 +27,7 @@ public interface GarageInterface {
 	ArrayList<Ticket> getActiveTickets();
 	ArrayList<Ticket> getAllTickets();
 	ArrayList<SecurityCamera> getCameras();
+	SecurityCamera getCamera(String cameraID);
 	void addLogEntry(String logEntry);
 	ArrayList<String> getLogEntries();
 	Gate getGate();

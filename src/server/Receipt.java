@@ -28,7 +28,7 @@ public class Receipt implements ReceiptInterface {
 	}
 	
 	public String toString() {
-		return "RECEIPT" // dummy value
+		return "RECEIPT FOR "+ticketID // dummy value
 				+ "garage name"
 				+ "ticket id"
 				+ "entry time"
