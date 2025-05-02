@@ -121,11 +121,11 @@ public class Ticket implements TicketInterface{
 		fee = garage.getHourlyRate() * hours_in_garage;
 	}
 
-	public boolean pay(float amount) {
+	public boolean pay(double paymentAmount) {
 		// fee has been calculated and returned with getFee()
 		if (isPaid || isOverridden) {return false;}
 
-		if (amount < fee) {return false;} // payment validation
+		if (paymentAmount < fee) {return false;} // payment validation
 		exitTime = new Date();
 		isPaid = true;
 

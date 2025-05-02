@@ -32,8 +32,8 @@ public class User implements UserInterface {
 		return garage.generateTicket();
 	}
 	
-	public Receipt payTicket(String ticketID) {	
-		return garage.payTicket(ticketID);
+	public Receipt payTicket(String ticketID, double paymentAmount) {	
+		return garage.payTicket(ticketID, paymentAmount);
 	}
 
 	public int getAvailableSpaces() {

@@ -12,6 +12,7 @@ import server.Employee;
 import server.Garage;
 import server.Report;
 import server.Ticket;
+import server.LogType;
 
 public class ServerData {
 	private final String GARAGE_SUBDIR = "/garages/"; // "GA#.txt"
