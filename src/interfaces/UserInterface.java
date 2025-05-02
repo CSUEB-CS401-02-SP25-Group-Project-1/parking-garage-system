@@ -14,4 +14,5 @@ public interface UserInterface {
 	String viewBillingSummary(String ticketID); // for bs:<...>
 	String getGarageName(); // for gn:<garage_name>
 	void toggleGate(); // for tg:toggled
+	boolean getGateStatus(); // for gs
 }
