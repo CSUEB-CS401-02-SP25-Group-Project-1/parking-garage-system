@@ -1,10 +1,10 @@
 package interfaces;
 
-import server.Receipt;
-import server.Report;
+import mock.Receipt;
+import mock.Report;
 import javax.swing.ImageIcon;
 import java.util.ArrayList;
-import server.Ticket;
+import mock.Ticket;
 
 public interface EmployeeInterface {
 	String getID();
