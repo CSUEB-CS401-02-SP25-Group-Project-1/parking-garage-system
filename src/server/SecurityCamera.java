@@ -3,7 +3,6 @@ package server;
 import javax.swing.ImageIcon;
 
 import interfaces.SecurityCameraInterface;
-import mock.Garage;
 
 public class SecurityCamera implements SecurityCameraInterface {
 	private static int count = 0;
