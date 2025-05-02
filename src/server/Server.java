@@ -71,6 +71,10 @@ public class Server implements Runnable {
 		}
 	}
 
+	public ServerData getServerData() { // for debugging: allows for retrieving server memory
+		return serverData;
+	}
+
 	// helper methods
 	private void closeServerSocket() {
 		try {
