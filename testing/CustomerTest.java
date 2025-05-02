@@ -1,33 +1,33 @@
-package tests;
+package test;
 
 import static org.junit.jupiter.api.Assertions.*;
-import org.junit.jupiter.api.Test;
 
+import org.junit.jupiter.api.Test;
 import server.Customer;
 import server.Garage;
 import server.Ticket;
+import server.UserType
 
-
-public class CustomerTest {
+public class CustomerTest 
+{
 
 	@Test
-	public void test_customer_garage()
+	public void testCustomerGarageConstructor()
 	{
 		Garage garage = new Garage();
 		Customer customer = new Customer(garage);
-		
-		assertEquals(garage, customer.getGarage());
-		assertEquals(UserType.Customer, customer.getType());
+		assertSame("Garage Testing and Customer Testing",garage,customer.getGarage());
+		assertTrue("Customer being type Customer",customer.getType() == UserType.Customer);
 	}
+	
 	@Test
-	public void test_availbility()
+	public void testviewGarageAvailability()
 	{
-		String name = "Garage";
-		int capacity = 100;
-		double rate = 10.50;
-		Garage garage = new Garage(name, capacity, rate);
-		Customer customer = new Customer(garage);
-		Ticket ticket = customer.generateTicket();
-		assertEquals(capacity - 1, customer.availbility());
+		int Spots = 200;
+		Garage garage_spots = new Garage("Best Garage",Spots,10);
+	    Customer customer_user = new Customer(garage_spots);
+		Ticket ticket = customer_user.generateTicket();
+		int Availabity = Spots - 1;
+		assertEquals("After issuing one ticket, the availabity spots will decrease",Availabity,customer_user.viewGarageAvailability());
 	}
 }
