@@ -55,7 +55,6 @@ public class ClientHandler implements Runnable {
 			} catch (Exception e) {
 				log.append(LogType.ERROR, e+" while signing out client "+clientIP);
 			}
-			
 		}
 	}
 	

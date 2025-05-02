@@ -42,7 +42,7 @@ public class ServerSaveTest {
 
     // helper methods
 	private void startServer() {
-		server = new Server(7777, "loading_test_", 
+		server = new Server(7777, "saving_test_", 
 		Paths.get("debug", "logs").toString(), DATA_DIR,
 		true);
 		new Thread(server).start();
