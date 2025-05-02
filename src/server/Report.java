@@ -82,6 +82,7 @@ public class Report implements ReportInterface {
 	public ArrayList<Earning> getEarnings() {return earnings;}
 	public Garage getGarage() {return garage;}
 	public String getID() {return id;}
+	public int getCurrentlyParkedNum() {return currentlyParked;}
 
 	// methods
 	public double getRevenueThisHour() {
