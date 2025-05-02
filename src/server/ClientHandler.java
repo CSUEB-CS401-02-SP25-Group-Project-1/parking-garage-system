@@ -73,7 +73,7 @@ public class ClientHandler implements Runnable {
 			out.writeObject(new ImageMessage(type, "server", text, image));
 			out.flush();
 		} catch (Exception e) {
-			log.append(LogType.ERROR, e+" while attempting to send image message to client ("+clientIP+")");
+			log.append(LogType.ERROR, e+" while attempting to send image message to client "+clientIP);
 		}
 	}
 	
