@@ -47,7 +47,7 @@ public class ServerData {
 		loadAllEmployees();
 	}
 	
-	public void saveAll() { // useful for when server is about to terminate
+	public synchronized void saveAll() { // useful for when server is about to terminate
 		if (allowSaving) {
 			saveAllGarages();
 			saveAllTickets();
@@ -59,42 +59,42 @@ public class ServerData {
 	
 	// methods for retrieving an object based on their id
 	
-	public Garage getGarage(String garageID) {
+	public synchronized Garage getGarage(String garageID) {
 		if (garages.containsKey(garageID)) {
 			return garages.get(garageID);
 		}
 		return null;
 	}
 	
-	public Ticket getTicket(String ticketID) {
+	public synchronized Ticket getTicket(String ticketID) {
 		if (tickets.containsKey(ticketID)) {
 			return tickets.get(ticketID);
 		}
 		return null;
 	}
 	
-	public Report getReport(String reportID) {
+	public synchronized Report getReport(String reportID) {
 		if (reports.containsKey(reportID)) {
 			return reports.get(reportID);
 		}
 		return null;
 	}
 	
-	public SecurityCamera getSecurityCamera(String cameraID) {
+	public synchronized SecurityCamera getSecurityCamera(String cameraID) {
 		if (cameras.containsKey(cameraID)) {
 			return cameras.get(cameraID);
 		}
 		return null;
 	}
 	
-	public Employee getEmployee(String employeeID) {
+	public synchronized Employee getEmployee(String employeeID) {
 		if (employees.containsKey(employeeID)) {
 			return employees.get(employeeID);
 		}
 		return null;
 	}
 	
-	public Employee getEmployeeByUsername(String garageID, String username) {
+	public synchronized Employee getEmployeeByUsername(String garageID, String username) {
 		String key = garageID+":"+username;
 		if (employeesByUsername.containsKey(key)) {
 			return employeesByUsername.get(key);
@@ -105,7 +105,7 @@ public class ServerData {
 	// methods to save an individual object to file 
 	// (boolean to indicate success; return true if there's no errors)
 	
-	public boolean saveGarage(Garage garage) { 
+	public synchronized boolean saveGarage(Garage garage) { 
 		if (getGarage(garage.getID()) == null) {
 	    	garages.put(garage.getID(), garage); // add garage to database if it's not there already
 	    }
@@ -123,7 +123,7 @@ public class ServerData {
 		return true;
 	}
 
-	public boolean saveTicket(Ticket ticket) {
+	public synchronized boolean saveTicket(Ticket ticket) {
 		if (getTicket(ticket.getID()) == null) {
 	    	tickets.put(ticket.getID(), ticket); // add ticket to database if it's not there already
 	    }
@@ -141,7 +141,7 @@ public class ServerData {
 		return true;
 	}
 
-	public boolean saveReport(Report report) {
+	public synchronized boolean saveReport(Report report) {
 		if (getReport(report.getID()) == null) {
 	    	reports.put(report.getID(), report); // add report to database if it's not there already
 	    }
@@ -159,7 +159,7 @@ public class ServerData {
 		return true;
 	}
 
-	public boolean saveSecurityCamera(SecurityCamera camera) {
+	public synchronized boolean saveSecurityCamera(SecurityCamera camera) {
 		if (getSecurityCamera(camera.getID()) == null) {
 	    	cameras.put(camera.getID(), camera); // add camera to database if it's not there already
 	    }
@@ -177,7 +177,7 @@ public class ServerData {
 		return true;
 	}
 
-	public boolean saveEmployee(Employee employee) {
+	public synchronized boolean saveEmployee(Employee employee) {
 		if (getEmployee(employee.getID()) == null) {
 	    	addEmployeeToDatabases(employee); // add employee to database if it's not there already
 	    }
@@ -203,7 +203,7 @@ public class ServerData {
 		}
 	}
 
-	private void addEmployeeToDatabases(Employee employee) {
+	private synchronized void addEmployeeToDatabases(Employee employee) {
 		employees.put(employee.getID(), employee);
 		employeesByUsername.put(employee.getGarage().getID()+":"+employee.getUsername(), employee); // garageID:username
 	}
