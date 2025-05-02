@@ -91,7 +91,7 @@ public class Garage implements GarageInterface {
 		return null;
 	}
 
-	public Receipt payTicket(String ticketID) { // returns receipt if successful
+	public Receipt payTicket(String ticketID, double paymentAmount) { // returns receipt if successful
 		//Find ticket by ID
 		Ticket ticket = getTicket(ticketID);
 		
@@ -101,7 +101,7 @@ public class Garage implements GarageInterface {
 		}
 		
 		//Mark ticket paid and remove from active tickets list
-		ticket.pay();
+		ticket.pay(paymentAmount);
 		this.activeTickets.remove(ticket);
 		
 		//Create and return new receipt of ticket payment
@@ -143,6 +143,16 @@ public class Garage implements GarageInterface {
 	
 		// return false if no camera with such ID was found
 		return true; // dummy value
+	}
+	
+	public SecurityCamera getCamera(String cameraID) {
+		// Find security camera matching the given Camera ID and return it
+		for(int i = 0; i < this.cameras.size(); i++) {
+			if(this.cameras.get(i).getID() == cameraID)
+				return this.cameras.get(i);
+		}
+		//Return null if not found
+		return null;
 	}
 
 	public ArrayList<SecurityCamera> getCameras() {

@@ -13,5 +13,5 @@ public interface TicketInterface {
 	void overrideFee(double newFee);
 	void calculateFee();
 	double getFee();
-	boolean pay();
+	boolean pay(double paymentAmount);
 }

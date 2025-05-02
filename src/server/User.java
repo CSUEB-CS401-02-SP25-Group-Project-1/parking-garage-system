@@ -32,27 +32,38 @@ public class User implements UserInterface {
 		return garage.generateTicket();
 	}
 	
-	public Receipt payTicket(String ticketID) {	
-		return garage.payTicket(ticketID);
+	public Receipt payTicket(String ticketID, double paymentAmount) {	
+		return garage.payTicket(ticketID, paymentAmount);
 	}
 
 	public int getAvailableSpaces() {
-		// TODO Auto-generated method stub
-		return 0;
+		return garage.getAvailableSpaces();
 	}
 
 	public String viewBillingSummary(String ticketID) {
-		// TODO Auto-generated method stub
+		//Find ticket
+		Ticket ticket = garage.getTicket(ticketID);
+		
+		//If ticket was found, return billing summary
+		if(ticket != null)
+			return ticket.getID() + ":" +
+					ticket.getEntryTime() + ":" +
+					ticket.getExitTime() + ":" +
+					ticket.getFee();
+		else
+		//If ticket was NOT found, return null
 		return null;
 	}
 
 	public String getGarageName() {
-		// TODO Auto-generated method stub
-		return null;
+		return garage.getName();
 	}
 
 	public void toggleGate() {
-		// TODO Auto-generated method stub
-		
+		Gate gate = garage.getGate();
+		if(gate.isOpen())
+			gate.close();
+		else
+			gate.open();
 	}
 }
