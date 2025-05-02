@@ -24,6 +24,14 @@ public class Garage implements GarageInterface {
 		this.capacity = capacity;
 		gate = new Gate(this, gateOpenTime);
 	}
+	
+	public Garage() {
+		id = "GA"+count++;
+		this.name = "Unnamed";
+		this.hourlyRate = 0.0;
+		this.capacity = 0;
+		gate = new Gate(this, 0.0);
+	}
 
 	public String getID() {
 		return id;
