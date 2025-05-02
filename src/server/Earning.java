@@ -1,4 +1,4 @@
-package mock;
+package server;
 
 import java.util.Date;
 import interfaces.EarningInterface;
