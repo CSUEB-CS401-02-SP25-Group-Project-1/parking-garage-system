@@ -5,7 +5,7 @@ import java.io.FileWriter;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.Scanner;
 import mock.Earning;
 import mock.Employee;
@@ -24,13 +24,13 @@ public class ServerData {
 	private boolean allowSaving; // used for debugging
 	
 	// loaded server data
-	// hash tables for efficiency (sorry!)
-	private HashMap<String, Garage> garages = new HashMap<>(); // ID, object
-	private HashMap<String, Ticket> tickets = new HashMap<>();
-	private HashMap<String, Report> reports = new HashMap<>();
-	private HashMap<String, SecurityCamera> cameras = new HashMap<>();
-	private HashMap<String, Employee> employees = new HashMap<>();
-	private HashMap<String, Employee> employeesByUsername = new HashMap<>(); // used to search employees by username rather than by id
+	// hash maps for efficiency (sorry!)
+	private ConcurrentHashMap<String, Garage> garages = new ConcurrentHashMap<>(); // ID, object
+	private ConcurrentHashMap<String, Ticket> tickets = new ConcurrentHashMap<>();
+	private ConcurrentHashMap<String, Report> reports = new ConcurrentHashMap<>();
+	private ConcurrentHashMap<String, SecurityCamera> cameras = new ConcurrentHashMap<>();
+	private ConcurrentHashMap<String, Employee> employees = new ConcurrentHashMap<>();
+	private ConcurrentHashMap<String, Employee> employeesByUsername = new ConcurrentHashMap<>(); // used to search employees by username rather than by id
 	
 	public ServerData(String rootDir, Log log, boolean allowSaving) {
 		this.log = log;

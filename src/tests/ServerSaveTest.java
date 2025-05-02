@@ -24,12 +24,14 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ServerSaveTest {
-    private final String DATA_DIR = Paths.get("debug", "saving_test_data_"+new Date().getTime()).toString();
+    private final String DATA_DIR = Paths.get("debug", "saving_test_data").toString();
     private Server server;
     private ServerData serverData;
+    private Garage garage;
 
     @BeforeAll
     public void setup() {
+        cleanDirectory(new File(DATA_DIR)); // clean up data directory before running
         startServer();
         server.waitUntilReady();
         serverData = server.getServerData();
@@ -50,6 +52,7 @@ public class ServerSaveTest {
 
     private String getDataFromFile(String path) {
         File dataFile = new File(path);
+        waitUntilFileExists(dataFile);
         String dataString = "";
         try {
             Scanner lineScanner = new Scanner(dataFile);
@@ -63,6 +66,7 @@ public class ServerSaveTest {
 
     private String getReportDataFromFile(String path) {
         File dataFile = new File(path);
+        waitUntilFileExists(dataFile);
         String reportString = "";
         try {
             Scanner lineScanner = new Scanner(dataFile);
@@ -76,11 +80,31 @@ public class ServerSaveTest {
         return reportString;
     }
 
+    private void waitUntilFileExists(File file) {
+        while (!file.exists()) {
+            try {
+                Thread.sleep(10);
+            } catch (Exception e) {
+                continue;
+            }
+        }
+    }
+
+    private void cleanDirectory(File dir) {
+        if (!dir.exists()) return;
+        for (File file : dir.listFiles()) {
+            if (file.isDirectory()) {
+                cleanDirectory(file);
+            } 
+            file.delete();
+        }
+    }
+
     // actual tests
     @Test
     @Order(1)
     public void testSavingGarages() {
-        Garage garage = new Garage("Test Garage", 10.0, 50, 20.0);
+        garage = new Garage("Test Garage", 10.0, 50, 20.0);
         assertTrue(serverData.saveGarage(garage));
         assertEquals("Test Garage,10.0,50,20.0",
         getDataFromFile(Paths.get(DATA_DIR, "garages", "GA0.txt").toString()));
@@ -89,7 +113,6 @@ public class ServerSaveTest {
 
     @Test
     public void testSavingTickets() {
-        Garage garage = serverData.getGarage("GA0");
         Ticket ticket = new Ticket(garage); // sets entry date
         ticket.calculateFee(); // sets exit date
         Date entryTime = ticket.getEntryTime();
@@ -103,7 +126,6 @@ public class ServerSaveTest {
 
     @Test
     public void testSavingReports() {
-        Garage garage = serverData.getGarage("GA0");
         Report report = new Report(garage);
         report.addEntryTime(new Date(1234));
         report.addEntryTime(new Date(5678));
@@ -119,7 +141,6 @@ public class ServerSaveTest {
 
     @Test
     public void testSavingEmployees() {
-        Garage garage = serverData.getGarage("GA0");
         Employee employee = new Employee(garage, "my_badass_username", "VERY STRONG PASSWORD!");
         assertTrue(serverData.saveEmployee(employee));
         String expected = "GA0,my_badass_username,VERY STRONG PASSWORD!";
@@ -130,7 +151,6 @@ public class ServerSaveTest {
 
     @Test
     public void testSavingCameras() {
-        Garage garage = serverData.getGarage("GA0");
         SecurityCamera camera = new SecurityCamera(garage);
         assertTrue(serverData.saveSecurityCamera(camera));
         String expected = "GA0";
