@@ -3,6 +3,8 @@ package mock;
 import java.util.ArrayList;
 import java.util.Date;
 import interfaces.GarageInterface;
+import server.Gate;
+import server.SecurityCamera;
 
 public class Garage implements GarageInterface {
 	private static int count = 0;
