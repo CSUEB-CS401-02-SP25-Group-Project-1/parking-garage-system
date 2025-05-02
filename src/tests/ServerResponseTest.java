@@ -357,7 +357,7 @@ public class ServerResponseTest { // tests all server responses from given clien
 		// server should not return any ids of cameras from other garages
 		sendMessage("vc");
 		response = getMessage();
-		assertFalse(response.getText().contains("SC1"));
+		assertFalse(response.getText().contains("SC1,"));
 	}
 
 	@Test
@@ -368,10 +368,17 @@ public class ServerResponseTest { // tests all server responses from given clien
 		assertEquals("vf:camera_not_found", response.getText());
 
 		// server should return message containing the live camera feed
-		sendMessage("vf:SC0");
+		for (int i = 3; i < 30; i++) {
+			sendMessage("vf:SC"+i);
+			response = getImageMessage();
+			assertEquals("vf:image", response.getText());
+			assertNotNull(response.getImage()); // actual image should be returned by server
+		}
+		
+		// server should not return camera feed taken from another garage
+		sendMessage("vf:SC1");
 		response = getImageMessage();
-		assertEquals("vf:image", response.getText());
-		assertNotNull(response.getImage()); // actual image should be returned by server
+		assertEquals("vf:camera_not_found", response.getText());
 	}
 	
 	@Test
