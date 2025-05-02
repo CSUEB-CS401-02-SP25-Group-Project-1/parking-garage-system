@@ -7,7 +7,6 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.nio.file.Paths;
 import java.util.HashMap;
-
 import org.junit.jupiter.api.*;
 import server.Server;
 import shared.Message;
@@ -40,8 +39,8 @@ public class ServerResponseTest { // tests all server responses from given clien
 
 	// helper methods
 	private void startServer() {
-		server = new Server(SERVER_PORT, "debug_", 
-		Paths.get("debug", "logs").toString(), Paths.get("debug", "data").toString(),
+		server = new Server(SERVER_PORT, "response_test_", 
+		Paths.get("debug", "logs").toString(), Paths.get("debug", "response_test_data").toString(),
 		false); // server data will not be saved for these tests
 		new Thread(server).start();
 	}
@@ -135,6 +134,10 @@ public class ServerResponseTest { // tests all server responses from given clien
 		response = getMessage();
 		assertEquals("li:invalid_credentials", response.getText());
 
+		sendMessage("li:employee_in_another_garage:foo"); // with correct credentials from wrong garage
+		response = getMessage();
+		assertEquals("li:invalid_credentials", response.getText());
+
 		// server sends "success" response if client's credentials match those in database
 		sendMessage("li:test_employee:test_password");
 		response = getMessage();
@@ -156,6 +159,10 @@ public class ServerResponseTest { // tests all server responses from given clien
 		// server sends "invalid ticket id" response if client requests for ticket not in database
 		response = getBilling("TI999");;
 		assertEquals("bs:invalid_ticket_id", response);
+
+		// server should not let client get billing of a ticket from another garage
+		response = getBilling("TI666");
+		assertEquals("bs:invalid_ticket_id", response);
 	}
 
 	@Test
@@ -163,7 +170,7 @@ public class ServerResponseTest { // tests all server responses from given clien
 	public void GenerateTicketTest() {
 		// server sends ticket id of generated ticket when successful
 		Message response;
-		for (int i = 1; i < 30; i++) { // test garage holds up to 30 cars (TI0 is already loaded before test)
+		for (int i = 2; i <= 30; i++) { // test garage holds up to 30 cars (TI0 and TI1 are already loaded before test)
 			sendMessage("gt");
 			response = getMessage();
 			assertEquals("gt:TI"+i, response.getText());
@@ -181,7 +188,7 @@ public class ServerResponseTest { // tests all server responses from given clien
 	public void PayTicketTest() {
 		// server sends human-readable receipt when successful
 		Message response;
-		for (int i = 1; i < 15; i++) { // TI0 will be tested seperately
+		for (int i = 2; i < 16; i++) { // TI0 will be tested seperately
 			String ticketID = "TI"+i;
 			sendMessage("pt:"+ticketID+":"+fees.get(ticketID));
 			response = getMessage();
@@ -191,7 +198,7 @@ public class ServerResponseTest { // tests all server responses from given clien
 		// server sends error message when ticket is invalid
 
 		// ticket has already been paid for
-		sendMessage("pt:TI1:"+fees.get("TI1"));
+		sendMessage("pt:TI2:"+fees.get("TI2"));
 		response = getMessage();
 		assertEquals("pt:already_paid", response.getText());
 
@@ -204,32 +211,71 @@ public class ServerResponseTest { // tests all server responses from given clien
 		sendMessage("pt:TI999:9999.99");
 		response = getMessage();
 		assertEquals("pt:ticket_not_found", response.getText());
+
+		// server should not let client pay for another ticket that's in another garage
+		sendMessage("pt:TI1:666.66");
+		response = getMessage();
+		assertEquals("pt:ticket_not_found", response.getText());
 	}
 	
 	@Test
 	@Order(6)
 	public void ViewAvailableSpacesTest() {
-		// 
+		// available spaces should return 14 since there's still 14 unpaid (active) tickets in garage
+		sendMessage("va");
+		Message response = getMessage();
+		assertEquals("va:14", response.getText());
 	}
 	
 	@Test
 	public void ToggleGateTest() {
-		
+		// server should send back message acknowledging client's request
+		sendMessage("tg");
+		Message response = getMessage();
+		assertEquals("tg:toggled", response.getText());
 	}
 	
 	@Test
 	public void GetGarageNameTest() {
-		
+		// server should return human-readable name of garage
+		sendMessage("gn");
+		Message response = getMessage();
+		assertEquals("gn:Test Garage", response.getText());
 	}
 	
 	@Test
 	public void ChangePasswordTest() {
-		
+		// server should accept passwords containing special characters
+		sendMessage("mp:*(accept_me_i_contain_special_characters_&_i_love_$paghetti)*");
+		Message response = getMessage();
+		assertEquals("mp:password_changed", response.getText());
+
+		// server should reject passwords with no special characters
+		sendMessage("mp:rejectmeimnotspecial");
+		response = getMessage();
+		assertEquals("mp:no_special_characters", response.getText());
 	}
 	
 	@Test
 	public void ModifyGateOpenTimeTest() {
-		
+		// server should accept integers
+		sendMessage("mg:60");
+		Message response = getMessage();
+		assertEquals("mg:time_updated", response.getText());
+
+		// server should also accept floating point numbers
+		sendMessage("mg:17.5");
+		response = getMessage();
+		assertEquals("mg:time_updated", response.getText());
+
+		// server should reject negative values
+		sendMessage("mg:-5");
+		response = getMessage();
+		assertEquals("mg:invalid_time", response.getText());
+
+		sendMessage("mg:-5.55");
+		response = getMessage();
+		assertEquals("mg:invalid_time", response.getText());
 	}
 	
 	@Test

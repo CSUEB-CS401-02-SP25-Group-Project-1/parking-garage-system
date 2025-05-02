@@ -75,7 +75,7 @@ public class Garage implements GarageInterface {
 	}
 	
 	public Ticket getTicket(String ticketID) { // returns ticket from all tickets list based on its ticket id
-		for (Ticket ticket : activeTickets) {
+		for (Ticket ticket : allTickets) {
 			if (ticket.getID().equals(ticketID)) {
 				return ticket;
 			}
@@ -88,7 +88,15 @@ public class Garage implements GarageInterface {
 		// attempt to process payment
 		// if payment went through, create a new receipt
 		// if ticket was already paid for, return null instead
-		
+	
+		for (int i = 0; i < activeTickets.size(); i++) {
+			Ticket curTicket = activeTickets.get(i);
+			if (curTicket.getID().equals(ticketID)) {
+				curTicket.pay(); // mark as paid
+				activeTickets.remove(curTicket); // remove from active tickets list
+			}
+		}
+
 		return new Receipt("TI602", "The Awesome Garage", new Date(), new Date(), 599.99); // dummy value
 	}
 	

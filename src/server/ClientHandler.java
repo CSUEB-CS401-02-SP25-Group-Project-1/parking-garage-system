@@ -335,7 +335,7 @@ public class ClientHandler implements Runnable {
 	
 	private void payTicket(String ticketID, double amount) { // pt
 		// input validation
-		Ticket ticket = serverData.getTicket(ticketID);
+		Ticket ticket = garage.getTicket(ticketID);
 		if (ticket == null) { // check if ticket exists in database
 			sendMessage(MessageType.Fail, "pt:ticket_not_found");
 			log.append(LogType.ERROR, "Unable to retrieve ticket "+ticketID+" for client "+clientIP+ " (ticket not found)", garage);
@@ -352,7 +352,7 @@ public class ClientHandler implements Runnable {
 			return;
 		}
 		// update ticket
-		ticket.pay();
+		garage.payTicket(ticket.getID());
 		serverData.saveTicket(ticket);
 		// return receipt
 		sendMessage(MessageType.Success, "pt:"+new Receipt(ticket.getID(), garage.getName(),
