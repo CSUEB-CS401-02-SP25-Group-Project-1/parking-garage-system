@@ -352,7 +352,7 @@ public class ClientHandler implements Runnable {
 			return;
 		}
 		// update ticket
-		garage.payTicket(ticket.getID());
+		garage.payTicket(ticket.getID(), amount);
 		serverData.saveTicket(ticket);
 		// return receipt
 		sendMessage(MessageType.Success, "pt:"+new Receipt(ticket.getID(), garage.getName(),
