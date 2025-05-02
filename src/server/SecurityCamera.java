@@ -13,6 +13,7 @@ public class SecurityCamera {
 	
 	public SecurityCamera(Garage garage) {
 		id = "SC"+count++;
+		this.garage = garage;
 	}
 
 	public ImageIcon view() {

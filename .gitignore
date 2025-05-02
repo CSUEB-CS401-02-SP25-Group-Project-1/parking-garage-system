@@ -3,4 +3,4 @@
 /logs/
 *.log
 /debug/logs/
-/debug/save_test_data_*
+/debug/saving_test_data_*
