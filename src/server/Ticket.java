@@ -43,7 +43,7 @@ public class Ticket implements TicketInterface{
 		exitTime = null;
 		isPaid = false;
 		isOverridden = false;
-		fee = null;
+		fee = 0.0;
 
 		this.garage = new Garage(); // fake garage for testing
 
@@ -63,7 +63,7 @@ public class Ticket implements TicketInterface{
 		exitTime = null;
 		isPaid = false;
 		isOverridden = false;
-		fee = null;
+		fee = 0.0;
 
 		this.garage = garage;
 	}
@@ -141,7 +141,7 @@ public class Ticket implements TicketInterface{
 			// .getTime() returns long
 			// does not interfere with comma separation
 			// and can be restored with new Date(long)
-		if (!exitTime) {
+		if (exitTime != null) {
 			r += ",null";
 		} else {
 			r += "," + exitTime.getTime();
