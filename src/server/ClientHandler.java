@@ -257,6 +257,9 @@ public class ClientHandler implements Runnable {
 			case "tg":
 				toggleGate();
 				break;
+			case "gs":
+				getGateStatus();
+				break;
 			case "bs":
 				ticketID = parameters[1];
 				viewBillingSummary(ticketID);
@@ -369,6 +372,17 @@ public class ClientHandler implements Runnable {
 		// success message
 		sendMessage(MessageType.Success, "tg:toggled");
 		log.append(LogType.ACTION, "Toggled gate for client "+clientIP, garage);
+	}
+
+	private void getGateStatus() {
+		Gate gate = garage.getGate();
+		boolean gateStatus = gate.isOpen();
+		if (gateStatus) {
+			sendMessage(MessageType.Success, "gs:gate_open");
+		} else {
+			sendMessage(MessageType.Success, "gs:gate_closed");
+		}
+		log.append(LogType.ACTION, "Sent gate status to client "+clientIP, garage);
 	}
 	
 	private void viewAvailability() { // va

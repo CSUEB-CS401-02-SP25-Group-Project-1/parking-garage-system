@@ -245,6 +245,14 @@ public class ServerResponseTest { // tests all server responses from given clien
 		Message response = getMessage();
 		assertEquals("tg:toggled", response.getText());
 	}
+
+	@Test
+	public void GetGateStatusTest() {
+		// server should return message indicating the gate's status (open or closed)
+		sendMessage("gs");
+		Message response = getMessage();
+		assertTrue(response.getText().equals("gs:gate_open") || response.getText().equals("gs:gate_closed"));
+	}
 	
 	@Test
 	public void GetGarageNameTest() {
