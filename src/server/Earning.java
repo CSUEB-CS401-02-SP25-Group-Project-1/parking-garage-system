@@ -1,27 +1,26 @@
 package server;
 
+import java.util.Date;
 import interfaces.EarningInterface;
 
-import java.util.Date;
-
-public class Earning implements EarningInterface{
-	// associates time customer left to amount they paid
+public class Earning implements EarningInterface {
 	private Date date;
 	private double revenue;
-
-	// constructor
+	
 	public Earning(Date date, double revenue) {
 		this.date = date;
 		this.revenue = revenue;
 	}
 
-	// getters
-	public Date getDate() {return date;}
-	public double getRevenue() {return revenue;}
-
+	public Date getDate() {
+		return date;
+	}
+	
+	public double getRevenue() {
+		return revenue;
+	}
+	
 	public String toString() {
-		String r = "";
-		r += date.getTime() + "," + revenue;
-		return r; 
+		return date.getTime()+","+revenue;
 	}
 }

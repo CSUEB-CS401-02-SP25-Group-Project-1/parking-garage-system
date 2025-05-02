@@ -1,43 +1,39 @@
 package server;
 
 import interfaces.GateInterface;
-import server.Garage;
 
 public class Gate implements GateInterface {
-	private double openTime;
-	private boolean isOpen;
-	private Garage garage;
-
-	// constructors
-
-	public Gate() {
-		garage = new Garage();
-		openTime = 0;
-		isOpen = false;
-	}
-
-	public Gate(Garage garage) {
-		// if for any reason this happens
-		this.garage = garage;
-		openTime = 0;
-		isOpen = false;
-	}
-
+	double openTime; // in seconds
+	boolean open = false;
+	Garage garage;
+	
 	public Gate(Garage garage, double openTime) {
 		this.garage = garage;
 		this.openTime = openTime;
-		isOpen = false;
+	}
+	
+	public void open() {
+		open = true;
 	}
 
-	// getters
-	public double getOpenTime() {return openTime;}
-	public boolean isOpen() {return isOpen;}
-	public Garage getGarage() {return garage;}
+	public void close() {
+		open = false;
+	}
 
-	// setters
-	public void setOpenTime (double seconds) {openTime = seconds;}
+	public void setOpenTime(double seconds) {
+		openTime = seconds;
+	}
 
-	// methods
-	public void open() {isOpen = true;}
-	public void close() {isOpen = false;}
+	public double getOpenTime() {
+		return openTime;
+	}
+	
+	public boolean isOpen() {
+		return open;
+	}
+	
+	public Garage getGarage() {
+		return garage;
+	}
+
 }

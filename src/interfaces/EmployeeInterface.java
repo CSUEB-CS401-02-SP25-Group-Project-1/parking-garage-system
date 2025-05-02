@@ -1,15 +1,23 @@
 package interfaces;
 
-import mock.Receipt;
-import mock.Report;
+import server.Receipt;
+import server.Report;
+import javax.swing.ImageIcon;
+import java.util.ArrayList;
+import server.Ticket;
 
 public interface EmployeeInterface {
 	String getID();
 	String getUsername();
 	String getPassword();
-	void setPassword(String newPassword);
-	boolean overrideTicketFee(String ticketID, double newFee); // returns true if successful (ticket was found and not paid-for yet)
 	Receipt getReceipt(String ticketID); // returns receipt of an already paid-for ticket
 	Report getGarageReport();
-	void setGarageHourlyRate(double newRate);
+	boolean changePassword(String newPassword); // for mp:<newPassword>
+	boolean modifyGateTime(double newTime); // for mg:<newTime>
+	boolean overrideTicket(String ticketID, double newFee); // for ot:<ticketID>:<fee>
+	boolean modifyRate(double newRate); // for mr:<newRate>
+	ArrayList<Ticket> viewActiveTickets(); // for vv:<ticketIDs>
+	ArrayList<String> viewCameraIDs(); // for vc:<cameraIDs>
+	ImageIcon viewCameraFeed(String cameraID); // for vf:<cameraID>
+	ArrayList<String> viewGarageLogs(); // for vl:<logText>
 }

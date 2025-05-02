@@ -1,6 +1,8 @@
 package mock;
 
+import java.util.ArrayList;
 import java.util.Date;
+import javax.swing.ImageIcon;
 import interfaces.EmployeeInterface;
 import server.UserType;
 
@@ -56,6 +58,78 @@ public class Employee extends User implements EmployeeInterface {
 	
 	public String toString() {
 		return garage.getID()+","+username+","+password;
+	}
+
+	@Override
+	public int getAvailableSpaces() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public String viewBillingSummary(String ticketID) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getGarageName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void toggleGate() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean changePassword(String newPassword) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean modifyGateTime(double newTime) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean overrideTicket(String ticketID, double newFee) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean modifyRate(double newRate) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public ArrayList<Ticket> viewActiveTickets() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ArrayList<String> viewCameraIDs() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ImageIcon viewCameraFeed(String cameraID) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ArrayList<String> viewGarageLogs() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
