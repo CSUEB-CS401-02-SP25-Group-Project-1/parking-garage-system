@@ -43,7 +43,7 @@ public class Ticket implements TicketInterface{
 		exitTime = null;
 		isPaid = false;
 		isOverridden = false;
-		fee = null;
+		fee = 0.0;
 
 		this.garage = new Garage(); // fake garage for testing
 
@@ -63,7 +63,7 @@ public class Ticket implements TicketInterface{
 		exitTime = null;
 		isPaid = false;
 		isOverridden = false;
-		fee = null;
+		fee = 0.0;
 
 		this.garage = garage;
 	}
