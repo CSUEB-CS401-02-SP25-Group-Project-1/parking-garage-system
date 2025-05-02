@@ -1,6 +1,7 @@
 package mock;
 
 import interfaces.UserInterface;
+import server.User;
 import server.UserType;
 
 public class Customer extends User implements UserInterface {

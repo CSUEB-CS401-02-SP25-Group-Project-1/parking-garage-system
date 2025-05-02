@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.ImageIcon;
 import interfaces.EmployeeInterface;
+import server.User;
 import server.UserType;
 
 public class Employee extends User implements EmployeeInterface {

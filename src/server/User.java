@@ -1,8 +1,7 @@
-package mock;
+package server;
 
 import java.util.Date;
 import interfaces.UserInterface;
-import server.UserType;
 
 public class User implements UserInterface {
 	protected Garage garage;
