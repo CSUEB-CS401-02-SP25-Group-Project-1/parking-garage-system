@@ -1,4 +1,4 @@
-package mock;
+package server;
 
 import java.util.Date;
 
@@ -17,6 +17,14 @@ public class Receipt implements ReceiptInterface {
 		this.entryTime = entryTime;
 		this.exitTime = exitTime;
 		this.paymentAmount = paymentAmount;
+	}
+	
+	public Receipt(Ticket ticket) {
+		this.ticketID = ticket.getID();
+		this.garageName = ticket.getGarage().getName();
+		this.entryTime = ticket.getEntryTime();
+		this.exitTime = ticket.getExitTime();
+		this.paymentAmount = ticket.getFee();
 	}
 	
 	public String toString() {
