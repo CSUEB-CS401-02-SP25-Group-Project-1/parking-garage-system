@@ -193,8 +193,8 @@ public class ClientHandler implements Runnable {
 	}
 	
 	public void runEmployeeCommand(String parameters[]) {
+		String command = parameters[0];
 		try {
-			String command = parameters[0];
 			switch (command) {
 			case "mp":
 				String newPassword = parameters[1]; 
@@ -233,14 +233,15 @@ public class ClientHandler implements Runnable {
 				runCustomerCommand(parameters); // roll into customer commands (common commands) if code doesn't match employee's
 			}
 		} catch (Exception e) {
-			sendMessage(MessageType.Fail, "invalid_parameters");
-			log.append(LogType.ERROR, clientIP+" sent invalid message parameters!");
+			sendMessage(MessageType.Fail, "command_parsing_error");
+			log.append(LogType.ERROR, e.toString()+" while parsing command "+command);
 		}
 	}
 	
 	public void runCustomerCommand(String parameters[]) {
+		String command = parameters[0];
 		try {
-			String command = parameters[0];
+			
 			switch (command) {
 			case "gt":
 				generateTicket();
@@ -250,7 +251,8 @@ public class ClientHandler implements Runnable {
 				break;
 			case "pt":
 				String ticketID = parameters[1];
-				payTicket(ticketID);
+				double paymentAmount = Double.parseDouble(parameters[2]);
+				payTicket(ticketID, paymentAmount);
 				break;
 			case "tg":
 				toggleGate();
@@ -267,8 +269,8 @@ public class ClientHandler implements Runnable {
 				log.append(LogType.ERROR, clientIP+" requested unknown command: "+command);
 			}
 		} catch (Exception e) {
-			sendMessage(MessageType.Fail, "invalid_parameters");
-			log.append(LogType.ERROR, clientIP+" sent invalid message parameters!");
+			sendMessage(MessageType.Fail, "command_parsing_error");
+			log.append(LogType.ERROR, e.toString()+" while parsing command "+command);
 		}
 	}
 	
@@ -320,7 +322,7 @@ public class ClientHandler implements Runnable {
 		String ticketID = garage.generateTicket(); // generated ticket ID
 		if (ticketID == null) {
 			sendMessage(MessageType.Fail, "gt:unavailable_space");
-			log.append(LogType.ERROR, "Unable to generate ticket for "+clientIP+ "(no space in garage "+garage.getID()+")", garage);
+			log.append(LogType.ERROR, "Unable to generate ticket for "+clientIP+ " (no space in garage "+garage.getID()+")", garage);
 			return;
 		}
 		// save new ticket to database
@@ -331,17 +333,22 @@ public class ClientHandler implements Runnable {
 		log.append(LogType.ENTRY, "Generated ticket "+ticket.getID()+" for client "+clientIP, garage);
 	}
 	
-	private void payTicket(String ticketID) { // pt
+	private void payTicket(String ticketID, double amount) { // pt
 		// input validation
 		Ticket ticket = serverData.getTicket(ticketID);
 		if (ticket == null) { // check if ticket exists in database
 			sendMessage(MessageType.Fail, "pt:ticket_not_found");
-			log.append(LogType.ERROR, "Unable to retrieve ticket "+ticketID+" for client "+clientIP+ "(ticket not found)", garage);
+			log.append(LogType.ERROR, "Unable to retrieve ticket "+ticketID+" for client "+clientIP+ " (ticket not found)", garage);
 			return;
 		}
 		if (ticket.isPaid()) { // check if ticket hasn't been paid for yet
 			sendMessage(MessageType.Fail, "pt:already_paid");
-			log.append(LogType.ERROR, "Unable to fulfill payment for ticket "+ticket.getID()+" for client "+clientIP+ "(already paid)", garage);
+			log.append(LogType.ERROR, "Unable to fulfill payment for ticket "+ticket.getID()+" for client "+clientIP+ " (already paid)", garage);
+			return;
+		}
+		if (ticket.getFee() != amount) {
+			sendMessage(MessageType.Fail, "pt:incorrect_amount");
+			log.append(LogType.ERROR, "Unable to fulfill payment for ticket "+ticket.getID()+" for client "+clientIP+ " (incorrect payment amount)", garage);
 			return;
 		}
 		// update ticket
@@ -379,11 +386,13 @@ public class ClientHandler implements Runnable {
 			log.append(LogType.ERROR, "Unable to return billing summary for ticket "+ticketID+ " to client "+clientIP);
 			return;
 		}
-		// calculate fee in real time
-		ticket.calculateFee();
+		// calculate fee in real time (if it's not already overridden)
+		if (!ticket.isOverridden()) {
+			ticket.calculateFee();
+		}
 		serverData.saveTicket(ticket); // save calculated fee to file
 		// return ticket data with newly-calculated fee
-		String payload = "bs:"+ticket.getID()+":"+ticket.getEntryTime()+":"+ticket.getExitTime()+":"+ticket.getFee();
+		String payload = "bs:"+ticket.getID()+":"+ticket.getEntryTime().getTime()+":"+ticket.getExitTime().getTime()+":"+ticket.getFee();
 		sendMessage(MessageType.Success, payload);
 		log.append("Sent billing summary for ticket "+ticketID+" to client "+clientIP);
 	}

@@ -63,6 +63,7 @@ public class Ticket implements TicketInterface {
 	}
 
 	public void calculateFee() { // calculate fee based on how many hours since entry time multiplied by garage's hourly rate
+		exitTime = new Date();
 		fee = 12345.67; // dummy value
 	}
 
