@@ -23,8 +23,6 @@ public class EmployeeGUI {
     public static void main(String[] args) {
         initScreen();
         loginScreen();
-        //dashboardScreen();
-        exit();
     }
 
     // main windows
@@ -53,14 +51,16 @@ public class EmployeeGUI {
                                              "ERROR", JOptionPane.ERROR_MESSAGE);
                 continue;
             }
+            System.out.println(serverIP+" "+garageID);
             return;
         }
+        
     }
 
     private static void loginScreen() {
         // window config
         JFrame window = new JFrame("Employee Login");
-		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // TODO: find out how to call exit() method
+		window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		window.setSize(560, 480);
 		window.setLocationRelativeTo(null); // center on screen
 		window.setVisible(true); // make visible
@@ -98,10 +98,10 @@ public class EmployeeGUI {
         // widget action listeners
         submitButton.addActionListener(new ActionListener() { // search button action listener
 			public void actionPerformed(ActionEvent e) {
-				if (submitCredentials(usernameField.getText(), passwordField.getPassword().toString())) { // if credentials were valid
+				if (submitCredentials(usernameField.getText(), new String(passwordField.getPassword()))) { // if credentials were valid
                     // proceed to next screen
-                    window.dispose();
-                    return;
+                    dashboardScreen();
+                    window.dispose(); // close this screen
                 } else { // otherwise, show error message
                     JOptionPane.showMessageDialog(window, "Invalid credentials. Please try again.", 
                                                   "ERROR", JOptionPane.ERROR_MESSAGE);
@@ -803,7 +803,7 @@ public class EmployeeGUI {
         }
 
         private void updateRate() {
-            rateLabel.setText("Hourly rate: $"+getRate());
+            rateLabel.setText("Hourly rate: "+getRate());
         }
 
         private void updateGateTime() {
