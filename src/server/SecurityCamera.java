@@ -3,7 +3,7 @@ package server;
 import java.io.File;
 import java.nio.file.Paths;
 import javax.swing.ImageIcon;
-import mock.Garage;
+import server.Garage;
 
 public class SecurityCamera {
     private final String FEED_DIR = "live-feed";

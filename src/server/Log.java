@@ -5,7 +5,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.*;
 import java.util.*;
-import mock.Garage;
+import server.Garage;
 
 public class Log {
 	private String path;
