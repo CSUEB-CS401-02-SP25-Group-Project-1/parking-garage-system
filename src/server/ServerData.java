@@ -333,7 +333,6 @@ public class ServerData {
 	        }
 	        Double fee = null;
 	        if (!feeStr.equals("null")) {
-				System.out.println("Ass");
 	            fee = Double.parseDouble(feeStr);
 	        }
 	        // find associated garage from id
