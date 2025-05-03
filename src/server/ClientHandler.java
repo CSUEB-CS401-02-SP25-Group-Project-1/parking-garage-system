@@ -499,7 +499,7 @@ public class ClientHandler implements Runnable {
 		sendMessage(MessageType.Success, 
 					"vr:"+report.getRevenueThisHour()+","+report.getRevenueToday()+","+
 					report.getRevenueThisWeek()+","+report.getRevenueThisMonth()+","+
-					report.getRevenueToday()+","+report.getTotalRevenue()+","+
+					report.getRevenueThisYear()+","+report.getTotalRevenue()+","+
 					report.getPeakHour()+","+report.getCurrentlyParkedNum());
 		log.append(LogType.ACTION, "Generated garage report for employee "+employee.getUsername(), garage);
 	}

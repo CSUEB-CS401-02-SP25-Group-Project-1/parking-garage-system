@@ -168,7 +168,7 @@ public class EmployeeGUI {
         new Thread(updater).start();
     }
 
-    // more helper methods
+    // command methods
 
     private static void generateTicket(JFrame window, DashboardUpdater updater) {
         sendMessage("gt");
@@ -292,9 +292,9 @@ public class EmployeeGUI {
         updater.update(); // update ui to reflect changes
     }
 
-    private static void overrideTicket(JFrame window) { // 
+    private static void overrideTicket(JFrame window) { // no need to update widgets
         String ticketID = JOptionPane.showInputDialog(window, "Enter ticket ID:");
-        if (ticketID == null) {
+        if (ticketID == null) { // user cancellation
             return;
         }
         Double newFee = getValidDouble(window, "ticket fee");
@@ -325,6 +325,83 @@ public class EmployeeGUI {
         }
         JOptionPane.showMessageDialog(window, "Ticket fee has been successfully overridden",
                                       "SUCCESS", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private static void viewReport(JFrame window) {
+        sendMessage("vr");
+        Message response = getMessage();
+        if (!response.getText().startsWith("vr:")) {
+            JOptionPane.showMessageDialog(window, "Unable to view report at this time",
+                                          "ERROR", JOptionPane.ERROR_MESSAGE);
+        }
+        String report = assembleReport(response.getText().substring("vr:".length()));
+        if (report == null) {
+            JOptionPane.showMessageDialog(window, "Error while processing report",
+                                          "ERROR", JOptionPane.ERROR_MESSAGE);
+        }
+        JOptionPane.showMessageDialog(window, report, "Garage Report",
+                                      JOptionPane.PLAIN_MESSAGE);
+    }
+
+    private static void viewLogs(JFrame window) {
+        sendMessage("vl");
+        Message response = getMessage();
+        if (!response.getText().startsWith("vl:")) {
+            JOptionPane.showMessageDialog(window, "Unable to get server logs at this time",
+                                          "ERROR", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        String allLogsString = response.getText().substring("vl:".length());
+        // setup text area widget
+        JTextArea textArea = new JTextArea(allLogsString);
+        textArea.setEditable(false); // immutable
+        textArea.setLineWrap(true); // wrap long lines
+        textArea.setWrapStyleWord(true); // wrap at word boundaries
+        // wrap it in a scroll pane
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        scrollPane.setSize(500, 400); // size of popup
+        // show it as a dialog rather than a new window
+        JOptionPane.showMessageDialog(window, scrollPane, "Garage Logs",
+                                      JOptionPane.PLAIN_MESSAGE);
+    }
+
+    private static void logout(JFrame window) {
+        sendMessage("lo");
+        Message response = getMessage();
+        if (!response.getText().equals("lo:signed_out")) {
+            JOptionPane.showMessageDialog(window,
+            "Unable to sign employee out of server. Closing dashboard anyway.",
+            "ERROR", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        JOptionPane.showMessageDialog(window, "Signed out of server",
+                                      "SUCCESS", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    // more helper methods
+
+    private static String assembleReport(String reportData) { // assembles a human-readable report from server response data
+        String split[] = reportData.split(",");
+        if (split.length != 8) { // server should have returned 8 parameters
+            return null;
+        }
+        String revenueThisHour = formatAmountString(split[0]);
+        String revenueToday = formatAmountString(split[1]);
+        String revenueThisWeek = formatAmountString(split[2]);
+        String revenueThisMonth = formatAmountString(split[3]);
+        String revenueThisYear = formatAmountString(split[4]);
+        String revenueAllTime = formatAmountString(split[5]);
+        String peakHour = split[6];
+        String currentlyParkedVehicles = split[7];
+        String report = "Revenue generated this hour: "+revenueThisHour+"\n"+
+                        "Revenue generated today: "+revenueToday+"\n"+
+                        "Revenue generated this week: "+revenueThisWeek+"\n"+
+                        "Revenue generated this month: "+revenueThisMonth+"\n"+
+                        "Revenue generated this year: "+revenueThisYear+"\n"+
+                        "All-time revenue generated: "+revenueAllTime+"\n"+
+                        "Peak parking hour: "+peakHour+"\n"+
+                        "Currently parked vehicles: "+currentlyParkedVehicles;
+        return report;
     }
 
     private static String capitalize(String string) {
@@ -603,13 +680,13 @@ public class EmployeeGUI {
         }
 
         private String getRate() {
-            sendMessage("gr"); // TODO: to implement
+            sendMessage("gr");
             Message response = getMessage();
             return formatAmountString(response.getText().substring("gr:".length()));
         }
 
         private double getGateOpenTime() {
-            sendMessage("go"); // TODO: to implement
+            sendMessage("go");
             Message response = getMessage();
             return Double.parseDouble(response.getText().substring("go:".length()));
         }
