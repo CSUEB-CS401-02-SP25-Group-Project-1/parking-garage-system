@@ -21,11 +21,9 @@ public class EmployeeGUI {
     private static ObjectInputStream in;
 
     public static void main(String[] args) {
-        //while (true) { // loop for logouts
-            initScreen();
-            loginScreen();
-            dashboardScreen();
-        //}
+        initScreen();
+        loginScreen();
+        dashboardScreen();
     }
 
     // main windows
@@ -126,7 +124,6 @@ public class EmployeeGUI {
     }
 
     private static void dashboardScreen() {
-
         // window config
         JFrame window = new JFrame("Employee Dashboard");
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // TODO: find out how to call exit() method
@@ -146,6 +143,11 @@ public class EmployeeGUI {
         JList<String> activeTicketsList = new JList<>(); // gets updated
         JList<String> camerasList = new JList<>(); // gets updated
 
+        // start dashboard updater
+        DashboardUpdater updater = new DashboardUpdater(availabilityLabel, gateStatusLabel,
+        gateTimeLabel, rateLabel, activeTicketsList, camerasList);
+        new Thread(updater).start();
+
         // employee action buttons
         JButton generateTicketButton = new JButton("Generate Ticket");
         JButton payTicketButton = new JButton("Pay Ticket"); // billing summary is also viewed through here
@@ -158,19 +160,122 @@ public class EmployeeGUI {
         JButton viewLogsButton = new JButton("View Garage Logs");
         JButton logoutButton = new JButton("Logout");
 
-        // start dashboard updater
-        DashboardUpdater updater = new DashboardUpdater(availabilityLabel, gateStatusLabel,
-        gateTimeLabel, rateLabel, activeTicketsList, camerasList);
-        new Thread(updater).start();
+        // list selection listener for active tickets list
+        activeTicketsList.addListSelectionListener(new ListSelectionListener() {
+	    	public void valueChanged(ListSelectionEvent e) {
+	    		if (!e.getValueIsAdjusting()) { // detects whenever a list element is clicked once
+	    			String selectedTicketID = activeTicketsList.getSelectedValue();
+	    			payTicket(window, updater, selectedTicketID);
+	    		}
+	    	}
+	    });
+
+        // list selection listener for cameras list
+        camerasList.addListSelectionListener(new ListSelectionListener() {
+	    	public void valueChanged(ListSelectionEvent e) {
+	    		if (!e.getValueIsAdjusting()) { // detects whenever a list element is clicked once
+	    			String selectedCameraID = activeTicketsList.getSelectedValue();
+	    			viewCameraFeed(window, selectedCameraID);
+	    		}
+	    	}
+	    });
+
+        // action listeners for buttons
+        generateTicketButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				generateTicket(window, updater);
+			}
+	    });
+
+        payTicketButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				payTicket(window, updater, null); // null because no ticket has been selected
+			}
+	    });
+
+        toggleGateButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				toggleGate(window, updater);
+			}
+	    });
+
+        changePasswordButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				changePassword(window);
+			}
+	    });
+
+        changeGateTimeButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				changeGateTime(window, updater);
+			}
+	    });
+
+        changeRateButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				changeRate(window, updater);
+			}
+	    });
+
+        overrideTicketButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				overrideTicket(window);
+			}
+	    });
+
+        viewReportButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				viewReport(window);
+			}
+	    });
+
+        logoutButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				logout(window);
+			}
+	    });
+
+        viewLogsButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				viewReport(window);
+			}
+	    });
     }
 
     // command methods
+
+    private static void viewCameraFeed(JFrame window, String cameraID) {
+        sendMessage("vf");
+        ImageMessage response = getImageMessage();
+        if (response.getText().equals("vf:camera_not_found")) {
+            JOptionPane.showMessageDialog(window, "Unable to get live camera feed: camera not found", 
+                                          "ERROR", JOptionPane.ERROR_MESSAGE);
+        }
+        if (response.getText().equals("vf:feed_unavailable")) {
+            JOptionPane.showMessageDialog(window, "Unable to get live camera feed: feed unavailable", 
+                                          "ERROR", JOptionPane.ERROR_MESSAGE);
+        }
+        if (!response.getText().equals("vf:image")) {
+            JOptionPane.showMessageDialog(window, "Unable to get live camera feed at this time", 
+                                          "ERROR", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        ImageIcon liveFeed = response.getImage();
+        // display live feed on a new pop-up window
+        JDialog dialog = new JDialog(window, "Camera Feed", true); // true = modal
+        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        JLabel label = new JLabel(liveFeed); // labels can also be images
+        dialog.add(label);
+        dialog.pack(); // size to fit image
+        dialog.setLocationRelativeTo(window); // center on parent
+        dialog.setVisible(true); // shows and blocks until closed
+    }
 
     private static void generateTicket(JFrame window, DashboardUpdater updater) {
         sendMessage("gt");
         Message response = getMessage();
         if (response.getText().equals("gt:unavailable_space")) {
-            JOptionPane.showMessageDialog(window, "Unable to generate ticket: no more space in garage.", 
+            JOptionPane.showMessageDialog(window, "Unable to generate ticket: no more space in garage", 
                                           "ERROR", JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -372,6 +477,8 @@ public class EmployeeGUI {
         }
         JOptionPane.showMessageDialog(window, "Signed out of server",
                                       "SUCCESS", JOptionPane.INFORMATION_MESSAGE);
+        closeConnection(); // close connection
+        initScreen(); // go through init process again
     }
 
     // more helper methods
@@ -479,7 +586,7 @@ public class EmployeeGUI {
         return garageName;
     }
 
-    private static void exit() { // closes all connections before exiting // TODO: revise
+    private static void closeConnection() {
         if (socket != null) {
             try {
                 out.close();
@@ -489,6 +596,10 @@ public class EmployeeGUI {
                 e.printStackTrace();
             }
         }
+    }
+
+    private static void exit() {
+        closeConnection(); // closes all connections before exiting 
         System.exit(0);
     }
 
@@ -505,6 +616,16 @@ public class EmployeeGUI {
         Message message = null;
         try {
             message = (Message)in.readObject();
+        } catch (ClassNotFoundException | IOException e) {
+            e.printStackTrace();
+        }
+        return message;
+    }
+
+    private static ImageMessage getImageMessage() {
+        ImageMessage message = null;
+        try {
+            message = (ImageMessage)in.readObject();
         } catch (ClassNotFoundException | IOException e) {
             e.printStackTrace();
         }
