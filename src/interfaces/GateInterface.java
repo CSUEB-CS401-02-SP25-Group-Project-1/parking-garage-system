@@ -1,6 +1,6 @@
 package interfaces;
 
-import server.Garage;
+import mock.Garage;
 
 public interface GateInterface {
 	void open();

@@ -1,11 +1,11 @@
 package interfaces;
 
 import java.util.ArrayList;
-import server.Gate;
-import server.Receipt;
-import server.Report;
+import mock.Gate;
+import mock.Receipt;
+import mock.Report;
 import server.SecurityCamera;
-import server.Ticket;
+import mock.Ticket;
 
 public interface GarageInterface {
 	String getID();

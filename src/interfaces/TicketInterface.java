@@ -1,7 +1,7 @@
 package interfaces;
 
 import java.util.Date;
-import server.Garage;
+import mock.Garage;
 
 public interface TicketInterface {
 	Garage getGarage();
