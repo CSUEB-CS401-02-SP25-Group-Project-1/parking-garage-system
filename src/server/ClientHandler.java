@@ -229,6 +229,9 @@ public class ClientHandler implements Runnable {
 			case "vl":
 				viewLogs();
 				break;
+			case "gr":
+				getGarageRate();
+				break;
 			default:
 				runCustomerCommand(parameters); // roll into customer commands (common commands) if code doesn't match employee's
 			}
@@ -266,6 +269,9 @@ public class ClientHandler implements Runnable {
 				break;
 			case "gn":
 				viewGarageName();
+				break;
+			case "go":
+				getGateOpenTime();
 				break;
 			default:
 				sendMessage(MessageType.Fail, "unknown_command");
@@ -320,6 +326,11 @@ public class ClientHandler implements Runnable {
 	}
 	
 	// customer commands (includes common user commands)
+
+	private void getGateOpenTime() { // go
+		double openTime = garage.getGate().getOpenTime();
+		sendMessage(MessageType.Success, "go:"+openTime);
+	}
 	
 	private void generateTicket() { // gt
 		String ticketID = garage.generateTicket(); // generated ticket ID
@@ -419,6 +430,11 @@ public class ClientHandler implements Runnable {
 	}
 	
 	// employee commands
+
+	private void getGarageRate() { // gr
+		double rate = garage.getHourlyRate();
+		sendMessage(MessageType.Success, "gr:"+rate);
+	}
 	
 	private void modifyPassword(String newPassword) { // mp
 		// input validation

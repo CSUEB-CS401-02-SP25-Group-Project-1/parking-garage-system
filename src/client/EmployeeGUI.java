@@ -5,13 +5,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Vector;
-
 import javax.swing.*;
 import javax.swing.event.*;
 import java.awt.*;
 import java.awt.event.*;
-
 import shared.*;
 
 public class EmployeeGUI {
@@ -173,9 +170,126 @@ public class EmployeeGUI {
 
     // more helper methods
 
+    private static void generateTicket(JFrame window, DashboardUpdater updater) {
+        sendMessage("gt");
+        Message response = getMessage();
+        if (response.getText().equals("gt:unavailable_space")) {
+            JOptionPane.showMessageDialog(window, "Unable to generate ticket: no more space in garage.", 
+                                          "ERROR", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        String ticketID = response.getText().substring("gt:".length());
+        JOptionPane.showMessageDialog(window, "Generated ticket: "+ticketID,
+                                      "SUCCESS", JOptionPane.INFORMATION_MESSAGE);
+        updater.update(); // update ui to reflect changes
+    }
+
+    private static void payTicket(JFrame window, DashboardUpdater updater, String ticketID) {
+        if (ticketID == null) {
+            ticketID = JOptionPane.showInputDialog(window, "Enter ticket ID:");
+            if (ticketID == null) { // user cancellation
+                return;
+            }
+        }
+        // payment confirmation
+        double paymentAmount = displayBillingSummary(window, ticketID); // returns fee after payment confirmation
+        if (paymentAmount == -1) { // if user didn't pay or invalid ticket id
+            return; // cancel payment
+        }
+        // process payment
+        sendMessage("pt:"+ticketID+":"+paymentAmount);
+        Message response = getMessage();
+        if (response.getText().equals("pt:ticket_not_found")) {
+            JOptionPane.showMessageDialog(window, "Ticket not found: "+ticketID,
+                                          "ERROR", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        if (response.getText().equals("pt:already_paid")) {
+            JOptionPane.showMessageDialog(window, "Ticket has already been paid: "+ticketID,
+                                          "ERROR", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        if (response.getText().equals("pt:incorrect_amount")) {
+            JOptionPane.showMessageDialog(window, "Incorrect amount has been paid for "+ticketID,
+                                          "ERROR", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        if (!response.getText().startsWith("pt:")) { // if server didn't return "pay ticket" response at all
+            JOptionPane.showMessageDialog(window, "An unknown error has occurred.",
+                                          "ERROR", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        // view receipt
+        String reciept = response.getText().substring("pt:".length());
+        viewReceipt(window, reciept); // view reciept in another pop-up dialog
+        // update ui to reflect changes
+        updater.update(); 
+    }
+
+    private static void toggleGate(JFrame window, DashboardUpdater updater) {
+        sendMessage("tg");
+        Message response = getMessage();
+        if (!response.getText().equals("tg:toggled")) {
+            JOptionPane.showMessageDialog(window, "Garage gate cannot be toggled at this time",
+                                          "ERROR", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        updater.update(); // update ui to reflect changes
+    }
+
+    private static void changePassword(JFrame window) { // no need to update widgets
+        String newPassword = JOptionPane.showInputDialog("Enter new password:");
+        sendMessage("newPassword");
+    }
+
+    private static void viewReceipt(JFrame window, String reciept) {
+        JOptionPane.showMessageDialog(window, reciept, "Reciept",
+                                      JOptionPane.PLAIN_MESSAGE);
+    }
+
+    private static String formatAmountString(String amountStr) {
+        double rawValue = Double.parseDouble(amountStr);
+        return "$"+String.format("%.2f", rawValue);
+    }
+
+    private static double displayBillingSummary(JFrame window, String ticketID) {
+        sendMessage("bs:"+ticketID);
+        Message response = getMessage();
+        if (response.getText().equals("bs:invalid_ticket_id")) {
+            JOptionPane.showMessageDialog(window, "Invalid ticket: "+ticketID,
+                                          "ERROR", JOptionPane.ERROR_MESSAGE);
+            return -1;
+        }
+        String billing = response.getText().substring("bs:".length());
+        String split[] = billing.split(":");
+        double paymentAmount = Double.parseDouble(split[3]);
+        String prompt = "Billing summary for ticket:\n"+
+                        "Ticket ID: "+split[0]+"\n"+
+                        "Entry time: "+split[1]+"\n"+
+                        "Exit time: "+split[2]+"\n"+
+                        "Total due: "+formatAmountString(split[3]);
+        Object[] options = {"Pay", "Cancel"}; // custom button names for payment prompt
+        int paymentPrompt = JOptionPane.showOptionDialog(
+            window,
+            prompt,                             // message
+            "Payment Confirmation",             // title
+            JOptionPane.YES_NO_OPTION,          // option type
+            JOptionPane.QUESTION_MESSAGE,       // message type
+            null,                               // icon (null = default)
+            options,                            // custom button text array
+            options[0]                          // default selected button
+        );
+        if (paymentPrompt != 0) { // if user chose not to pay
+            return -1;
+        }
+        return paymentAmount; // return actual payment amount
+    }
+
     private static String getGarageName() {
         sendMessage("gn");
-        return getMessage().getText();
+        Message response = getMessage();
+        String garageName = response.getText().substring("gn:".length());
+        return garageName;
     }
 
     private static void exit() { // closes all connections before exiting // TODO: revise
@@ -377,8 +491,7 @@ public class EmployeeGUI {
         private String getRate() {
             sendMessage("gr"); // TODO: to implement
             Message response = getMessage();
-            double rawRate = Double.parseDouble(response.getText().substring("gr:".length()));
-            return String.format("%.2f", rawRate);
+            return formatAmountString(response.getText().substring("gr:".length()));
         }
 
         private double getGateOpenTime() {

@@ -15,4 +15,5 @@ public interface UserInterface {
 	String getGarageName(); // for gn:<garage_name>
 	void toggleGate(); // for tg:toggled
 	boolean getGateStatus(); // for gs
+	double getGateOpenTime(); // for go
 }
