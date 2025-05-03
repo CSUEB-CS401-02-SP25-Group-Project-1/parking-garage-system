@@ -5,6 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Date;
 import javax.swing.*;
 import javax.swing.event.*;
 import java.awt.*;
@@ -61,7 +62,6 @@ public class EmployeeGUI {
         window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         window.setSize(560, 480);
         window.setLocationRelativeTo(null);
-        window.setVisible(true);
         window.setLayout(new GridBagLayout()); // main layout
         GridBagConstraints grid = new GridBagConstraints();
         grid.insets = new Insets(10, 10, 10, 10); // padding
@@ -108,30 +108,39 @@ public class EmployeeGUI {
         // submit button action
         submitButton.addActionListener(new ActionListener() { // add button action listener
 			public void actionPerformed(ActionEvent e) {
-				if (submitCredentials(usernameField.getText(), new String(passwordField.getPassword()))) {
+                int returnCode = submitCredentials(usernameField.getText(), new String(passwordField.getPassword()));
+                switch (returnCode) {
+                    case 1: // success
                     // proceed to next screen
                     dashboardScreen(); 
                     window.dispose(); // close current screen
-                } else {
+                    break;
+                    case 0: // invalid credentials
                     JOptionPane.showMessageDialog(window, "Invalid credentials. Please try again.",
                                                   "ERROR", JOptionPane.ERROR_MESSAGE);
                     usernameField.setText(""); // clear fields
                     passwordField.setText("");
+                    break;
+                    case -1: // unable to reach server
+                    JOptionPane.showMessageDialog(window, "Unable to reach server at this time",
+                                                  "ERROR", JOptionPane.ERROR_MESSAGE);
                 }
 			}
 	    });
 
         // make the submit button the default button
         window.getRootPane().setDefaultButton(submitButton); 
+
+        // draw window
+        window.setVisible(true);
     }
 
     private static void dashboardScreen() {
         // window config
         JFrame window = new JFrame("Employee Dashboard");
 		window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		window.setSize(560, 480);
+		window.setSize(560, 600);
 		window.setLocationRelativeTo(null); // center on screen
-		window.setVisible(true); // make visible
         window.setLayout(new BorderLayout());
 
         // widgets
@@ -158,17 +167,22 @@ public class EmployeeGUI {
 
         // panel layout
 
-        // label panel on top
+        // tickets panel (left side)
+        JPanel ticketsPanel = new JPanel(new BorderLayout());
+        ticketsPanel.setBorder(BorderFactory.createTitledBorder("Active Tickets"));
+        ticketsPanel.add(new JScrollPane(activeTicketsList), BorderLayout.CENTER);
+
+        // label panel (top right)
         JPanel labelPanel = new JPanel();
         labelPanel.setLayout(new BoxLayout(labelPanel, BoxLayout.Y_AXIS));
 
-        usernameLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
-        garageLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
-        rateLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
-        availabilityLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
-        gateTimeLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
-
-        gateStatusLabel.setFont(new Font("SansSerif", Font.BOLD, 24)); // big bold gate status
+        Font boldFont = new Font("SansSerif", Font.BOLD, 14);
+        usernameLabel.setFont(boldFont);
+        garageLabel.setFont(boldFont);
+        rateLabel.setFont(boldFont);
+        availabilityLabel.setFont(boldFont);
+        gateTimeLabel.setFont(boldFont);
+        gateStatusLabel.setFont(new Font("SansSerif", Font.BOLD, 24)); // even bolder!
 
         labelPanel.add(usernameLabel);
         labelPanel.add(garageLabel);
@@ -177,29 +191,26 @@ public class EmployeeGUI {
         labelPanel.add(gateTimeLabel);
         labelPanel.add(gateStatusLabel);
 
-        window.add(labelPanel, BorderLayout.NORTH);
-
-        // lists panel in center
-        JPanel listsPanel = new JPanel(new GridLayout(1, 2, 10, 0));
-
-        // active tickets list
-        JPanel ticketsPanel = new JPanel(new BorderLayout());
-        ticketsPanel.setBorder(BorderFactory.createTitledBorder("Active Tickets"));
-        ticketsPanel.add(new JScrollPane(activeTicketsList), BorderLayout.CENTER);
-
-        // cameras list
+        // cameras panel (bottom right)
         JPanel camerasPanel = new JPanel(new BorderLayout());
         camerasPanel.setBorder(BorderFactory.createTitledBorder("Cameras"));
         camerasPanel.add(new JScrollPane(camerasList), BorderLayout.CENTER);
 
-        listsPanel.add(ticketsPanel);
-        listsPanel.add(camerasPanel);
+        // right panel (stacks label and cameras panel)
+        JPanel rightPanel = new JPanel(new GridLayout(2, 1, 10, 10));
+        rightPanel.add(labelPanel);
+        rightPanel.add(camerasPanel);
 
-        window.add(listsPanel, BorderLayout.CENTER);
+        // main panel (center)
+        JPanel mainPanel = new JPanel(new GridLayout(1, 2, 10, 10));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        mainPanel.add(ticketsPanel);
+        mainPanel.add(rightPanel);
+        window.add(mainPanel, BorderLayout.CENTER);
 
-        // button panel on bottom
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
-
+        // button panel (bottom area)
+        JPanel buttonPanel = new JPanel(new GridLayout(0, 2, 10, 10)); // wraps buttons (2 per row)
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         buttonPanel.add(generateTicketButton);
         buttonPanel.add(payTicketButton);
         buttonPanel.add(toggleGateButton);
@@ -210,7 +221,6 @@ public class EmployeeGUI {
         buttonPanel.add(viewReportButton);
         buttonPanel.add(viewLogsButton);
         buttonPanel.add(logoutButton);
-
         window.add(buttonPanel, BorderLayout.SOUTH);
 
         // start dashboard updater
@@ -311,6 +321,9 @@ public class EmployeeGUI {
 				viewLogs(window);
 			}
 	    });
+
+        // draw window
+        window.setVisible(true);
     }
 
     // command methods
@@ -360,10 +373,11 @@ public class EmployeeGUI {
 
     private static void payTicket(JFrame window, DashboardUpdater updater, String ticketID) {
         if (ticketID == null) {
-            ticketID = JOptionPane.showInputDialog(window, "Enter ticket ID:").toUpperCase();
+            ticketID = JOptionPane.showInputDialog(window, "Enter ticket ID:");
             if (ticketID == null) { // user cancellation
                 return;
             }
+            ticketID = ticketID.toUpperCase();
         }
         // payment confirmation
         Double paymentAmount = displayBillingSummary(window, ticketID); // returns fee after payment confirmation
@@ -473,10 +487,11 @@ public class EmployeeGUI {
     }
 
     private static void overrideTicket(JFrame window) { // no need to update widgets
-        String ticketID = JOptionPane.showInputDialog(window, "Enter ticket ID:").toUpperCase();
+        String ticketID = JOptionPane.showInputDialog(window, "Enter ticket ID:");
         if (ticketID == null) { // user cancellation
             return;
         }
+        ticketID = ticketID.toUpperCase();
         Double newFee = getValidDouble(window, "ticket fee");
         if (newFee == null) { // user cancellation
             return;
@@ -643,8 +658,8 @@ public class EmployeeGUI {
         double paymentAmount = Double.parseDouble(split[3]);
         String prompt = "Billing summary for ticket:\n"+
                         "Ticket ID: "+split[0]+"\n"+
-                        "Entry time: "+split[1]+"\n"+
-                        "Exit time: "+split[2]+"\n"+
+                        "Entry time: "+new Date(Long.parseLong(split[1]))+"\n"+
+                        "Exit time: "+new Date(Long.parseLong(split[2]))+"\n"+
                         "Total due: "+formatAmountString(split[3]);
         Object[] options = {"Pay", "Cancel"}; // custom button names for payment prompt
         int paymentPrompt = JOptionPane.showOptionDialog(
@@ -740,14 +755,17 @@ public class EmployeeGUI {
         return false;
     }
 
-    private static boolean submitCredentials(String username, String password) {
+    private static int submitCredentials(String username, String password) {
         sendMessage("li:"+username+":"+password);
         Message response = getMessage();
+        if (response == null) {
+            return -1;
+        }
         if (response.getText().equals("li:successful")) {
             user = username;
-            return true;
+            return 1;
         }
-        return false;
+        return 0;
     }
 
     private static class DashboardUpdater implements Runnable {

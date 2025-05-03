@@ -21,7 +21,7 @@ public class Ticket implements TicketInterface {
 	}
 	
 	// constructor for loading ticket from file
-	public Ticket(Garage garage, Date entryTime, Date exitTime, boolean overriden, boolean paid, double fee) {
+	public Ticket(Garage garage, Date entryTime, Date exitTime, boolean overriden, boolean paid, Double fee) {
 		id = "TI"+count++;
 		this.garage = garage;
 		this.entryTime = entryTime;
