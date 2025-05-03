@@ -34,6 +34,6 @@ public class Receipt implements ReceiptInterface
 		"Ticket ID: " + ticketID + "\n" +
 		"Entry Time: " + entryTime + "\n" +
 		"Exit Time: " + exitTime + "\n" +
-		"Payment Amount: $" + String.format("%2f",paymentAmount); //
+		"Payment Amount: $" + String.format("%2f",paymentAmount); 
 	}
 }
