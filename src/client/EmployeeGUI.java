@@ -131,8 +131,7 @@ public class EmployeeGUI {
 		window.setSize(560, 480);
 		window.setLocationRelativeTo(null); // center on screen
 		window.setVisible(true); // make visible
-
-        // TODO: add panels
+        window.setLayout(new BorderLayout());
 
         // widgets
         JLabel usernameLabel = new JLabel("Logged in as: "+user);
@@ -143,11 +142,6 @@ public class EmployeeGUI {
         JLabel rateLabel = new JLabel(); // gets updated
         JList<String> activeTicketsList = new JList<>(); // gets updated
         JList<String> camerasList = new JList<>(); // gets updated
-
-        // start dashboard updater
-        DashboardUpdater updater = new DashboardUpdater(availabilityLabel, gateStatusLabel,
-        gateTimeLabel, rateLabel, activeTicketsList, camerasList);
-        new Thread(updater).start();
 
         // employee action buttons
         JButton generateTicketButton = new JButton("Generate Ticket");
@@ -160,6 +154,68 @@ public class EmployeeGUI {
         JButton viewReportButton = new JButton("View Garage Report");
         JButton viewLogsButton = new JButton("View Garage Logs");
         JButton logoutButton = new JButton("Logout");
+
+        // panel layout
+
+        // label panel on top
+        JPanel labelPanel = new JPanel();
+        labelPanel.setLayout(new BoxLayout(labelPanel, BoxLayout.Y_AXIS));
+
+        usernameLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        garageLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        rateLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        availabilityLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        gateTimeLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
+
+        gateStatusLabel.setFont(new Font("SansSerif", Font.BOLD, 24)); // big bold gate status
+
+        labelPanel.add(usernameLabel);
+        labelPanel.add(garageLabel);
+        labelPanel.add(rateLabel);
+        labelPanel.add(availabilityLabel);
+        labelPanel.add(gateTimeLabel);
+        labelPanel.add(gateStatusLabel);
+
+        window.add(labelPanel, BorderLayout.NORTH);
+
+        // lists panel in center
+        JPanel listsPanel = new JPanel(new GridLayout(1, 2, 10, 0));
+
+        // active tickets list
+        JPanel ticketsPanel = new JPanel(new BorderLayout());
+        ticketsPanel.setBorder(BorderFactory.createTitledBorder("Active Tickets"));
+        ticketsPanel.add(new JScrollPane(activeTicketsList), BorderLayout.CENTER);
+
+        // cameras list
+        JPanel camerasPanel = new JPanel(new BorderLayout());
+        camerasPanel.setBorder(BorderFactory.createTitledBorder("Cameras"));
+        camerasPanel.add(new JScrollPane(camerasList), BorderLayout.CENTER);
+
+        listsPanel.add(ticketsPanel);
+        listsPanel.add(camerasPanel);
+
+        window.add(listsPanel, BorderLayout.CENTER);
+
+        // button panel on bottom
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
+
+        buttonPanel.add(generateTicketButton);
+        buttonPanel.add(payTicketButton);
+        buttonPanel.add(toggleGateButton);
+        buttonPanel.add(changePasswordButton);
+        buttonPanel.add(changeGateTimeButton);
+        buttonPanel.add(changeRateButton);
+        buttonPanel.add(overrideTicketButton);
+        buttonPanel.add(viewReportButton);
+        buttonPanel.add(viewLogsButton);
+        buttonPanel.add(logoutButton);
+
+        window.add(buttonPanel, BorderLayout.SOUTH);
+
+        // start dashboard updater
+        DashboardUpdater updater = new DashboardUpdater(availabilityLabel, gateStatusLabel,
+        gateTimeLabel, rateLabel, activeTicketsList, camerasList);
+        new Thread(updater).start();
 
         // list selection listener for active tickets list
         activeTicketsList.addListSelectionListener(new ListSelectionListener() {
