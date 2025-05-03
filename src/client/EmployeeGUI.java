@@ -192,8 +192,8 @@ public class EmployeeGUI {
             }
         }
         // payment confirmation
-        double paymentAmount = displayBillingSummary(window, ticketID); // returns fee after payment confirmation
-        if (paymentAmount == -1) { // if user didn't pay or invalid ticket id
+        Double paymentAmount = displayBillingSummary(window, ticketID); // returns fee after payment confirmation
+        if (paymentAmount == null) { // if user didn't pay or invalid ticket id
             return; // cancel payment
         }
         // process payment
@@ -215,13 +215,13 @@ public class EmployeeGUI {
             return;
         }
         if (!response.getText().startsWith("pt:")) { // if server didn't return "pay ticket" response at all
-            JOptionPane.showMessageDialog(window, "An unknown error has occurred.",
+            JOptionPane.showMessageDialog(window, "An unknown error has occurred",
                                           "ERROR", JOptionPane.ERROR_MESSAGE);
             return;
         }
         // view receipt
-        String reciept = response.getText().substring("pt:".length());
-        viewReceipt(window, reciept); // view reciept in another pop-up dialog
+        String receipt = response.getText().substring("pt:".length());
+        viewReceipt(window, receipt); // view receipt in another pop-up dialog
         // update ui to reflect changes
         updater.update(); 
     }
@@ -238,12 +238,126 @@ public class EmployeeGUI {
     }
 
     private static void changePassword(JFrame window) { // no need to update widgets
-        String newPassword = JOptionPane.showInputDialog("Enter new password:");
-        sendMessage("newPassword");
+        String newPassword = JOptionPane.showInputDialog(window, "Enter new password:");
+        if (newPassword == null) { // user cancellation
+            return;
+        }
+        sendMessage("mp:"+newPassword);
+        Message response = getMessage();
+        if (response.getText().equals("mp:no_special_characters")) {
+            JOptionPane.showMessageDialog(window, "Password must contain special characters",
+                                          "ERROR", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        if (!response.getText().equals("mp:password_changed")) {
+            JOptionPane.showMessageDialog(window, "An unknown error has occurred",
+                                          "ERROR", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        JOptionPane.showMessageDialog(window, "Password has been successfully changed",
+                                      "SUCCESS", JOptionPane.INFORMATION_MESSAGE);
     }
 
-    private static void viewReceipt(JFrame window, String reciept) {
-        JOptionPane.showMessageDialog(window, reciept, "Reciept",
+    private static void changeGateTime(JFrame window, DashboardUpdater updater) {
+        Double newGateTime = getValidDouble(window, "gate open time");
+        if (newGateTime == null) { // user cancellation
+            return;
+        }
+        sendMessage("mg:"+newGateTime);
+        Message response = getMessage();
+        if (!response.getText().equals("mg:time_updated")) {
+            JOptionPane.showMessageDialog(window, "Unable to change gate open time at this time",
+                                          "ERROR", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        JOptionPane.showMessageDialog(window, "Gate open time has been successfully changed",
+                                      "SUCCESS", JOptionPane.INFORMATION_MESSAGE);
+        updater.update(); // update ui to reflect changes
+    }
+
+    private static void changeRate(JFrame window, DashboardUpdater updater) {
+        Double newRate = getValidDouble(window, "hourly rate");
+        if (newRate == null) { // user cancellation
+            return;
+        }
+        sendMessage("mr:"+newRate);
+        Message response = getMessage();
+        if (!response.getText().equals("mr:modified_rate")) {
+            JOptionPane.showMessageDialog(window, "Unable to change hourly rate at this time",
+                                          "ERROR", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        JOptionPane.showMessageDialog(window, "Hourly rate has been successfully changed",
+                                      "SUCCESS", JOptionPane.INFORMATION_MESSAGE);
+        updater.update(); // update ui to reflect changes
+    }
+
+    private static void overrideTicket(JFrame window) { // 
+        String ticketID = JOptionPane.showInputDialog(window, "Enter ticket ID:");
+        if (ticketID == null) {
+            return;
+        }
+        Double newFee = getValidDouble(window, "ticket fee");
+        if (newFee == null) { // user cancellation
+            return;
+        }
+        sendMessage("ot:"+ticketID+":"+newFee);
+        Message response = getMessage();
+        if (response.getText().equals("ot:ticket_not_found")) {
+            JOptionPane.showMessageDialog(window, "Ticket not found",
+                                          "ERROR", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        if (response.getText().equals("ot:already_paid")) {
+            JOptionPane.showMessageDialog(window, "Ticket has already been paid",
+                                          "ERROR", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        if (response.getText().equals("ot:invalid_fee")) {
+            JOptionPane.showMessageDialog(window, "Invalid fee",
+                                          "ERROR", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        if (!response.getText().equals("ot:overridden_ticket")) {
+            JOptionPane.showMessageDialog(window, "Unable to override ticket at this time",
+                                          "ERROR", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        JOptionPane.showMessageDialog(window, "Ticket fee has been successfully overridden",
+                                      "SUCCESS", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private static String capitalize(String string) {
+        if (string == null || string.isEmpty()) {
+            return string;
+        }
+        return string.substring(0, 1).toUpperCase() + string.substring(1);
+    }
+
+    private static Double getValidDouble(JFrame window, String what) { // Double to return null on cancellation
+        while (true) {
+            try {
+                String input = JOptionPane.showInputDialog(window, "Enter new "+what+":");
+                if (input == null) { // user cancellation
+                    return null;
+                }
+                double inputTest = Double.parseDouble(input);
+                if (inputTest < 0) {
+                    JOptionPane.showMessageDialog(window, capitalize(what)+" must be a positive value",
+                                                  "ERROR", JOptionPane.ERROR_MESSAGE);
+                    continue;
+                }
+                return inputTest;
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(window, capitalize(what)+" must be a number",
+                                              "ERROR", JOptionPane.ERROR_MESSAGE);
+                continue;
+            }
+        }
+    }
+
+    private static void viewReceipt(JFrame window, String receipt) {
+        JOptionPane.showMessageDialog(window, receipt, "Receipt",
                                       JOptionPane.PLAIN_MESSAGE);
     }
 
@@ -252,13 +366,13 @@ public class EmployeeGUI {
         return "$"+String.format("%.2f", rawValue);
     }
 
-    private static double displayBillingSummary(JFrame window, String ticketID) {
+    private static Double displayBillingSummary(JFrame window, String ticketID) {
         sendMessage("bs:"+ticketID);
         Message response = getMessage();
         if (response.getText().equals("bs:invalid_ticket_id")) {
             JOptionPane.showMessageDialog(window, "Invalid ticket: "+ticketID,
                                           "ERROR", JOptionPane.ERROR_MESSAGE);
-            return -1;
+            return null;
         }
         String billing = response.getText().substring("bs:".length());
         String split[] = billing.split(":");
@@ -280,7 +394,7 @@ public class EmployeeGUI {
             options[0]                          // default selected button
         );
         if (paymentPrompt != 0) { // if user chose not to pay
-            return -1;
+            return null;
         }
         return paymentAmount; // return actual payment amount
     }
