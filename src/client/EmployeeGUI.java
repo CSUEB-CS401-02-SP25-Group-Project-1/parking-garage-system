@@ -4,8 +4,11 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
+import javax.swing.*;
+import javax.swing.event.*;
+import java.awt.*;
+import java.awt.event.*;
+
 import shared.*;
 
 public class EmployeeGUI {
@@ -17,11 +20,11 @@ public class EmployeeGUI {
     private static ObjectInputStream in;
 
     public static void main(String[] args) {
-        while (true) { // loop for logouts
+        //while (true) { // loop for logouts
             initScreen();
             loginScreen();
             dashboardScreen();
-        }
+        //}
     }
 
     // main windows
@@ -35,7 +38,7 @@ public class EmployeeGUI {
                 }
             }
             if (garageID == null) {
-                String garageID = JOptionPane.showInputDialog("Enter garage ID:");
+                garageID = JOptionPane.showInputDialog("Enter garage ID:");
                 if (garageID == null) { // if user didn't specify garage ID
                     exit(); // close program
                 }
@@ -55,17 +58,84 @@ public class EmployeeGUI {
     }
 
     private static void loginScreen() {
-        JFrame frame = new JFrame("Employee Login");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // TODO: find out how to call exit() method
-		frame.setSize(560, 480);
-		frame.setLocationRelativeTo(null); // center on screen
-		frame.setVisible(true);	// make visible
-		// UI stuff
+        // window config
+        JFrame window = new JFrame("Employee Login");
+		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // TODO: find out how to call exit() method
+		window.setSize(560, 480);
+		window.setLocationRelativeTo(null); // center on screen
+		window.setVisible(true); // make visible
 
+        // panel layouts
+        //LayoutManager boxLayout = new BoxLayout(mainPanel, BoxLayout.Y_AXIS);
+        LayoutManager flowLayout = new FlowLayout();
+
+        // panels
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(flowLayout);
+
+        JPanel usernamePanel = new JPanel();
+        mainPanel.setLayout(flowLayout);
+
+        JPanel passwordPanel = new JPanel();
+        mainPanel.setLayout(flowLayout);
+
+        // widgets
+        
+        // notice text
+        JLabel noticeLabel = new JLabel("Welcome! Please login below.");
+
+        // username
+        JLabel usernameLabel = new JLabel("Username:");
+        JTextField usernameField = new JTextField(10);
+
+        // password
+        JLabel passwordLabel = new JLabel("Password:");
+        JTextField passwordField = new JTextField(10);
+
+        // submit button
+        JButton submitButton = new JButton("Submit");
+
+        // widget action listeners
+        submitButton.addActionListener(new ActionListener() { // search button action listener
+			public void actionPerformed(ActionEvent e) {
+				if (submitCredentials(usernameField.getText(), passwordField.getText())) { // if credentials were valid
+                    // proceed to next screen
+                    window.dispose();
+                    return;
+                } else { // otherwise, show error message
+                    JOptionPane.showMessageDialog(window, "Invalid credentials. Please try again.", 
+                                                  "ERROR", JOptionPane.ERROR_MESSAGE);
+                    usernameField.setText(""); // clear fields
+                    passwordField.setText("");
+                }
+			}
+	    });
+
+        // add widgets to panels
+        mainPanel.add(noticeLabel);
+        mainPanel.add(usernamePanel);
+        usernamePanel.add(usernameLabel);
+        usernamePanel.add(usernameField);
+        mainPanel.add(passwordPanel);
+        passwordPanel.add(passwordLabel);
+        passwordPanel.add(passwordField);
+        mainPanel.add(submitButton);
+
+        // make the submit button the default selection
+        window.getRootPane().setDefaultButton(submitButton);
+
+        // add panels to window
+        window.add(mainPanel);
     }
 
     private static void dashboardScreen() {
-
+        // TODO: display current username
+        // TODO: display garage name (and id)
+        // TODO: display current parking availability
+        // TODO: display list of active tickets in garage
+        // TODO: display list of cameras
+        // TODO: display gate status
+        // TODO: employee action buttons
     }
 
     // more helper methods
@@ -101,9 +171,9 @@ public class EmployeeGUI {
         return message;
     }
 
-    private static boolean connectToServer(String serverIP) {
+    private static boolean connectToServer(String ip) {
         try {
-            socket = new Socket(serverIP, PORT);
+            socket = new Socket(ip, PORT);
             out = new ObjectOutputStream(socket.getOutputStream());
             in = new ObjectInputStream(socket.getInputStream());
         } catch (Exception e) { // if connection failed
@@ -113,15 +183,24 @@ public class EmployeeGUI {
         return true;
     }
 
-    private static boolean requestGarage(String garageID) {
-        garageID = garageID.toUpperCase();
-        sendMessage("init:"+garageID+":em");
+    private static boolean requestGarage(String id) {
+        id = id.toUpperCase();
+        sendMessage("init:"+id+":em");
         Message response = getMessage();
         if (response.getText().equals("init:assigned_em")) {
             return true;
         }
         // if server returned error response
         garageID = null; // clear current garage ID in memory
+        return false;
+    }
+
+    private static boolean submitCredentials(String username, String password) {
+        sendMessage("li:"+username+":"+password);
+        Message response = getMessage();
+        if (response.getText().equals("li:successful")) {
+            return true;
+        }
         return false;
     }
 }
