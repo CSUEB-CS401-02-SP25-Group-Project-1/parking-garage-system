@@ -44,7 +44,7 @@ public class ClientHandler implements Runnable {
 				handleCustomer(); // handle client as customer instead
 			}
 		} catch (Exception e) {
-			log.append(LogType.ERROR, e+" while communicating with client "+clientIP);
+			//log.append(LogType.ERROR, e+" while communicating with client "+clientIP);
 		} finally {
 			sendMessage(MessageType.Success, "lo:signed_out");
 			try {
@@ -53,7 +53,7 @@ public class ClientHandler implements Runnable {
 				client.close();
 				log.append(LogType.ACTION, clientIP+" has logged out", garage);
 			} catch (Exception e) {
-				log.append(LogType.ERROR, e+" while signing out client "+clientIP);
+				//log.append(LogType.ERROR, e+" while signing out client "+clientIP);
 			}
 		}
 	}
@@ -64,7 +64,7 @@ public class ClientHandler implements Runnable {
 			out.writeObject(new Message(type, "server", text));
 			out.flush();
 		} catch (Exception e) {
-			log.append(LogType.ERROR, e+" while attempting to send message to client "+clientIP);
+			//log.append(LogType.ERROR, e+" while attempting to send message to client "+clientIP);
 		}
 	}
 	
@@ -73,7 +73,7 @@ public class ClientHandler implements Runnable {
 			out.writeObject(new ImageMessage(type, "server", text, image));
 			out.flush();
 		} catch (Exception e) {
-			log.append(LogType.ERROR, e+" while attempting to send image message to client ("+clientIP+")");
+			//log.append(LogType.ERROR, e+" while attempting to send image message to client "+clientIP);
 		}
 	}
 	
@@ -108,7 +108,7 @@ public class ClientHandler implements Runnable {
 				}
 			} catch (Exception e) {
 				sendMessage(MessageType.Fail, "init:unknown");
-				log.append(LogType.ERROR, e+" while listening for init message");
+				//log.append(LogType.ERROR, e+" while listening for init message");
 			}
 		}
 	}
@@ -160,7 +160,7 @@ public class ClientHandler implements Runnable {
 				return;
 			} catch (Exception e) {
 				sendMessage(MessageType.Fail, "li:unknown_error");
-				log.append(LogType.ERROR, e+": Unable to process login request for client "+clientIP);
+				// log.append(LogType.ERROR, e+": Unable to process login request for client "+clientIP);
 			}
 		}
 	}
@@ -229,6 +229,9 @@ public class ClientHandler implements Runnable {
 			case "vl":
 				viewLogs();
 				break;
+			case "gr":
+				getGarageRate();
+				break;
 			default:
 				runCustomerCommand(parameters); // roll into customer commands (common commands) if code doesn't match employee's
 			}
@@ -257,12 +260,18 @@ public class ClientHandler implements Runnable {
 			case "tg":
 				toggleGate();
 				break;
+			case "gs":
+				getGateStatus();
+				break;
 			case "bs":
 				ticketID = parameters[1];
 				viewBillingSummary(ticketID);
 				break;
 			case "gn":
 				viewGarageName();
+				break;
+			case "go":
+				getGateOpenTime();
 				break;
 			default:
 				sendMessage(MessageType.Fail, "unknown_command");
@@ -290,7 +299,7 @@ public class ClientHandler implements Runnable {
 				runEmployeeCommand(parameters);
 			} catch (Exception e) {
 				sendMessage(MessageType.Fail, "unknown_error");
-				log.append(LogType.ERROR, "Unable to process message from client "+clientIP);
+				//log.append(LogType.ERROR, "Unable to process message from client "+clientIP);
 			}
 		} 
 	}
@@ -310,13 +319,18 @@ public class ClientHandler implements Runnable {
 				runCustomerCommand(parameters);
 			} catch (Exception e) {
 				sendMessage(MessageType.Fail, "unknown_error");
-				log.append(LogType.ERROR, "Unable to process message from client "+clientIP);
+				//log.append(LogType.ERROR, "Unable to process message from client "+clientIP);
 			}
 			
 		}
 	}
 	
 	// customer commands (includes common user commands)
+
+	private void getGateOpenTime() { // go
+		double openTime = garage.getGate().getOpenTime();
+		sendMessage(MessageType.Success, "go:"+openTime);
+	}
 	
 	private void generateTicket() { // gt
 		String ticketID = garage.generateTicket(); // generated ticket ID
@@ -370,6 +384,17 @@ public class ClientHandler implements Runnable {
 		sendMessage(MessageType.Success, "tg:toggled");
 		log.append(LogType.ACTION, "Toggled gate for client "+clientIP, garage);
 	}
+
+	private void getGateStatus() {
+		Gate gate = garage.getGate();
+		boolean gateStatus = gate.isOpen();
+		if (gateStatus) {
+			sendMessage(MessageType.Success, "gs:gate_open");
+		} else {
+			sendMessage(MessageType.Success, "gs:gate_closed");
+		}
+		log.append(LogType.ACTION, "Sent gate status to client "+clientIP, garage);
+	}
 	
 	private void viewAvailability() { // va
 		int availabileSpaces = garage.getAvailableSpaces();
@@ -405,6 +430,11 @@ public class ClientHandler implements Runnable {
 	}
 	
 	// employee commands
+
+	private void getGarageRate() { // gr
+		double rate = garage.getHourlyRate();
+		sendMessage(MessageType.Success, "gr:"+rate);
+	}
 	
 	private void modifyPassword(String newPassword) { // mp
 		// input validation
@@ -469,7 +499,7 @@ public class ClientHandler implements Runnable {
 		sendMessage(MessageType.Success, 
 					"vr:"+report.getRevenueThisHour()+","+report.getRevenueToday()+","+
 					report.getRevenueThisWeek()+","+report.getRevenueThisMonth()+","+
-					report.getRevenueToday()+","+report.getTotalRevenue()+","+
+					report.getRevenueThisYear()+","+report.getTotalRevenue()+","+
 					report.getPeakHour()+","+report.getCurrentlyParkedNum());
 		log.append(LogType.ACTION, "Generated garage report for employee "+employee.getUsername(), garage);
 	}

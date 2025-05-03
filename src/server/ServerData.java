@@ -324,13 +324,13 @@ public class ServerData {
 	        Boolean paid = Boolean.parseBoolean(split[4]);
 	        String feeStr = split[5];
 	        // null string check
-	        Long entryTime = null;
+	        Date entryDate = null;
 	        if (!entryTimeStr.equals("null")) {
-	            entryTime = Long.parseLong(entryTimeStr);
+	            entryDate = new Date(Long.parseLong(entryTimeStr));
 	        }
-	        Long exitTime = null;
+	        Date exitDate = null;
 	        if (!exitTimeStr.equals("null")) {
-	            exitTime = Long.parseLong(exitTimeStr);
+	            exitDate = new Date(Long.parseLong(exitTimeStr));
 	        }
 	        Double fee = null;
 	        if (!feeStr.equals("null")) {
@@ -343,7 +343,7 @@ public class ServerData {
 	            return;
 	        }
 	        // assemble object
-	        Ticket ticket = new Ticket(garage, new Date(entryTime), new Date(exitTime), overridden, paid, fee);
+	        Ticket ticket = new Ticket(garage, entryDate, exitDate, overridden, paid, fee);
 	        // add ticket to database
 	        tickets.put(ticket.getID(), ticket);
 	        // add ticket to associated garage

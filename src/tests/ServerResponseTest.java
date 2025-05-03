@@ -245,6 +245,14 @@ public class ServerResponseTest { // tests all server responses from given clien
 		Message response = getMessage();
 		assertEquals("tg:toggled", response.getText());
 	}
+
+	@Test
+	public void GetGateStatusTest() {
+		// server should return message indicating the gate's status (open or closed)
+		sendMessage("gs");
+		Message response = getMessage();
+		assertTrue(response.getText().equals("gs:gate_open") || response.getText().equals("gs:gate_closed"));
+	}
 	
 	@Test
 	public void GetGarageNameTest() {
@@ -387,6 +395,22 @@ public class ServerResponseTest { // tests all server responses from given clien
 		sendMessage("vl");
 		Message response = getMessage();
 		assertTrue(response.getText().startsWith("vl:") && response.getText().contains("\n")); // log entries are seperated by newlines
+	}
+
+	@Test
+	public void GetGarageRateTest() {
+		// server should return the garage's current hourly rate
+		sendMessage("gr");
+		Message response = getMessage();
+		assertEquals("gr:15.0", response.getText());
+	}
+
+	@Test
+	public void GetGateOpenTimeTest() {
+		// server should return the garage's current hourly rate
+		sendMessage("go");
+		Message response = getMessage();
+		assertEquals("go:10.0", response.getText());
 	}
 	
 	@Test
