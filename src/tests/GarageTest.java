@@ -4,6 +4,12 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 import java.util.ArrayList;
+import server.Garage;
+import server.Gate;
+import server.Receipt;
+import server.Report;
+import server.SecurityCamera;
+import server.Ticket;
 
 public class GarageTest {
     private Garage garage;
