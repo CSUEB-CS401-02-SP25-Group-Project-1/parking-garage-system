@@ -23,7 +23,7 @@ public class EmployeeGUI {
     public static void main(String[] args) {
         initScreen();
         loginScreen();
-        dashboardScreen();
+        //dashboardScreen();
         exit();
     }
 
@@ -58,61 +58,52 @@ public class EmployeeGUI {
     }
 
     private static void loginScreen() {
+        // window config
         JFrame window = new JFrame("Employee Login");
-        window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        window.setSize(560, 480);
-        window.setLocationRelativeTo(null);
-        window.setVisible(true);
-        window.setLayout(new GridBagLayout()); // main layout
-        GridBagConstraints grid = new GridBagConstraints();
-        grid.insets = new Insets(10, 10, 10, 10); // padding
-    
-        // notice label
+		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // TODO: find out how to call exit() method
+		window.setSize(560, 480);
+		window.setLocationRelativeTo(null); // center on screen
+		window.setVisible(true); // make visible
+
+        // panel layouts
+        //LayoutManager boxLayout = new BoxLayout(mainPanel, BoxLayout.Y_AXIS);
+        LayoutManager flowLayout = new FlowLayout();
+
+        // panels
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(flowLayout);
+
+        JPanel usernamePanel = new JPanel();
+        mainPanel.setLayout(flowLayout);
+
+        JPanel passwordPanel = new JPanel();
+        mainPanel.setLayout(flowLayout);
+
+        // widgets
+        
+        // notice text
         JLabel noticeLabel = new JLabel("Welcome! Please login below.");
-        noticeLabel.setFont(new Font("SansSerif", Font.BOLD, 16));
-        grid.gridx = 0;
-        grid.gridy = 0;
-        grid.gridwidth = 2;
-        grid.anchor = GridBagConstraints.CENTER;
-        window.add(noticeLabel, grid);
-    
+
         // username
         JLabel usernameLabel = new JLabel("Username:");
-        JTextField usernameField = new JTextField(15);
-        grid.gridwidth = 1;
-        grid.gridy = 1;
-        grid.gridx = 0;
-        grid.anchor = GridBagConstraints.EAST;
-        window.add(usernameLabel, grid);
-        grid.gridx = 1;
-        grid.anchor = GridBagConstraints.WEST;
-        window.add(usernameField, grid);
-    
+        JTextField usernameField = new JTextField(10);
+
         // password
         JLabel passwordLabel = new JLabel("Password:");
-        JPasswordField passwordField = new JPasswordField(15);
-        grid.gridy = 2;
-        grid.gridx = 0;
-        grid.anchor = GridBagConstraints.EAST;
-        window.add(passwordLabel, grid);
-        grid.gridx = 1;
-        grid.anchor = GridBagConstraints.WEST;
-        window.add(passwordField, grid);
-    
-        // submit button to right of password field
+        JPasswordField passwordField = new JPasswordField(10);
+
+        // submit button
         JButton submitButton = new JButton("Submit");
-        grid.gridy = 2;
-        grid.gridx = 2;
-        grid.anchor = GridBagConstraints.WEST;
-        window.add(submitButton, grid);
-    
-        // submit button action
-        submitButton.addActionListener(new ActionListener() { // add button action listener
+
+        // widget action listeners
+        submitButton.addActionListener(new ActionListener() { // search button action listener
 			public void actionPerformed(ActionEvent e) {
-				if (submitCredentials(usernameField.getText(), new String(passwordField.getPassword()))) {
-                    window.dispose(); // login successful
-                } else {
-                    JOptionPane.showMessageDialog(window, "Invalid credentials. Please try again.",
+				if (submitCredentials(usernameField.getText(), passwordField.getPassword().toString())) { // if credentials were valid
+                    // proceed to next screen
+                    window.dispose();
+                    return;
+                } else { // otherwise, show error message
+                    JOptionPane.showMessageDialog(window, "Invalid credentials. Please try again.", 
                                                   "ERROR", JOptionPane.ERROR_MESSAGE);
                     usernameField.setText(""); // clear fields
                     passwordField.setText("");
@@ -120,8 +111,21 @@ public class EmployeeGUI {
 			}
 	    });
 
-        // make the submit button the default button
-        window.getRootPane().setDefaultButton(submitButton); 
+        // add widgets to panels
+        mainPanel.add(noticeLabel);
+        mainPanel.add(usernamePanel);
+        usernamePanel.add(usernameLabel);
+        usernamePanel.add(usernameField);
+        mainPanel.add(passwordPanel);
+        passwordPanel.add(passwordLabel);
+        passwordPanel.add(passwordField);
+        mainPanel.add(submitButton);
+
+        // make the submit button the default selection
+        window.getRootPane().setDefaultButton(submitButton);
+
+        // add panels to window
+        window.add(mainPanel);
     }
 
     private static void dashboardScreen() {

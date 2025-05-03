@@ -53,7 +53,7 @@ public class ClientHandler implements Runnable {
 				client.close();
 				log.append(LogType.ACTION, clientIP+" has logged out", garage);
 			} catch (Exception e) {
-				log.append(LogType.ERROR, e+" while signing out client "+clientIP);
+				//log.append(LogType.ERROR, e+" while signing out client "+clientIP); // TODO
 			}
 		}
 	}
@@ -107,7 +107,7 @@ public class ClientHandler implements Runnable {
 					log.append(LogType.ERROR, clientIP+" sent invalid init message!");
 				}
 			} catch (Exception e) {
-				//sendMessage(MessageType.Fail, "init:unknown"); // TODO
+				sendMessage(MessageType.Fail, "init:unknown"); // TODO
 				//log.append(LogType.ERROR, e+" while listening for init message"); // TODO
 			}
 		}
@@ -160,7 +160,7 @@ public class ClientHandler implements Runnable {
 				return;
 			} catch (Exception e) {
 				sendMessage(MessageType.Fail, "li:unknown_error");
-				log.append(LogType.ERROR, e+": Unable to process login request for client "+clientIP);
+				// log.append(LogType.ERROR, e+": Unable to process login request for client "+clientIP); // TODO
 			}
 		}
 	}
@@ -298,7 +298,7 @@ public class ClientHandler implements Runnable {
 				String parameters[] = getMessageParameters(incoming);
 				runEmployeeCommand(parameters);
 			} catch (Exception e) {
-				//sendMessage(MessageType.Fail, "unknown_error"); // TODO
+				sendMessage(MessageType.Fail, "unknown_error"); // TODO
 				//log.append(LogType.ERROR, "Unable to process message from client "+clientIP); // TODO
 			}
 		} 
@@ -318,7 +318,7 @@ public class ClientHandler implements Runnable {
 				String parameters[] = getMessageParameters(incoming);
 				runCustomerCommand(parameters);
 			} catch (Exception e) {
-				//sendMessage(MessageType.Fail, "unknown_error"); // TODO
+				sendMessage(MessageType.Fail, "unknown_error"); // TODO
 				//log.append(LogType.ERROR, "Unable to process message from client "+clientIP); TODO
 			}
 			
