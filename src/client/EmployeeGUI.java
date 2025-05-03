@@ -463,7 +463,7 @@ public class EmployeeGUI {
         textArea.setWrapStyleWord(true); // wrap at word boundaries
         // wrap it in a scroll pane
         JScrollPane scrollPane = new JScrollPane(textArea);
-        scrollPane.setSize(new Dimension(500, 400)); // size of popup
+        scrollPane.setPreferredSize(new Dimension(500, 400)); // size of popup
         // show it as a dialog rather than a new window
         JOptionPane.showMessageDialog(window, scrollPane, "Garage Logs",
                                       JOptionPane.PLAIN_MESSAGE);
