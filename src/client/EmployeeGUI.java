@@ -24,6 +24,7 @@ public class EmployeeGUI {
         initScreen();
         loginScreen();
         dashboardScreen();
+        exit();
     }
 
     // main windows
@@ -58,7 +59,7 @@ public class EmployeeGUI {
 
     private static void loginScreen() {
         JFrame window = new JFrame("Employee Login");
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         window.setSize(560, 480);
         window.setLocationRelativeTo(null);
         window.setVisible(true);
@@ -126,7 +127,7 @@ public class EmployeeGUI {
     private static void dashboardScreen() {
         // window config
         JFrame window = new JFrame("Employee Dashboard");
-		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // TODO: find out how to call exit() method
+		window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		window.setSize(560, 480);
 		window.setLocationRelativeTo(null); // center on screen
 		window.setVisible(true); // make visible
@@ -174,7 +175,7 @@ public class EmployeeGUI {
         camerasList.addListSelectionListener(new ListSelectionListener() {
 	    	public void valueChanged(ListSelectionEvent e) {
 	    		if (!e.getValueIsAdjusting()) { // detects whenever a list element is clicked once
-	    			String selectedCameraID = activeTicketsList.getSelectedValue();
+	    			String selectedCameraID = camerasList.getSelectedValue();
 	    			viewCameraFeed(window, selectedCameraID);
 	    		}
 	    	}
@@ -231,13 +232,13 @@ public class EmployeeGUI {
 
         logoutButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				logout(window);
+				logout(window, updater);
 			}
 	    });
 
         viewLogsButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				viewReport(window);
+				viewLogs(window);
 			}
 	    });
     }
@@ -466,7 +467,7 @@ public class EmployeeGUI {
                                       JOptionPane.PLAIN_MESSAGE);
     }
 
-    private static void logout(JFrame window) {
+    private static void logout(JFrame window, DashboardUpdater updater) {
         sendMessage("lo");
         Message response = getMessage();
         if (!response.getText().equals("lo:signed_out")) {
@@ -477,6 +478,7 @@ public class EmployeeGUI {
         }
         JOptionPane.showMessageDialog(window, "Signed out of server",
                                       "SUCCESS", JOptionPane.INFORMATION_MESSAGE);
+        updater.stop(); // stop updater
         closeConnection(); // close connection
         initScreen(); // go through init process again
     }
@@ -720,12 +722,12 @@ public class EmployeeGUI {
 
         private void updateActiveTicketsList() {
             ArrayList<String> activeTicketIDs = getActiveTicketIDs();
-            activeTicketsList = new JList<>(getListModel(activeTicketIDs));
+            activeTicketsList.setModel(getListModel(activeTicketIDs));
         }
 
         private void updateCamerasList() {
             ArrayList<String> cameraIDs = getCameraIDs();
-            activeTicketsList = new JList<>(getListModel(cameraIDs));
+            camerasList.setModel(getListModel(cameraIDs));
         }
 
         private void updateGateStatus() {
@@ -754,7 +756,7 @@ public class EmployeeGUI {
             return Integer.parseInt(response.getText().substring("va:".length()));
         }
 
-        private String geAllIDsAsString(String command) {
+        private String getAllIDsAsString(String command) {
             sendMessage(command);
             Message response = getMessage();
             return response.getText().substring((command+":").length());
@@ -772,11 +774,11 @@ public class EmployeeGUI {
         }
 
         private ArrayList<String> getActiveTicketIDs() {
-            return getIDsFromString(geAllIDsAsString("vv"));
+            return getIDsFromString(getAllIDsAsString("vv"));
         }
 
         private ArrayList<String> getCameraIDs() {
-            return getIDsFromString(geAllIDsAsString("vc"));
+            return getIDsFromString(getAllIDsAsString("vc"));
         }
 
         private DefaultListModel<String> getListModel(ArrayList<String> strings) {
