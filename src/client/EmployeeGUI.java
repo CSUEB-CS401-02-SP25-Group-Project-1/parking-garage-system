@@ -109,7 +109,7 @@ public class EmployeeGUI {
         // submit button action
         submitButton.addActionListener(new ActionListener() { // add button action listener
 			public void actionPerformed(ActionEvent e) {
-				if (submitCredentials(usernameField.getText(), passwordField.getPassword().toString())) {
+				if (submitCredentials(usernameField.getText(), new String(passwordField.getPassword()))) {
                     window.dispose(); // login successful
                 } else {
                     JOptionPane.showMessageDialog(window, "Invalid credentials. Please try again.",
@@ -435,11 +435,13 @@ public class EmployeeGUI {
         if (!response.getText().startsWith("vr:")) {
             JOptionPane.showMessageDialog(window, "Unable to view report at this time",
                                           "ERROR", JOptionPane.ERROR_MESSAGE);
+            return;
         }
         String report = assembleReport(response.getText().substring("vr:".length()));
         if (report == null) {
             JOptionPane.showMessageDialog(window, "Error while processing report",
                                           "ERROR", JOptionPane.ERROR_MESSAGE);
+            return;
         }
         JOptionPane.showMessageDialog(window, report, "Garage Report",
                                       JOptionPane.PLAIN_MESSAGE);
