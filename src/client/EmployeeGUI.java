@@ -21,14 +21,13 @@ public class EmployeeGUI {
     private static ObjectInputStream in;
 
     public static void main(String[] args) {
-        initScreen();
+        initScreen(); // will open each screen by chaining
     }
 
     // main windows
 
     private static void initScreen() {
         while (true) {
-            System.out.println("ass");
             if (serverIP == null) {
                 serverIP = JOptionPane.showInputDialog("Enter server IP:");
                 if (serverIP == null) { // if user didn't specify server IP
@@ -58,52 +57,63 @@ public class EmployeeGUI {
     }
 
     private static void loginScreen() {
-        // window config
         JFrame window = new JFrame("Employee Login");
-		window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		window.setSize(560, 480);
-		window.setLocationRelativeTo(null); // center on screen
-		window.setVisible(true); // make visible
-
-        // panel layouts
-        //LayoutManager boxLayout = new BoxLayout(mainPanel, BoxLayout.Y_AXIS);
-        LayoutManager flowLayout = new FlowLayout();
-
-        // panels
-        JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(flowLayout);
-
-        JPanel usernamePanel = new JPanel();
-        mainPanel.setLayout(flowLayout);
-
-        JPanel passwordPanel = new JPanel();
-        mainPanel.setLayout(flowLayout);
-
-        // widgets
-        
-        // notice text
+        window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        window.setSize(560, 480);
+        window.setLocationRelativeTo(null);
+        window.setVisible(true);
+        window.setLayout(new GridBagLayout()); // main layout
+        GridBagConstraints grid = new GridBagConstraints();
+        grid.insets = new Insets(10, 10, 10, 10); // padding
+    
+        // notice label
         JLabel noticeLabel = new JLabel("Welcome! Please login below.");
-
+        noticeLabel.setFont(new Font("SansSerif", Font.BOLD, 16));
+        grid.gridx = 0;
+        grid.gridy = 0;
+        grid.gridwidth = 2;
+        grid.anchor = GridBagConstraints.CENTER;
+        window.add(noticeLabel, grid);
+    
         // username
         JLabel usernameLabel = new JLabel("Username:");
-        JTextField usernameField = new JTextField(10);
-
+        JTextField usernameField = new JTextField(15);
+        grid.gridwidth = 1;
+        grid.gridy = 1;
+        grid.gridx = 0;
+        grid.anchor = GridBagConstraints.EAST;
+        window.add(usernameLabel, grid);
+        grid.gridx = 1;
+        grid.anchor = GridBagConstraints.WEST;
+        window.add(usernameField, grid);
+    
         // password
         JLabel passwordLabel = new JLabel("Password:");
-        JPasswordField passwordField = new JPasswordField(10);
-
-        // submit button
+        JPasswordField passwordField = new JPasswordField(15);
+        grid.gridy = 2;
+        grid.gridx = 0;
+        grid.anchor = GridBagConstraints.EAST;
+        window.add(passwordLabel, grid);
+        grid.gridx = 1;
+        grid.anchor = GridBagConstraints.WEST;
+        window.add(passwordField, grid);
+    
+        // submit button to right of password field
         JButton submitButton = new JButton("Submit");
-
-        // widget action listeners
-        submitButton.addActionListener(new ActionListener() { // search button action listener
+        grid.gridy = 2;
+        grid.gridx = 2;
+        grid.anchor = GridBagConstraints.WEST;
+        window.add(submitButton, grid);
+    
+        // submit button action
+        submitButton.addActionListener(new ActionListener() { // add button action listener
 			public void actionPerformed(ActionEvent e) {
-				if (submitCredentials(usernameField.getText(), new String(passwordField.getPassword()))) { // if credentials were valid
+				if (submitCredentials(usernameField.getText(), new String(passwordField.getPassword()))) {
                     // proceed to next screen
-                    dashboardScreen();
-                    window.dispose(); // close this screen
-                } else { // otherwise, show error message
-                    JOptionPane.showMessageDialog(window, "Invalid credentials. Please try again.", 
+                    dashboardScreen(); 
+                    window.dispose(); // close current screen
+                } else {
+                    JOptionPane.showMessageDialog(window, "Invalid credentials. Please try again.",
                                                   "ERROR", JOptionPane.ERROR_MESSAGE);
                     usernameField.setText(""); // clear fields
                     passwordField.setText("");
@@ -111,21 +121,8 @@ public class EmployeeGUI {
 			}
 	    });
 
-        // add widgets to panels
-        mainPanel.add(noticeLabel);
-        mainPanel.add(usernamePanel);
-        usernamePanel.add(usernameLabel);
-        usernamePanel.add(usernameField);
-        mainPanel.add(passwordPanel);
-        passwordPanel.add(passwordLabel);
-        passwordPanel.add(passwordField);
-        mainPanel.add(submitButton);
-
-        // make the submit button the default selection
-        window.getRootPane().setDefaultButton(submitButton);
-
-        // add panels to window
-        window.add(mainPanel);
+        // make the submit button the default button
+        window.getRootPane().setDefaultButton(submitButton); 
     }
 
     private static void dashboardScreen() {
@@ -221,12 +218,23 @@ public class EmployeeGUI {
         gateTimeLabel, rateLabel, activeTicketsList, camerasList);
         new Thread(updater).start();
 
+        // "closing window" procedure
+        window.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                logout(window, updater);
+                System.exit(0); // close program
+            }
+        });
+
         // list selection listener for active tickets list
         activeTicketsList.addListSelectionListener(new ListSelectionListener() {
 	    	public void valueChanged(ListSelectionEvent e) {
 	    		if (!e.getValueIsAdjusting()) { // detects whenever a list element is clicked once
 	    			String selectedTicketID = activeTicketsList.getSelectedValue();
-	    			payTicket(window, updater, selectedTicketID);
+                    if (selectedTicketID != null) {
+                        payTicket(window, updater, selectedTicketID);
+                    }
 	    		}
 	    	}
 	    });
@@ -236,7 +244,9 @@ public class EmployeeGUI {
 	    	public void valueChanged(ListSelectionEvent e) {
 	    		if (!e.getValueIsAdjusting()) { // detects whenever a list element is clicked once
 	    			String selectedCameraID = camerasList.getSelectedValue();
-	    			viewCameraFeed(window, selectedCameraID);
+                    if (selectedCameraID != null) {
+                        viewCameraFeed(window, selectedCameraID);
+                    }
 	    		}
 	    	}
 	    });
@@ -350,7 +360,7 @@ public class EmployeeGUI {
 
     private static void payTicket(JFrame window, DashboardUpdater updater, String ticketID) {
         if (ticketID == null) {
-            ticketID = JOptionPane.showInputDialog(window, "Enter ticket ID:");
+            ticketID = JOptionPane.showInputDialog(window, "Enter ticket ID:").toUpperCase();
             if (ticketID == null) { // user cancellation
                 return;
             }
@@ -402,10 +412,16 @@ public class EmployeeGUI {
     }
 
     private static void changePassword(JFrame window) { // no need to update widgets
-        String newPassword = JOptionPane.showInputDialog(window, "Enter new password:");
-        if (newPassword == null) { // user cancellation
-            return;
+        // workaround for swing having no input dialogue for obscuring passwords like jpasswordfield
+        JPasswordField passwordField = new JPasswordField();
+        Object[] prompt = {"Enter new password:", passwordField};
+        int option = JOptionPane.showConfirmDialog(window, prompt, "Change password",
+        JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+        if (option != 0) { // user cancellation
+            return; 
         }
+        // send new password to server
+        String newPassword = new String(passwordField.getPassword());
         sendMessage("mp:"+newPassword);
         Message response = getMessage();
         if (response.getText().equals("mp:no_special_characters")) {
@@ -457,7 +473,7 @@ public class EmployeeGUI {
     }
 
     private static void overrideTicket(JFrame window) { // no need to update widgets
-        String ticketID = JOptionPane.showInputDialog(window, "Enter ticket ID:");
+        String ticketID = JOptionPane.showInputDialog(window, "Enter ticket ID:").toUpperCase();
         if (ticketID == null) { // user cancellation
             return;
         }
@@ -811,7 +827,7 @@ public class EmployeeGUI {
         }
 
         private void updateGateTime() {
-            gateTimeLabel.setText("Gate open time: "+getGateOpenTime());
+            gateTimeLabel.setText("Gate open time: "+getGateOpenTime()+"s");
         }
 
         // more helper methods

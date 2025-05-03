@@ -1,1 +1,1 @@
-Sample Garage,40.0,200,10.0
+Sample Garage,14.99,200,10.0
