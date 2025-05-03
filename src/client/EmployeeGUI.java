@@ -22,13 +22,13 @@ public class EmployeeGUI {
 
     public static void main(String[] args) {
         initScreen();
-        loginScreen();
     }
 
     // main windows
 
     private static void initScreen() {
         while (true) {
+            System.out.println("ass");
             if (serverIP == null) {
                 serverIP = JOptionPane.showInputDialog("Enter server IP:");
                 if (serverIP == null) { // if user didn't specify server IP
@@ -52,9 +52,9 @@ public class EmployeeGUI {
                 continue;
             }
             System.out.println(serverIP+" "+garageID);
+            loginScreen();
             return;
         }
-        
     }
 
     private static void loginScreen() {
@@ -311,10 +311,12 @@ public class EmployeeGUI {
         if (response.getText().equals("vf:camera_not_found")) {
             JOptionPane.showMessageDialog(window, "Unable to get live camera feed: camera not found", 
                                           "ERROR", JOptionPane.ERROR_MESSAGE);
+            return;
         }
         if (response.getText().equals("vf:feed_unavailable")) {
             JOptionPane.showMessageDialog(window, "Unable to get live camera feed: feed unavailable", 
                                           "ERROR", JOptionPane.ERROR_MESSAGE);
+            return;
         }
         if (!response.getText().equals("vf:image")) {
             JOptionPane.showMessageDialog(window, "Unable to get live camera feed at this time", 
@@ -542,7 +544,9 @@ public class EmployeeGUI {
                                       "SUCCESS", JOptionPane.INFORMATION_MESSAGE);
         updater.stop(); // stop updater
         closeConnection(); // close connection
+        user = null; // reset user
         initScreen(); // go through init process again
+        window.dispose(); // close dashboard
     }
 
     // more helper methods
