@@ -8,10 +8,10 @@ import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Scanner;
 import server.Earning;
-import mock.Employee;
-import mock.Garage;
-import mock.Report;
-import mock.Ticket;
+import server.Employee;
+import server.Garage;
+import server.Report;
+import server.Ticket;
 
 public class ServerData {
 	private final String GARAGE_SUBDIR = "/garages/"; // "GA#.txt"

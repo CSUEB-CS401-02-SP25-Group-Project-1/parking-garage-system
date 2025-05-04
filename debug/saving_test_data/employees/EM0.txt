@@ -1,1 +1,0 @@
-GA0,my_badass_username,VERY STRONG PASSWORD!
