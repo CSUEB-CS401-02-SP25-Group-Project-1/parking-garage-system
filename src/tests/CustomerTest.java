@@ -1,32 +1,34 @@
 package tests;
 
-package mock.*;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
-import org.junit.*;
+import server.Customer;
+import server.Garage;
+import server.Ticket;
+import server.UserType;
+
 
 public class CustomerTest {
+
 	@Test
-	public void testInheritance() {
-		Garage g = new Garage();
-		Customer customer = new Customer(g);
+	public void test_customer_garage()
+	{
+		Garage garage = new Garage();
+		Customer customer = new Customer(garage);
 		
-		// test inheritance
-		assertEquals(g, customer.getGarage());
+		assertEquals(garage, customer.getGarage());
 		assertEquals(UserType.Customer, customer.getType());
 	}
-
 	@Test
-	public void testViewGarageAvailablity() {
-		String name = "name";
-		int capacity = 20;
+	public void test_availbility()
+	{
+		String name = "Garage";
+		int capacity = 100;
 		double rate = 10.50;
-		Garage g = new Garage(name, capacity, rate);
-		Customer customer = new Customer(g);
-
-		// add ticket to garage
-		Ticket t = customer.generateTicket();
-		
-		// One ticket added means available space is (capacity - 1)
-		assertEquals(capacity - 1, customer.viewGarageAvailability());
+		Garage garage = new Garage(name, capacity, rate);
+		Customer customer = new Customer(garage);
+		Ticket ticket = customer.generateTicket();
+		assertEquals(capacity - 1, customer.availbility());
 	}
 }
