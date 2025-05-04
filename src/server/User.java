@@ -66,4 +66,13 @@ public class User implements UserInterface {
 		else
 			gate.open();
 	}
+	
+	public boolean getGateStatus() {
+		return garage.getGate().isOpen();
+	}
+	
+	public double getGateOpenTime() {
+		return garage.getGate().getOpenTime();
+	}
+	
 }
