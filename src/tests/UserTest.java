@@ -4,6 +4,7 @@ import server.User;
 import server.Garage;
 import server.Ticket;
 import server.Receipt;
+import server.UserType;
 
 import org.junit.*;
 
@@ -13,7 +14,7 @@ public class UserTest {
 	public void testSetters() {
 		Garage garage = new Garage(); // no parameters for mock garage
 		UserType type = UserType.Customer;
-		User user1;
+		User user1 = new User();
 		user1.setGarage(garage);
 		user1.setType(type);
 
@@ -25,21 +26,22 @@ public class UserTest {
 	public void testTickets() {
 		User user = new User();
 		// add a ticket
-		Ticket t = user.generateTicket();
+		String s = user.generateTicket();
+		Ticket t = user.getGarage().getTicket(s);
 
 		// ticket will exist if generated
-		assertTrue(t != null);
+		assertNotNull(t);
 
 		// pay the ticket off
 		Receipt r = user.payTicket(t.getID(), 4000);
 		
 		// receipt will exist if ticket was paid
-		assertTrue(r != null);
+		assertNotNull(r);
 
 		// try to pay off ticket again
 		r = user.payTicket(t.getID(), 4000);
 
 		// `r` will be null because ticket is already removed
-		assertEquals(r, null);
+		assertNull(r);
 	}
 }

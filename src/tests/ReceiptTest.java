@@ -1,5 +1,9 @@
 package tests;
 
+import server.Receipt;
+import server.Ticket;
+import server.Garage;
+
 import static org.junit.Assert.*;
 import org.junit.Test;
 import java.util.Date;

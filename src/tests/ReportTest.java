@@ -1,5 +1,7 @@
 package tests;
 
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.Test;
 import server.Garage;
 import server.Earning;
 import server.Report;
@@ -39,10 +41,10 @@ public class ReportTest {
 	}	
 
 	for (Earning e : expectedEarnings) {
-	    r.addEarning(e);
+	    r.addExit(e);
 	}
 	
-	assertEquals(expectedEntries, r.getEntrytimes());
+	assertEquals(expectedEntries, r.getEntryTimes());
 	assertEquals(expectedEarnings, r.getEarnings());
 
 	assertTrue(r.getCurrentlyParkedNum() > 0);
@@ -67,8 +69,8 @@ public class ReportTest {
 
     @Test
     public void testToString() {
-	Garage g = newGarage();
-	Report r = newReport(g);
+	Garage g = new Garage();
+	Report r = new Report(g);
 
 	String expected = "";
 	String entries_s = "";
@@ -79,7 +81,7 @@ public class ReportTest {
 	assertEquals(expected, r.toString());
 
 	for (Date d : expectedEntries) {
-	    r.addEntry(d);
+	    r.addEntryTime(d);
 	    entries_s += d.getTime() + ",";
 	}
 

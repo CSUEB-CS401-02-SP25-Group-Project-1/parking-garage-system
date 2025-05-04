@@ -1,14 +1,14 @@
 package tests;
 
-import static org.junit.Assert.*;
-
+import static org.junit.jupiter.api.Assertions.*;
 import org.junit.Test;
 
-import server.Ticket
+import server.Ticket;
 import server.Garage;
 
 import java.util.Date;
 import java.lang.Thread;
+import java.io.IOException;
 
 public class TicketTest {
 	
@@ -28,9 +28,12 @@ public class TicketTest {
 	@Test
 	public void testPay() {
 		Ticket t = new Ticket(new Garage());
-
-		Thread.sleep(10000); // wait so fee is > 0
-				     
+		
+		try {
+			Thread.sleep(10000); // wait so fee is > 0
+		} catch (InterruptedException e) {
+			System.err.println(e);
+		}		
 		t.calculateFee(); // put fee on ticket
 		boolean success = t.pay(0); // fail payment
 		assertFalse(success);
