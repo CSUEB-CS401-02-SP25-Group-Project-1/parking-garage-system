@@ -1,4 +1,5 @@
 package server;
+import server.*;
 
 import interfaces.TicketInterface;
 
@@ -141,7 +142,7 @@ public class Ticket implements TicketInterface{
 			// .getTime() returns long
 			// does not interfere with comma separation
 			// and can be restored with new Date(long)
-		if (exitTime != null) {
+		if (exitTime == null) {
 			r += ",null";
 		} else {
 			r += "," + exitTime.getTime();
