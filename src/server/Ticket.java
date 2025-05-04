@@ -84,11 +84,7 @@ public class Ticket implements TicketInterface{
 	//getters
 	public Garage getGarage() {return garage;}
 	public Date getEntryTime() {return entryTime;}
-	public Date getExitTime() {
-		if(exitTime == null)
-			return new Date(1970, 1, 1);
-		return exitTime;
-	}
+	public Date getExitTime() {return exitTime;}
 	public boolean isOverridden() {return isOverridden;}
 	public boolean isPaid() {return isPaid;}
 	public String getID() {return id;}
@@ -121,8 +117,8 @@ public class Ticket implements TicketInterface{
 		// stores it in fee
 		// does *not* pay the ticket off. this is merely for visibility
 		Date now = new Date(); 
-		long hours_in_garage =
-			(now.getTime() - entryTime.getTime()) / 3600000;
+		double hours_in_garage =
+			(now.getTime() - entryTime.getTime()) / 3600000.0;
 		fee = garage.getHourlyRate() * hours_in_garage;
 	}
 

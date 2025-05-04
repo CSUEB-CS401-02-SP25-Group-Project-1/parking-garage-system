@@ -2,57 +2,77 @@ package tests;
 
 import static org.junit.Assert.*;
 
-import org.junit.Test;
-
-import server.Ticket
+import org.junit.*;
+import server.Ticket;
 import server.Garage;
-
-import java.util.Date;
 import java.lang.Thread;
+import java.util.Date;
 
 public class TicketTest {
 	
 	@Test
 	public void testGetters() {
-		Garage g = new Garage();
-		Ticket t = new Ticket(g);
+		Garage garage = new Garage("Test_Garage", 5, 30, 1);
+		Ticket ticket = new Ticket(garage);
 
-		assertEquals(t.getGarage(), g);
-		assertNotNull(t.getEntryTime());
+		//Confirming garage is set correctly
+		assertEquals(ticket.getGarage(), garage);
+		
+		//Confirming ticket entry time is not null
+		assertNotNull(ticket.getEntryTime());
 
-		assertNull(t.getExitTime()); // ticket is not paid off
-		assertFalse(t.isPaid());
-		assertFalse(t.isOverridden());
+		//Attempting to get the exit time on an UNPAID ticket,
+		//should return null
+		assertNull(ticket.getExitTime());
+		
+		//Confirming that ticket is yet to be paid
+		assertFalse(ticket.isPaid());
+		
+		//Confirming that the ticket's fee hasn't been overridden 
+		assertFalse(ticket.isOverridden());
 	}
 
 	@Test
-	public void testPay() {
-		Ticket t = new Ticket(new Garage());
+	public void testPay() throws InterruptedException {
+		Garage garage = new Garage("Test_Garage", 50000, 30, 1);
+		Ticket ticket = new Ticket(garage);
+		
+		//After creating ticket, give it time to accumulate a fee
+		Thread.sleep(10000);
+		ticket.calculateFee();
+		double fee = ticket.getFee();
+		
+		//Confirming that the ticket CANNOT be paid for less than it's fee
+		assertFalse(ticket.pay(fee - 10));
 
-		Thread.sleep(10000); // wait so fee is > 0
-				     
-		t.calculateFee(); // put fee on ticket
-		boolean success = t.pay(0); // fail payment
-		assertFalse(success);
+		//Confirming that the ticket CAN be paid for it's fee
+		assertTrue(ticket.pay(ticket.getFee()));
+		
+		//Confirm that ticket has been marked as paid
+		assertTrue(ticket.isPaid());
+		
+		//Confirm that the ticket still has NOT been overridden
+		assertFalse(ticket.isOverridden());
 
-		success = t.pay(1000); // succeed payment
-		assertTrue(success);
-		assertTrue(t.isPaid());
-		assertFalse(t.isOverridden());
-
-		assertNotNull(t.getExitTime());
+		//Confirm that the ticket's exit time is NOT still null after payment
+		assertNotNull(ticket.getExitTime());
 	}
 
 	@Test
 	public void testOverride() {
-		Ticket t = new Ticket(new Garage());
+		Garage garage = new Garage("Test_Garage", 5, 30, 1);
+		Ticket ticket = new Ticket(garage);
 
-		t.calculateFee();
-
-		t.overrideFee(100); // big number
+		//Calculating the ticket's current fee, 
+		//then overriding with a different fee
+		ticket.calculateFee();
+		ticket.overrideFee(1738);
 		
-		assertTrue(t.isOverridden());
-		assertEquals(t.getFee(), 100);
+		//Confirming that the ticket has been overridden
+		assertTrue(ticket.isOverridden());
+		
+		//Confirming that the ticket's fee has been changed successfully
+		assertTrue(ticket.getFee() == 1738);
 	}
 
 	@Test
@@ -66,4 +86,22 @@ public class TicketTest {
 
 		assertEquals(expected, t.toString());
 	}	
+	
+	@Test
+	public void testCorreectFeeCalculation() {
+		//Created a garage with an hourly rate of $50,000/hr
+		Garage garage = new Garage("Test_Garage", 50000, 30, 1);
+		
+		//Creating a ticket with an entry time
+		// exactly 30 min ago
+		Date thirtyMinAgo = new Date();
+		thirtyMinAgo.setMinutes(thirtyMinAgo.getMinutes() - 30);
+		Ticket ticket = new Ticket(garage, thirtyMinAgo, new Date(), false, false, 0.0);
+		
+		//Calculate the fee on the ticket
+		ticket.calculateFee();
+		
+		//Confirm that the fee is 30 min of parking fee ($25k)
+		assertTrue((int)ticket.getFee() == 25000);
+	}
 }
