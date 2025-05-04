@@ -8,8 +8,8 @@ import server.Earning;
 public class Report implements ReportInterface {
 	private static int count = 0;
 	private String id;
-	private ArrayList<Date> entryTimes;
-	private ArrayList<Earning> earnings;
+	private ArrayList<Date> entryTimes = new ArrayList<>();
+	private ArrayList<Earning> earnings = new ArrayList<>();
 	private int currentlyParked; // number of currently parked vehicles in garage
 	private Garage garage;
 	

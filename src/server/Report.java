@@ -110,7 +110,7 @@ public class Report implements ReportInterface {
 	}
 
 	public double getTotalRevenue() {
-		double revenue;
+		double revenue = 0;
 		for (Earning earning : earnings) {
 			revenue += earning.getRevenue();
 		}
@@ -159,7 +159,7 @@ public class Report implements ReportInterface {
 		String entries_s = "";
 		String earnings_s = "";
 
-		for (Date entry : entries) {
+		for (Date entry : entryTimes) {
 			entries_s += entry.getTime() + ",";
 		}
 

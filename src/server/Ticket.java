@@ -44,7 +44,7 @@ public class Ticket implements TicketInterface{
 		exitTime = null;
 		isPaid = false;
 		isOverridden = false;
-		fee = 0;
+		fee = 0.0;
 
 		this.garage = new Garage(); // fake garage for testing
 
@@ -64,7 +64,7 @@ public class Ticket implements TicketInterface{
 		exitTime = null;
 		isPaid = false;
 		isOverridden = false;
-		fee = 0;
+		fee = 0.0;
 
 		this.garage = garage;
 	}
@@ -122,11 +122,11 @@ public class Ticket implements TicketInterface{
 		fee = garage.getHourlyRate() * hours_in_garage;
 	}
 
-	public boolean pay(float amount) {
+	public boolean pay(double paymentAmount) {
 		// fee has been calculated and returned with getFee()
 		if (isPaid || isOverridden) {return false;}
 
-		if (amount < fee) {return false;} // payment validation
+		if (paymentAmount < fee) {return false;} // payment validation
 		exitTime = new Date();
 		isPaid = true;
 

@@ -19,7 +19,7 @@ public interface GarageInterface {
 	String generateTicket(); // returns ticket ID of generated ticket
 	void loadTicket(Ticket ticket);
 	Ticket getTicket(String ticketID);
-	Receipt payTicket(String ticketID);
+	Receipt payTicket(String ticketID, double paymentAmount);
 	void loadReport(Report report);
 	Report viewReport();
 	boolean addCamera(SecurityCamera newCamera);
@@ -27,6 +27,7 @@ public interface GarageInterface {
 	ArrayList<Ticket> getActiveTickets();
 	ArrayList<Ticket> getAllTickets();
 	ArrayList<SecurityCamera> getCameras();
+	SecurityCamera getCamera(String cameraID);
 	void addLogEntry(String logEntry);
 	ArrayList<String> getLogEntries();
 	Gate getGate();

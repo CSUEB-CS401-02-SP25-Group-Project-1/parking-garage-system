@@ -12,6 +12,6 @@ public interface TicketInterface {
 	String getID();
 	void overrideFee(double newFee);
 	void calculateFee();
-	Double getFee();
-	void pay();
+	double getFee();
+	boolean pay(double paymentAmount);
 }

@@ -1,6 +1,5 @@
 package server;
 
-import java.util.Date;
 import interfaces.UserInterface;
 
 public class User implements UserInterface {
@@ -33,31 +32,38 @@ public class User implements UserInterface {
 		return garage.generateTicket();
 	}
 	
-	public Receipt payTicket(String ticketID) {	
-		return garage.payTicket(ticketID);
+	public Receipt payTicket(String ticketID, double paymentAmount) {	
+		return garage.payTicket(ticketID, paymentAmount);
 	}
 
-	@Override
 	public int getAvailableSpaces() {
-		// TODO Auto-generated method stub
-		return 0;
+		return garage.getAvailableSpaces();
 	}
 
-	@Override
 	public String viewBillingSummary(String ticketID) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getGarageName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void toggleGate() {
-		// TODO Auto-generated method stub
+		//Find ticket
+		Ticket ticket = garage.getTicket(ticketID);
 		
+		//If ticket was found, return billing summary
+		if(ticket != null)
+			return ticket.getID() + ":" +
+					ticket.getEntryTime() + ":" +
+					ticket.getExitTime() + ":" +
+					ticket.getFee();
+		else
+		//If ticket was NOT found, return null
+		return null;
+	}
+
+	public String getGarageName() {
+		return garage.getName();
+	}
+
+	public void toggleGate() {
+		Gate gate = garage.getGate();
+		if(gate.isOpen())
+			gate.close();
+		else
+			gate.open();
 	}
 }

@@ -5,14 +5,14 @@ import java.io.FileWriter;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.Scanner;
 import server.Earning;
 import server.Employee;
 import server.Garage;
 import server.Report;
-import server.SecurityCamera;
 import server.Ticket;
+import server.LogType;
 
 public class ServerData {
 	private final String GARAGE_SUBDIR = "/garages/"; // "GA#.txt"
@@ -22,18 +22,20 @@ public class ServerData {
 	private final String EMPLOYEE_SUBDIR = "/employees/"; // "EM#.txt"
 	private String rootDir;
 	private final Log log;
+	private boolean allowSaving; // used for debugging
 	
 	// loaded server data
-	// hash tables for efficiency (sorry!)
-	private HashMap<String, Garage> garages = new HashMap<>(); // ID, object
-	private HashMap<String, Ticket> tickets = new HashMap<>();
-	private HashMap<String, Report> reports = new HashMap<>();
-	private HashMap<String, SecurityCamera> cameras = new HashMap<>();
-	private HashMap<String, Employee> employees = new HashMap<>();
-	private HashMap<String, Employee> employeesByUsername = new HashMap<>(); // used to search employees by username rather than by id
+	// hash maps for efficiency (sorry!)
+	private ConcurrentHashMap<String, Garage> garages = new ConcurrentHashMap<>(); // ID, object
+	private ConcurrentHashMap<String, Ticket> tickets = new ConcurrentHashMap<>();
+	private ConcurrentHashMap<String, Report> reports = new ConcurrentHashMap<>();
+	private ConcurrentHashMap<String, SecurityCamera> cameras = new ConcurrentHashMap<>();
+	private ConcurrentHashMap<String, Employee> employees = new ConcurrentHashMap<>();
+	private ConcurrentHashMap<String, Employee> employeesByUsername = new ConcurrentHashMap<>(); // used to search employees by username rather than by id
 	
-	public ServerData(String rootDir, Log log) {
+	public ServerData(String rootDir, Log log, boolean allowSaving) {
 		this.log = log;
+		determineSaving(allowSaving);
 		assignRoot(rootDir);
 		initFolders();
 	}
@@ -46,122 +48,167 @@ public class ServerData {
 		loadAllEmployees();
 	}
 	
-	public void saveAll() { // useful for when server is about to terminate
-		saveAllGarages();
-		saveAllTickets();
-		saveAllReports();
-		saveAllCameras();
-		saveAllEmployees();
+	public synchronized void saveAll() { // useful for when server is about to terminate
+		if (allowSaving) {
+			saveAllGarages();
+			saveAllTickets();
+			saveAllReports();
+			saveAllCameras();
+			saveAllEmployees();
+		}
 	}
 	
 	// methods for retrieving an object based on their id
 	
-	public Garage getGarage(String garageID) {
+	public synchronized Garage getGarage(String garageID) {
 		if (garages.containsKey(garageID)) {
 			return garages.get(garageID);
 		}
 		return null;
 	}
 	
-	public Ticket getTicket(String ticketID) {
+	public synchronized Ticket getTicket(String ticketID) {
 		if (tickets.containsKey(ticketID)) {
 			return tickets.get(ticketID);
 		}
 		return null;
 	}
 	
-	public Report getReport(String reportID) {
+	public synchronized Report getReport(String reportID) {
 		if (reports.containsKey(reportID)) {
 			return reports.get(reportID);
 		}
 		return null;
 	}
 	
-	public SecurityCamera getSecurityCamera(String cameraID) {
+	public synchronized SecurityCamera getSecurityCamera(String cameraID) {
 		if (cameras.containsKey(cameraID)) {
 			return cameras.get(cameraID);
 		}
 		return null;
 	}
 	
-	public Employee getEmployee(String employeeID) {
+	public synchronized Employee getEmployee(String employeeID) {
 		if (employees.containsKey(employeeID)) {
 			return employees.get(employeeID);
 		}
 		return null;
 	}
 	
-	public Employee getEmployeeByUsername(String username) {
-		if (employeesByUsername.containsKey(username)) {
-			return employeesByUsername.get(username);
+	public synchronized Employee getEmployeeByUsername(String garageID, String username) {
+		String key = garageID+":"+username;
+		if (employeesByUsername.containsKey(key)) {
+			return employeesByUsername.get(key);
 		}
 		return null;
 	}
 	
-	// methods to save an individual object to file
+	// methods to save an individual object to file 
+	// (boolean to indicate success; return true if there's no errors)
 	
-	public void saveGarage(Garage garage) { 
+	public synchronized boolean saveGarage(Garage garage) { 
 		if (getGarage(garage.getID()) == null) {
 	    	garages.put(garage.getID(), garage); // add garage to database if it's not there already
 	    }
+		if (!allowSaving) {
+			return true; // don't save if saving is disabled
+		}
+		// actual saving logic
 		String savePath = Paths.get(getFullSubdir(GARAGE_SUBDIR), garage.getID()+".txt").toString();
 	    try (FileWriter saveFile = new FileWriter(savePath)) {
 	        saveFile.write(garage.toString());
 	    } catch (Exception e) {
 	        log.append(LogType.ERROR, "Unable to save garage "+garage.getID()+" to file: "+e);
+			return false;
 	    }
+		return true;
 	}
 
-	public void saveTicket(Ticket ticket) {
+	public synchronized boolean saveTicket(Ticket ticket) {
 		if (getTicket(ticket.getID()) == null) {
 	    	tickets.put(ticket.getID(), ticket); // add ticket to database if it's not there already
 	    }
+		if (!allowSaving) {
+			return true; // don't save if saving is disabled
+		}
+		// actual saving logic
 	    String savePath = Paths.get(getFullSubdir(TICKET_SUBDIR), ticket.getID()+".txt").toString();
 	    try (FileWriter saveFile = new FileWriter(savePath)) {
 	        saveFile.write(ticket.toString());
 	    } catch (Exception e) {
 	        log.append(LogType.ERROR, "Unable to save ticket "+ticket.getID()+" to file: "+e);
+			return false;
 	    }
+		return true;
 	}
 
-	public void saveReport(Report report) {
+	public synchronized boolean saveReport(Report report) {
 		if (getReport(report.getID()) == null) {
 	    	reports.put(report.getID(), report); // add report to database if it's not there already
 	    }
+		if (!allowSaving) {
+			return true; // don't save if saving is disabled
+		}
+		// actual saving logic
 	    String savePath = Paths.get(getFullSubdir(REPORT_SUBDIR), report.getID()+".txt").toString();
 	    try (FileWriter saveFile = new FileWriter(savePath)) {
 	        saveFile.write(report.toString());
 	    } catch (Exception e) {
 	        log.append(LogType.ERROR, "Unable to save report "+report.getID()+" to file: "+e);
+			return false;
 	    }
+		return true;
 	}
 
-	public void saveSecurityCamera(SecurityCamera camera) {
+	public synchronized boolean saveSecurityCamera(SecurityCamera camera) {
 		if (getSecurityCamera(camera.getID()) == null) {
 	    	cameras.put(camera.getID(), camera); // add camera to database if it's not there already
 	    }
+		if (!allowSaving) {
+			return true; // don't save if saving is disabled
+		}
+		// actual saving logic
 	    String savePath = Paths.get(getFullSubdir(CAMERA_SUBDIR), camera.getID()+".txt").toString();
 	    try (FileWriter saveFile = new FileWriter(savePath)) {
 	        saveFile.write(camera.toString());
 	    } catch (Exception e) {
 	        log.append(LogType.ERROR, "Unable to save camera "+camera.getID()+" to file: "+e);
+			return false;
 	    }
+		return true;
 	}
 
-	public void saveEmployee(Employee employee) {
+	public synchronized boolean saveEmployee(Employee employee) {
 		if (getEmployee(employee.getID()) == null) {
-	    	employees.put(employee.getID(), employee); // add employee to database if it's not there already
-	    	employeesByUsername.put(employee.getUsername(), employee);
+	    	addEmployeeToDatabases(employee); // add employee to database if it's not there already
 	    }
+		if (!allowSaving) {
+			return true; // don't save if saving is disabled
+		}
+		// actual saving logic
 	    String savePath = Paths.get(getFullSubdir(EMPLOYEE_SUBDIR), employee.getID()+".txt").toString();
 	    try (FileWriter saveFile = new FileWriter(savePath)) {
 	        saveFile.write(employee.toString());
 	    } catch (Exception e) {
 	        log.append(LogType.ERROR, "Unable to save employee "+employee.getID()+" to file: "+e);
+			return false;
 	    }
+		return true;
 	}
 	
 	// helper methods
+	private void determineSaving(boolean allowSaving) {
+		this.allowSaving = allowSaving;
+		if (!this.allowSaving) {
+			log.append(LogType.WARNING, "File saving is disabled! Server data will not be saved!");
+		}
+	}
+
+	private synchronized void addEmployeeToDatabases(Employee employee) {
+		employees.put(employee.getID(), employee);
+		employeesByUsername.put(employee.getGarage().getID()+":"+employee.getUsername(), employee); // garageID:username
+	}
+
 	private void saveAllGarages() {
 		for (String garageID : garages.keySet()) {
 			Garage garage = garages.get(garageID);
@@ -277,13 +324,13 @@ public class ServerData {
 	        Boolean paid = Boolean.parseBoolean(split[4]);
 	        String feeStr = split[5];
 	        // null string check
-	        Long entryTime = null;
+	        Date entryDate = null;
 	        if (!entryTimeStr.equals("null")) {
-	            entryTime = Long.parseLong(entryTimeStr);
+	            entryDate = new Date(Long.parseLong(entryTimeStr));
 	        }
-	        Long exitTime = null;
+	        Date exitDate = null;
 	        if (!exitTimeStr.equals("null")) {
-	            exitTime = Long.parseLong(exitTimeStr);
+	            exitDate = new Date(Long.parseLong(exitTimeStr));
 	        }
 	        Double fee = null;
 	        if (!feeStr.equals("null")) {
@@ -296,7 +343,7 @@ public class ServerData {
 	            return;
 	        }
 	        // assemble object
-	        Ticket ticket = new Ticket(garage, new Date(entryTime), new Date(exitTime), overridden, paid, fee);
+	        Ticket ticket = new Ticket(garage, entryDate, exitDate, overridden, paid, fee);
 	        // add ticket to database
 	        tickets.put(ticket.getID(), ticket);
 	        // add ticket to associated garage
@@ -385,8 +432,7 @@ public class ServerData {
 	        // assemble object
 	        Employee employee = new Employee(garage, username, password);
 	        // add employee to databases
-	        employees.put(employee.getID(), employee);
-	        employeesByUsername.put(employee.getUsername(), employee);
+	        addEmployeeToDatabases(employee);
 	    } catch (Exception e) {
 	        log.append(LogType.ERROR, e+" while loading employee from "+employeeFile.getName()+". Skipping...");
 	    }

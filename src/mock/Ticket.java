@@ -21,7 +21,7 @@ public class Ticket implements TicketInterface {
 	}
 	
 	// constructor for loading ticket from file
-	public Ticket(Garage garage, Date entryTime, Date exitTime, boolean overriden, boolean paid, double fee) {
+	public Ticket(Garage garage, Date entryTime, Date exitTime, boolean overriden, boolean paid, Double fee) {
 		id = "TI"+count++;
 		this.garage = garage;
 		this.entryTime = entryTime;
@@ -63,6 +63,7 @@ public class Ticket implements TicketInterface {
 	}
 
 	public void calculateFee() { // calculate fee based on how many hours since entry time multiplied by garage's hourly rate
+		exitTime = new Date();
 		fee = 12345.67; // dummy value
 	}
 
