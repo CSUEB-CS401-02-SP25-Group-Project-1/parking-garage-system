@@ -1,7 +1,9 @@
 package tests;
 
-import mock.*;
 import server.User;
+import server.Garage;
+import server.Ticket;
+import server.Receipt;
 
 import org.junit.*;
 

@@ -1,7 +1,6 @@
 package tests;
 
-import mock.*;
-
+import server.*;
 import org.junit.*;
 
 public class GarageTest {

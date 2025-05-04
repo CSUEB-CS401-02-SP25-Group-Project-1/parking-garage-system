@@ -1,7 +1,6 @@
 package tests;
 
-package mock.*;
-
+import server.*;
 import org.junit.*;
 
 public class CustomerTest {

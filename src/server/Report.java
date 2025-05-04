@@ -124,7 +124,7 @@ public class Report implements ReportInterface {
 		// subtract from base
 		long rdate = entryTimes.get(0).getTime(); // date to be returned
 		long max = 0;	// stores max value found
-		long entries;	// accumulates total entries per hour
+		long entries = 0;	// accumulates total entries per hour
 		long baseDate = rdate;
 			// used to subtract from proceeding dates
 		long now;	// the current date in the list
