@@ -2,7 +2,7 @@ package interfaces;
 
 import java.util.ArrayList;
 import java.util.Date;
-import mock.Earning;
+import server.Earning;
 import mock.Garage;
 
 public interface ReportInterface {

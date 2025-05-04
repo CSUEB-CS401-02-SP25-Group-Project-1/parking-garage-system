@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Scanner;
-import mock.Earning;
+import server.Earning;
 import mock.Employee;
 import mock.Garage;
 import mock.Report;
