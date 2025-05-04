@@ -103,7 +103,6 @@ public class Ticket implements TicketInterface{
 		fee = newFee;
 
 		isOverridden = true;
-		isPaid = true;
 	}
 	public void overrideFee() {
 		overrideFee(0);
@@ -117,8 +116,8 @@ public class Ticket implements TicketInterface{
 		// stores it in fee
 		// does *not* pay the ticket off. this is merely for visibility
 		Date now = new Date(); 
-		long hours_in_garage =
-			(now.getTime() - entryTime.getTime()) / 3600000;
+		double hours_in_garage =
+			(now.getTime() - entryTime.getTime()) / 3600000.0;
 		fee = garage.getHourlyRate() * hours_in_garage;
 	}
 

@@ -356,9 +356,18 @@ public class ServerData {
 	private void loadReport(File reportFile) {
 	    try (Scanner lineScanner = new Scanner(reportFile)) {
 	        // load from file
-	        String garageID = lineScanner.nextLine();
-	        String entriesStr = lineScanner.nextLine();
-	        String earningsStr = lineScanner.nextLine();
+			String garageID = "";
+			if (lineScanner.hasNextLine()) {
+				garageID = lineScanner.nextLine();
+			}
+			String entriesStr = "";
+			if (lineScanner.hasNextLine()) {
+				entriesStr = lineScanner.nextLine();
+			}
+	        String earningsStr = "";
+			if (lineScanner.hasNextLine()) {
+				earningsStr = lineScanner.nextLine();
+			}
 	        // find associated garage from id
 	        Garage garage = garages.get(garageID);
 	        if (garage == null) {

@@ -656,11 +656,24 @@ public class EmployeeGUI {
         String billing = response.getText().substring("bs:".length());
         String split[] = billing.split(":");
         double paymentAmount = Double.parseDouble(split[3]);
-        String prompt = "Billing summary for ticket:\n"+
-                        "Ticket ID: "+split[0]+"\n"+
-                        "Entry time: "+new Date(Long.parseLong(split[1]))+"\n"+
-                        "Exit time: "+new Date(Long.parseLong(split[2]))+"\n"+
-                        "Total due: "+formatAmountString(split[3]);
+        
+        String prompt;
+        //If null for garage exit,
+        //putting "STILL ACTIVE" for the exit time
+        if(split[2].equals("STILL ACTIVE")) {
+        	prompt = "Billing summary for ticket:\n"+
+                    "Ticket ID: "+split[0]+"\n"+
+                    "Entry time: "+new Date(Long.parseLong(split[1]))+"\n"+
+                    "Exit time: "+ "STILL ACTIVE"+"\n"+
+                    "Total due: "+formatAmountString(split[3]);
+        }
+        else {
+	        prompt = "Billing summary for ticket:\n"+
+	                        "Ticket ID: "+split[0]+"\n"+
+	                        "Entry time: "+new Date(Long.parseLong(split[1]))+"\n"+
+	                        "Exit time: "+new Date(Long.parseLong(split[2]))+"\n"+
+	                        "Total due: "+formatAmountString(split[3]);
+	    }
         Object[] options = {"Pay", "Cancel"}; // custom button names for payment prompt
         int paymentPrompt = JOptionPane.showOptionDialog(
             window,
