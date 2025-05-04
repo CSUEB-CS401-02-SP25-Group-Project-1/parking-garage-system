@@ -73,6 +73,9 @@ public class TicketTest {
 		
 		//Confirming that the ticket's fee has been changed successfully
 		assertTrue(ticket.getFee() == 1738);
+		
+		//Confirming that ticket is NOT marked as paid after being overridden
+		assertTrue(ticket.isPaid() == false);
 	}
 
 	@Test

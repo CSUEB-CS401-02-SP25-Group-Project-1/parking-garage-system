@@ -103,7 +103,6 @@ public class Ticket implements TicketInterface{
 		fee = newFee;
 
 		isOverridden = true;
-		isPaid = true;
 	}
 	public void overrideFee() {
 		overrideFee(0);
