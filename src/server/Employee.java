@@ -120,4 +120,9 @@ public class Employee extends User implements EmployeeInterface {
     public String toString() {
         return garage.getID()+","+username+","+password;
     }
+    
+    public double getGarageRate() {
+    	return garage.getHourlyRate();
+    }
+    
 }
