@@ -74,5 +74,6 @@ public class User implements UserInterface {
 	public double getGateOpenTime() {
 		return garage.getGate().getOpenTime();
 	}
+
 	
 }
