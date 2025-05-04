@@ -208,36 +208,49 @@ public class CustomerGUI {
     // helper methods
 
     private static Double displayBillingSummary(JFrame window, String ticketID) {
-        sendMessage("bs:"+ticketID);
+    	sendMessage("bs:"+ticketID);
         Message response = getMessage();
         if (response.getText().equals("bs:invalid_ticket_id")) {
             JOptionPane.showMessageDialog(window, "Invalid ticket: "+ticketID,
-                                      "ERROR", JOptionPane.ERROR_MESSAGE);
+                                          "ERROR", JOptionPane.ERROR_MESSAGE);
             return null;
         }
         String billing = response.getText().substring("bs:".length());
         String split[] = billing.split(":");
         double paymentAmount = Double.parseDouble(split[3]);
-        String prompt = "Billing summary for ticket:\n"+
-                        "Ticket ID: "+split[0]+"\n"+
-                        "Entry time: "+new Date(Long.parseLong(split[1]))+"\n"+
-                        "Exit time: "+new Date(Long.parseLong(split[2]))+"\n"+
-                        "Total due: "+formatAmountString(split[3]);
-        Object[] options = {"Pay", "Cancel"};
+        
+        String prompt;
+        //If null for garage exit,
+        //putting "STILL ACTIVE" for the exit time
+        if(split[2].equals("STILL ACTIVE")) {
+        	prompt = "Billing summary for ticket:\n"+
+                    "Ticket ID: "+split[0]+"\n"+
+                    "Entry time: "+new Date(Long.parseLong(split[1]))+"\n"+
+                    "Exit time: "+ "STILL ACTIVE"+"\n"+
+                    "Total due: "+formatAmountString(split[3]);
+        }
+        else {
+	        prompt = "Billing summary for ticket:\n"+
+	                        "Ticket ID: "+split[0]+"\n"+
+	                        "Entry time: "+new Date(Long.parseLong(split[1]))+"\n"+
+	                        "Exit time: "+new Date(Long.parseLong(split[2]))+"\n"+
+	                        "Total due: "+formatAmountString(split[3]);
+	    }
+        Object[] options = {"Pay", "Cancel"}; // custom button names for payment prompt
         int paymentPrompt = JOptionPane.showOptionDialog(
             window,
-            prompt,
-            "Payment Confirmation",
-            JOptionPane.YES_NO_OPTION,
-            JOptionPane.QUESTION_MESSAGE,
-            null,
-            options,
-            options[0]
+            prompt,                             // message
+            "Payment Confirmation",             // title
+            JOptionPane.YES_NO_OPTION,          // option type
+            JOptionPane.QUESTION_MESSAGE,       // message type
+            null,                               // icon (null = default)
+            options,                            // custom button text array
+            options[0]                          // default selected button
         );
-        if (paymentPrompt != 0) {
+        if (paymentPrompt != 0) { // if user chose not to pay
             return null;
         }
-        return paymentAmount;
+        return paymentAmount; // return actual payment amount
     }
 
     private static void viewReceipt(JFrame window, String receipt) {

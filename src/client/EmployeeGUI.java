@@ -658,9 +658,9 @@ public class EmployeeGUI {
         double paymentAmount = Double.parseDouble(split[3]);
         
         String prompt;
-        //If null placeholder time of jan 1 1970 for garage exit,
+        //If null for garage exit,
         //putting "STILL ACTIVE" for the exit time
-        if(split[2].equals("59960937600000")) {
+        if(split[2].equals("STILL ACTIVE")) {
         	prompt = "Billing summary for ticket:\n"+
                     "Ticket ID: "+split[0]+"\n"+
                     "Entry time: "+new Date(Long.parseLong(split[1]))+"\n"+
