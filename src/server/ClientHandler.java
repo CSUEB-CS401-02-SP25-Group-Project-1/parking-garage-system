@@ -369,6 +369,11 @@ public class ClientHandler implements Runnable {
 		garage.payTicket(ticket.getID(), amount);
 		serverData.saveTicket(ticket);
 		// return receipt
+		String exitTime;//Handle null exit time
+		if(ticket.getExitTime() == null)
+			exitTime = "STILL ACTIVE";
+		else
+			exitTime = "" + ticket.getExitTime();
 		sendMessage(MessageType.Success, "pt:"+new Receipt(ticket.getID(), garage.getName(),
 					ticket.getEntryTime(), ticket.getExitTime(), ticket.getFee())); 
 					// clients will have to discern that this is a human-readable string after the "pt:" prefix
@@ -417,7 +422,12 @@ public class ClientHandler implements Runnable {
 		}
 		serverData.saveTicket(ticket); // save calculated fee to file
 		// return ticket data with newly-calculated fee
-		String payload = "bs:"+ticket.getID()+":"+ticket.getEntryTime().getTime()+":"+ticket.getExitTime().getTime()+":"+ticket.getFee();
+		String exitTime;//Handle null exit time
+		if(ticket.getExitTime() == null)
+			exitTime = "STILL ACTIVE";
+		else
+			exitTime = "" + ticket.getExitTime().getTime();
+		String payload = "bs:"+ticket.getID()+":"+ticket.getEntryTime().getTime()+":"+exitTime+":"+ticket.getFee();
 		sendMessage(MessageType.Success, payload);
 		log.append("Sent billing summary for ticket "+ticketID+" to client "+clientIP);
 	}
