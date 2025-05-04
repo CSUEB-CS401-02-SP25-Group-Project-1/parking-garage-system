@@ -84,7 +84,11 @@ public class Ticket implements TicketInterface{
 	//getters
 	public Garage getGarage() {return garage;}
 	public Date getEntryTime() {return entryTime;}
-	public Date getExitTime() {return exitTime;}
+	public Date getExitTime() {
+		if(exitTime == null)
+			return new Date(1970, 1, 1);
+		return exitTime;
+	}
 	public boolean isOverridden() {return isOverridden;}
 	public boolean isPaid() {return isPaid;}
 	public String getID() {return id;}
