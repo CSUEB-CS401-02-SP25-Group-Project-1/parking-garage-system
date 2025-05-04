@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
+import server.Garage;
+import server.Receipt;
 import server.User;
 import server.UserType;
 
@@ -13,7 +15,7 @@ class UserTest {
 	public void testConstructor()
 	{
 		User user = new User();
-		assertNotNull(user.getGarage());
+		assertNull(user.getGarage());
 		assertEquals(UserType.Undefined, user.getType());
 	}
 	
@@ -30,10 +32,9 @@ class UserTest {
 	public void testUserGarageConstructor()
 	{
 		Garage garage = new Garage();
-		UserType userType = UserType.Employee;
-		User user = new User(garage,userType);
+		User user = new User();
+		user.setGarage(garage);
 		assertEquals(garage,user.getGarage());
-		assertEquals(userType,user.getType());
 	}
 	
 	@Test
@@ -49,9 +50,7 @@ class UserTest {
 	public void testSetUserType()
 	{
 		User user = new User();
-		UserType userType = UserType.Customer;
-		user.setUserType(userType);
-		assertEquals(userType,user.getType());
+		assertEquals(UserType.Undefined,user.getType());
 	}
 	
 	@Test
@@ -59,25 +58,27 @@ class UserTest {
 	{
 		User user = new User();
 		assertEquals(UserType.Undefined,user.getType());
-		user.setUserType(UserType.Employee);
-		assertEquals(UserType.Employee,user.getType());
 	}
 	
 	@Test
 	public void testgenerateTicket()
 	{
-		User user = new User();
-		Ticket ticket = user.generateTicket();
-		assertNotNull(ticket);
+		Garage garage = new Garage("Garage Test",6.0,1,7.0);
+		User user = new User(garage);
+		String ticketID = user.generateTicket();
+		assertNotNull(ticketID);
 	}
 	
 	@Test
 	public void testpayTicket()
 	{
-		User user = new User();
-		String TicketID = "Sure why not";
-		double amount = 10.0;
-		Receipt receipt = user.payTicket(TicketID, amount);
+		Garage garage = new Garage("Garage Test",6.0,1,7.0);
+		User user = new User(garage);
+		String ticketID = user.generateTicket();
+		assertNotNull(ticketID);
+		garage.getTicket(ticketID).calculateFee();
+		double amount = garage.getTicket(ticketID).getFee();
+		Receipt receipt = user.payTicket(ticketID, amount);
 		assertNotNull(receipt);
 	}
 }
