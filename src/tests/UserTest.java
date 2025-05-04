@@ -1,43 +1,85 @@
 package tests;
 
-import mock.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
+import server.Garage;
+import server.Ticket;
 import server.User;
+import server.UserType;
 
-import org.junit.*;
-
-public class UserTest {
-
-	@Test
-	public void testSetters() {
-		Garage garage = new Garage(); // no parameters for mock garage
-		UserType type = UserType.Customer;
-		User user1;
-		user1.setGarage(garage);
-		user1.setType(type);
-
-		assertEquals(garage, user1.getGarage());
-		assertEquals(type, user1.getType());
-	}
+class UserTest {
 
 	@Test
-	public void testTickets() {
+	public void testConstructor()
+	{
 		User user = new User();
-		// add a ticket
-		Ticket t = user.generateTicket();
-
-		// ticket will exist if generated
-		assertTrue(t != null);
-
-		// pay the ticket off
-		Receipt r = user.payTicket(t.getID(), 4000);
-		
-		// receipt will exist if ticket was paid
-		assertTrue(r != null);
-
-		// try to pay off ticket again
-		r = user.payTicket(t.getID(), 4000);
-
-		// `r` will be null because ticket is already removed
-		assertEquals(r, null);
+		assertNotNull(user.getGarage());
+		assertEquals(UserType.Undefined, user.getType());
+	}
+	
+	@Test
+	public void testGarageConstructor()
+	{
+		Garage garage = new Garage();
+		User user = new User(garage);
+		assertEquals(garage,user.getGarage());
+		assertEquals(UserType.Undefined,user.getType());
+	}
+	
+	@Test
+	public void testUserGarageConstructor()
+	{
+		Garage garage = new Garage();
+		UserType userType = UserType.Employee;
+		User user = new User(garage);
+		assertEquals(garage,user.getGarage());
+		assertEquals(userType,user.getType());
+	}
+	
+	@Test
+	public void testSetGarage()
+	{
+		User user = new User();
+		Garage garage = new Garage();
+		user.setGarage(garage);
+		assertEquals(garage,user.getGarage());
+	}
+	
+	@Test
+	public void testSetUserType()
+	{
+		User user = new User();
+		UserType userType = UserType.Customer;
+		user.setUserType(userType);
+		assertEquals(userType,user.getType());
+	}
+	
+	@Test
+	public void testGetUserType()
+	{
+		User user = new User();
+		assertEquals(UserType.Undefined,user.getType());
+		user.setUserType(UserType.Employee);
+		assertEquals(UserType.Employee,user.getType());
+	}
+	
+	@Test
+	public void testgenerateTicket()
+	{
+		User user = new User();
+		String ticket = user.generateTicket();
+		assertNotNull(ticket);
+	}
+	
+	@Test
+	public void testpayTicket()
+	{
+		User user = new User();
+		String TicketID = "Sure why not";
+		double amount = 10.0;
+		Receipt receipt = user.payTicket(TicketID, amount);
+		assertNotNull(receipt);
 	}
 }

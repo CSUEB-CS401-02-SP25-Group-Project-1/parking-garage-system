@@ -66,4 +66,9 @@ public class User implements UserInterface {
 		else
 			gate.open();
 	}
+
+	public void setUserType(UserType userType2) {
+		// TODO Auto-generated method stub
+		
+	}
 }
