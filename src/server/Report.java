@@ -23,7 +23,7 @@ public class Report implements ReportInterface {
 	
 	public Report(Garage garage) {
 		// new report created
-		id = "R" + (count++);
+		id = "RE" + (count++);
 		this.garage = garage;
 		entryTimes = new ArrayList<>();
 		earnings = new ArrayList<>();
@@ -32,7 +32,7 @@ public class Report implements ReportInterface {
 
 	public Report() {
 		// no arguments constructor
-		id = "R" + (count++);
+		id = "RE" + (count++);
 		this.garage = new Garage();
 		entryTimes = new ArrayList<>();
 		earnings = new ArrayList<>();
@@ -155,7 +155,7 @@ public class Report implements ReportInterface {
 	    String earnings_s = "";
 	    
 	    for (Earning earning : earnings) {
-	        if (!earnings_s.isEmpty()) earnings_s += "|";
+	        if (!earnings_s.isEmpty()) earnings_s += "\\|";
 	        earnings_s += earning.toString();
 	    }
 	    return garageID + "\n" + entries_s + "\n" + earnings_s;
