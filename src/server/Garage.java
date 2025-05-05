@@ -70,6 +70,7 @@ public class Garage implements GarageInterface {
 			Ticket ticket = new Ticket(this);
 			allTickets.add(ticket);
 			activeTickets.add(ticket);
+			report.addEntryTime(new Date());
 			return ticket.getID();
 		}
 		return null;
@@ -103,6 +104,8 @@ public class Garage implements GarageInterface {
 		//Mark ticket paid and remove from active tickets list
 		ticket.pay(paymentAmount);
 		this.activeTickets.remove(ticket);
+		
+		report.addExit(new Date(), paymentAmount);
 		
 		//Create and return new receipt of ticket payment
 		return new Receipt(ticket);
