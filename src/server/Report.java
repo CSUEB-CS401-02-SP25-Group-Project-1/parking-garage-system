@@ -166,11 +166,18 @@ public class Report implements ReportInterface {
 		}
 
 		for (Earning earning : earnings) {
-			earnings_s += earning.toString() + "\\|";
+			earnings_s += earning.toString() + "|";
 		}
-		return garageID + "\n" + entries_s + "\n" + earnings_s + "\n";
+		earnings_s = earnings.isEmpty() ? "" : earnings_s.substring(0, earnings_s()-1);
+		
+		return garageID + "\n" + entries_s + "\n" + earnings_s;
 	}
 	
+	private int earnings_s() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 	// helper methods
 	private double accumulate(long ms) {
 	    double revenue = 0;

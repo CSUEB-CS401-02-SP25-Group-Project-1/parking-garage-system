@@ -66,6 +66,7 @@ public class Garage implements GarageInterface {
 	}
 
 	public String generateTicket() { // returns ticket ID if successful
+<<<<<<< Updated upstream
 	    if (!isFull()) {
 	        Ticket ticket = new Ticket(this);
 	        allTickets.add(ticket);
@@ -81,6 +82,19 @@ public class Garage implements GarageInterface {
 	        return ticket.getID();
 	    }
 	    return null;
+=======
+		if (!isFull()) {
+			Ticket ticket = new Ticket(this);
+			allTickets.add(ticket);
+			activeTickets.add(ticket);
+			if (report == null) {
+				report = new Report(this);
+			}
+			report.addEntryTime(ticket.getEntryTime());
+			return ticket.getID();
+		}
+		return null;
+>>>>>>> Stashed changes
 	}
 	
 	@Override
@@ -99,6 +113,7 @@ public class Garage implements GarageInterface {
 		return null;
 	}
 
+<<<<<<< Updated upstream
 	public Receipt payTicket(String ticketID, double paymentAmount) {
 	    Ticket ticket = getTicket(ticketID);
 	    if(ticket == null || ticket.isPaid()) {
@@ -123,6 +138,25 @@ public class Garage implements GarageInterface {
 	    }
 	    
 	    return new Receipt(ticket);
+=======
+	public Receipt payTicket(String ticketID, double paymentAmount) { // returns receipt if successful
+		//Find ticket by ID
+		Ticket ticket = getTicket(ticketID);
+		
+		//Return null if the ticket is already paid
+		if(ticket.isPaid()) {
+			return null;
+		}
+
+		ticket.pay(paymentAmount);
+		this.activeTickets.remove(ticket);
+		if (report == null) {
+			report = new Report(this);
+		}
+		
+		report.addExit(ticket.getExitTime(), ticket.getFee());
+		return new Receipt(ticket);
+>>>>>>> Stashed changes
 	}
 	
 	@Override
