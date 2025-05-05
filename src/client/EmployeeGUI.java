@@ -525,19 +525,21 @@ public class EmployeeGUI {
     private static void viewReport(JFrame window) {
         sendMessage("vr");
         Message response = getMessage();
-        if (!response.getText().startsWith("vr:")) {
-            JOptionPane.showMessageDialog(window, "Unable to view report at this time",
-                                          "ERROR", JOptionPane.ERROR_MESSAGE);
+        
+        if (response.getText().equals("vr:no_data")) {
+            JOptionPane.showMessageDialog(window, "No report data available", 
+                                         "INFO", JOptionPane.INFORMATION_MESSAGE);
             return;
         }
+        if (response.getText().equals("vr:error")) {
+            JOptionPane.showMessageDialog(window, "Server failed to generate report", 
+                                         "ERROR", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
         String report = assembleReport(response.getText().substring("vr:".length()));
-        if (report == null) {
-            JOptionPane.showMessageDialog(window, "Error while processing report",
-                                          "ERROR", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        JOptionPane.showMessageDialog(window, report, "Garage Report",
-                                      JOptionPane.PLAIN_MESSAGE);
+        JOptionPane.showMessageDialog(window, report, "Garage Report", 
+                                     JOptionPane.PLAIN_MESSAGE);
     }
 
     private static void viewLogs(JFrame window) {
@@ -582,28 +584,34 @@ public class EmployeeGUI {
 
     // more helper methods
 
-    private static String assembleReport(String reportData) { // assembles a human-readable report from server response data
-        String split[] = reportData.split(",");
-        if (split.length != 8) { // server should have returned 8 parameters
-            return null;
+    private static String assembleReport(String reportData) {
+        String[] split = reportData.split(",");
+        
+        // Validate data length (expecting exactly 8 fields)
+        if (split.length != 8) {
+            return "ERROR: Corrupted report data. Expected 8 fields, got " + split.length;
         }
+
+        // Parse and format each field
         String revenueThisHour = formatAmountString(split[0]);
         String revenueToday = formatAmountString(split[1]);
         String revenueThisWeek = formatAmountString(split[2]);
         String revenueThisMonth = formatAmountString(split[3]);
         String revenueThisYear = formatAmountString(split[4]);
-        String revenueAllTime = formatAmountString(split[5]);
-        String peakHour = split[6];
-        String currentlyParkedVehicles = split[7];
-        String report = "Revenue generated this hour: "+revenueThisHour+"\n"+
-                        "Revenue generated today: "+revenueToday+"\n"+
-                        "Revenue generated this week: "+revenueThisWeek+"\n"+
-                        "Revenue generated this month: "+revenueThisMonth+"\n"+
-                        "Revenue generated this year: "+revenueThisYear+"\n"+
-                        "All-time revenue generated: "+revenueAllTime+"\n"+
-                        "Peak parking hour: "+peakHour+"\n"+
-                        "Currently parked vehicles: "+currentlyParkedVehicles;
-        return report;
+        String totalRevenue = formatAmountString(split[5]);
+        String peakHour = split[6].equals("null") ? "No peak hour" : new Date(Long.parseLong(split[6])).toString();
+        String parkedVehicles = split[7];
+
+        // Build human-readable report
+        return "=== Garage Report ===\n" +
+               "Revenue this hour: " + revenueThisHour + "\n" +
+               "Revenue today: " + revenueToday + "\n" +
+               "Revenue this week: " + revenueThisWeek + "\n" +
+               "Revenue this month: " + revenueThisMonth + "\n" +
+               "Revenue this year: " + revenueThisYear + "\n" +
+               "Total revenue: " + totalRevenue + "\n" +
+               "Peak parking hour: " + peakHour + "\n" +
+               "Currently parked vehicles: " + parkedVehicles;
     }
 
     private static String capitalize(String string) {
