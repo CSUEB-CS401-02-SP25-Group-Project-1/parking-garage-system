@@ -4,6 +4,8 @@ import interfaces.ReportInterface;
 
 import java.util.Date;
 import java.util.ArrayList;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.Enumeration;
 
 public class Report implements ReportInterface {
 	private ArrayList<Date> entryTimes;
@@ -118,17 +120,23 @@ public class Report implements ReportInterface {
 	}
 
 	public String getPeakHour() {
-		ConcurrentHashMap<int, int> entries_per_hour
-			= new ConcurrentHasMap<>();
-		for (Date d : entryTime) {
-			entrues_per_hour[d.getHoues()]++;
+		ConcurrentHashMap<Integer, Integer> entries_per_hour
+			= new ConcurrentHashMap<>();
+		for (Date d : entryTimes) {
+			int count = entries_per_hour.get(d.getHours());
+			entries_per_hour.put(d.getHours(), count++);
 		}
 		int max_hour = 0;
 		int max_entries = 0;
-		for (int key : entries_per_hour) {
-			if (entries_per_hour[key] > max_entries) {
-				max_entries = entries_per_hour[key];
-				max_hour = key;
+		
+		Enumeration<Integer> keys = entries_per_hour.keys();
+		
+		while (keys.hasMoreElements()) {
+			Integer hour = (Integer)keys.nextElement();
+			Integer entries = entries_per_hour.get(hour);
+			if (entries > max_entries) {
+				max_entries = entries;
+				max_hour = hour;
 			}
 		}
 		return "" + max_hour;
