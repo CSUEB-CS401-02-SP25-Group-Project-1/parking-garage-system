@@ -3,6 +3,7 @@ package tests;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.Test;
 import org.junit.Before;
+
 import server.Garage;
 import server.Earning;
 import server.Report;

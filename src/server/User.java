@@ -24,6 +24,9 @@ public class User implements UserInterface {
 		return this.garage;
 	}
 	
+	public void setType(UserType type) {
+		userType = type;
+	}
 	public UserType getType() {
 		return this.userType;
 	}
@@ -75,5 +78,4 @@ public class User implements UserInterface {
 		return garage.getGate().getOpenTime();
 	}
 
-	
 }
