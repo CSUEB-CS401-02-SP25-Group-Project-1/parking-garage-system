@@ -4,14 +4,23 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.Test;
 
 import server.Gate;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.Test;
+
 import server.Garage;
 
-public class GateTest {
+public class GateTest
+{
     // test constructor
     // test getters
 	
     @Test
-    public void testGate() {
+    public void testGate() 
+    {
 	Garage g = new Garage();
 	double openTime = 20.0;
         Gate gate = new Gate(g, openTime);
@@ -21,7 +30,7 @@ public class GateTest {
 
 	openTime = 25.0;
 	gate.setOpenTime(openTime);
-	assertEquals(openTime, get.getOpenTime());
+	assertEquals(openTime, gate.getOpenTime());
 
 	gate.close();
 	assertFalse(gate.isOpen());

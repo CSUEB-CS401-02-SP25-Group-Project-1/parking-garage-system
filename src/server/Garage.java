@@ -121,7 +121,7 @@ public class Garage implements GarageInterface {
 	public boolean addCamera(SecurityCamera newCamera) {
 		// Check if camera has been added yet and return false if so
 		for(int i = 0; i < this.cameras.size(); i++) {
-			if(this.cameras.get(i).getID() == newCamera.getID())
+			if(this.cameras.get(i).getID().equals(newCamera.getID()))
 				return false;
 		}
 		
@@ -144,10 +144,11 @@ public class Garage implements GarageInterface {
 		return false;
 	}
 	
+	@Override
 	public SecurityCamera getCamera(String cameraID) {
 		// Find security camera matching the given Camera ID and return it
 		for(int i = 0; i < this.cameras.size(); i++) {
-			if(this.cameras.get(i).getID() == cameraID)
+			if(this.cameras.get(i).getID().equals(cameraID))
 				return this.cameras.get(i);
 		}
 		//Return null if not found
