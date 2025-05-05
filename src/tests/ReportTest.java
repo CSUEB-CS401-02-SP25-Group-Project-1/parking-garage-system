@@ -63,6 +63,9 @@ public class ReportTest {
 		double expected_revenue = 5 * expectedEarnings.get(0).getRevenue();
 		assertEquals(expected_revenue, r.getRevenueThisHour());
 		assertEquals(expected_revenue, r.getRevenueToday());
+		assertEquals(expected_revenue, r.getRevenueThisWeek());
+		assertEquals(expected_revenue, r.getRevenueThisMonth());
+		assertEquals(expected_revenue, r.getRevenueThisYear());
 		// etc...
 	
 		String peakHour = "" + expectedEntries.get(0).getHours();
