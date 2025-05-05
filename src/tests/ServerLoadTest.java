@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import mock.Report;
+import server.Report;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import server.Earning;
