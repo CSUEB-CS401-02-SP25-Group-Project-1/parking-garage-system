@@ -123,7 +123,12 @@ public class Report implements ReportInterface {
 		ConcurrentHashMap<Integer, Integer> entries_per_hour
 			= new ConcurrentHashMap<>();
 		for (Date d : entryTimes) {
-			int count = entries_per_hour.get(d.getHours());
+			try {
+				int count = entries_per_hour.get(d.getHours());
+			} catch (NullPointerExcpetion n) {
+				entries_per_hour.put(d.getHours(), 1);
+				continue;
+			}
 			entries_per_hour.put(d.getHours(), count++);
 		}
 		int max_hour = 0;
