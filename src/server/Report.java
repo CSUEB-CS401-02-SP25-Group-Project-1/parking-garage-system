@@ -21,15 +21,6 @@ public class Report implements ReportInterface {
 
 	private final int ms_p_h = 3600000;
 	
-	public Report(String id, Garage garage) {
-		// constructor for server so that each garage only has one report
-		this.id = id;
-		this.garage = garage;
-		entryTimes = new ArrayList<>();
-		earnings = new ArrayList<>();
-		currentlyParked = 0;
-	}
-	
 	public Report(Garage garage) {
 		// new report created
 		id = "RE" + (count++);
