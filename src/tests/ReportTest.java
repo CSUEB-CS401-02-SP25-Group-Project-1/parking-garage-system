@@ -14,7 +14,6 @@ import java.util.List;
 public class ReportTest {
     private List<Date> expectedEntries;
     private List<Earning> expectedEarnings;
-    private Report r;
 
     @Before
     public void setup() {
