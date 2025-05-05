@@ -175,9 +175,12 @@ public class Report implements ReportInterface {
 
 		int i = earnings.size() - 1;
 		long now = (new Date()).getTime();
+		
+		long hr_diff;
 
 		while (i >= 0) {
-			if (now - earnings.get(i).getDate().getTime() > ms) {
+			hr_diff = now - earnings.get(i).getDate().getTime();
+			if (Long.compareUnsigned(hr_diff, ms) > 0) {
 				break;
 			}
 			revenue += earnings.get(i).getRevenue();
