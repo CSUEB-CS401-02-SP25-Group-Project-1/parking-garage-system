@@ -6,6 +6,8 @@ import interfaces.ReportInterface;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.Enumeration;
+import java.lang.NullPointerException;
 
 public class Report implements ReportInterface {
 	private ArrayList<Date> entryTimes;
@@ -99,17 +101,29 @@ public class Report implements ReportInterface {
 	}
 
 	public String getPeakHour() {
-		ConcurrentHashMap<int, int> entries_per_hour
+
+		ConcurrentHashMap<Integer, Integer> entries_per_hour
 			= new ConcurrentHashMap<>();
 		for (Date d : entryTimes) {
-			entries_per_hour[d.getHours()]++;
+			try {
+				int count = entries_per_hour.get(d.getHours());
+			} catch (NullPointerException n) {
+				entries_per_hour.put(d.getHours(), 1);
+				continue;
+			}
+			entries_per_hour.put(d.getHours(), count++);
 		}
-		int max_hour;
+		int max_hour = 0;
 		int max_entries = 0;
-		for (int key : entries_per_hour) {
-			if (entries_per_hour[key] > max_entries) {
-				max_entries = entries_per_hour[key];
-				max_hour = key;
+		
+		Enumeration<Integer> keys = entries_per_hour.keys();
+		
+		while (keys.hasMoreElements()) {
+			Integer hour = (Integer)keys.nextElement();
+			Integer entries = entries_per_hour.get(hour);
+			if (entries > max_entries) {
+				max_entries = entries;
+				max_hour = hour;
 			}
 		}
 		return "" + max_hour;
@@ -145,8 +159,10 @@ public class Report implements ReportInterface {
 		int i = earnings.size() - 1;
 		long now = (new Date()).getTime();
 
-		while (now - earnings.get(i).getDate().getTime() <= ms
-				&& i >= 0) {
+		while (i >= 0) {
+			if (now - earnings.get(i).getDate().getTime() > ms) {
+				break;
+			}
 			revenue += earnings.get(i).getRevenue();
 			i--;
 		}

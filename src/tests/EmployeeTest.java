@@ -2,6 +2,7 @@ package tests;
 
 import server.Employee;
 import server.Garage;
+import server.Report;
 import static org.junit.Assert.*;
 import org.junit.*;
 

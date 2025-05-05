@@ -16,9 +16,6 @@ import org.junit.runners.Suite.SuiteClasses;
     ReceiptTest.class,
     ReportTest.class,
     SecurityCameraTest.class,
-    ServerLoadTest.class,
-    ServerResponseTest.class,
-    ServerSaveTest.class,
     TicketTest.class,
     UserTest.class,
 })

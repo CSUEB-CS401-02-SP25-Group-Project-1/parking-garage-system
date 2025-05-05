@@ -97,7 +97,7 @@ public class Ticket implements TicketInterface{
 	public void overrideFee(double newFee) {
 		// override this ticket with a new fee
 		// revenue is still counted 
-		if (isPaid || isOverridden) {return;}
+		if (isOverridden) {return;}
 		// override forces this ticket to be paid
 		exitTime = new Date();
 		fee = newFee;
@@ -119,14 +119,14 @@ public class Ticket implements TicketInterface{
 		double hours_in_garage =
 			(now.getTime() - entryTime.getTime()) / 3600000.0;
 		fee = garage.getHourlyRate() * hours_in_garage;
+		exitTime = now;
 	}
 
 	public boolean pay(double paymentAmount) {
 		// fee has been calculated and returned with getFee()
-		if (isPaid || isOverridden) {return false;}
+		if (isPaid) {return false;}
 
 		if (paymentAmount < fee) {return false;} // payment validation
-		exitTime = new Date();
 		isPaid = true;
 
 		// not overridden

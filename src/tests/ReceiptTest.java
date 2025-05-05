@@ -55,6 +55,6 @@ public class ReceiptTest {
         String receiptText = receipt.toString();
         assertTrue(receiptText.contains(ticket.getID()));
         assertTrue(receiptText.contains(garage.getName()));
-        assertTrue(receiptText.contains(String.valueOf(ticket.getFee())));
+        assertTrue(receiptText.contains(String.format("%2f", ticket.getFee())));
     }
 }
