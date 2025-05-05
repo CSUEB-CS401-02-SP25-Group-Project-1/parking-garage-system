@@ -1,15 +1,14 @@
 package tests;
 
 import static org.junit.jupiter.api.Assertions.*;
-
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import server.Garage;
 import server.Receipt;
 import server.User;
 import server.UserType;
 
-class UserTest {
+public class UserTest {
 
 	@Test
 	public void testConstructor()
