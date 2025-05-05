@@ -66,13 +66,21 @@ public class Garage implements GarageInterface {
 	}
 
 	public String generateTicket() { // returns ticket ID if successful
-		if (!isFull()) {
-			Ticket ticket = new Ticket(this);
-			allTickets.add(ticket);
-			activeTickets.add(ticket);
-			return ticket.getID();
-		}
-		return null;
+	    if (!isFull()) {
+	        Ticket ticket = new Ticket(this);
+	        allTickets.add(ticket);
+	        activeTickets.add(ticket);
+	        
+	        // Initialize report if null
+	        if (report == null) {
+	            report = new Report(this);
+	        }
+	        // Add entry to report
+	        report.addEntryTime(ticket.getEntryTime());
+	        
+	        return ticket.getID();
+	    }
+	    return null;
 	}
 	
 	@Override
@@ -91,21 +99,30 @@ public class Garage implements GarageInterface {
 		return null;
 	}
 
-	public Receipt payTicket(String ticketID, double paymentAmount) { // returns receipt if successful
-		//Find ticket by ID
-		Ticket ticket = getTicket(ticketID);
-		
-		//Return null if the ticket is already paid
-		if(ticket.isPaid()) {
-			return null;
-		}
-		
-		//Mark ticket paid and remove from active tickets list
-		ticket.pay(paymentAmount);
-		this.activeTickets.remove(ticket);
-		
-		//Create and return new receipt of ticket payment
-		return new Receipt(ticket);
+	public Receipt payTicket(String ticketID, double paymentAmount) {
+	    Ticket ticket = getTicket(ticketID);
+	    if(ticket == null || ticket.isPaid()) {
+	        return null;
+	    }
+	    
+	    // First pay the ticket (which sets exit time)
+	    boolean paymentSuccess = ticket.pay(paymentAmount);
+	    if (!paymentSuccess) {
+	        return null;
+	    }
+	    
+	    this.activeTickets.remove(ticket);
+	    
+	    // Initialize report if null
+	    if (report == null) {
+	        report = new Report(this);
+	    }
+	    // Add exit to report with the payment amount
+	    if (ticket.getExitTime() != null) {
+	        report.addExit(ticket.getExitTime(), ticket.getFee());
+	    }
+	    
+	    return new Receipt(ticket);
 	}
 	
 	@Override
@@ -118,8 +135,8 @@ public class Garage implements GarageInterface {
 	        this.report = new Report(this);
 	    }
 	    
-	    // Reset and rebuild report data
-	    report = new Report(this); // Fresh report
+	    // Clear existing data but keep the same report object
+	    this.report.clearData();
 	    
 	    // Add all active ticket entries
 	    for (Ticket ticket : activeTickets) {

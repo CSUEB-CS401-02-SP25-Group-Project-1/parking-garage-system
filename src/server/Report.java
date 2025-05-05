@@ -118,34 +118,36 @@ public class Report implements ReportInterface {
 	}
 
 	public String getPeakHour() {
-		// how to distinguish hours?
+	    if (entryTimes.isEmpty()) {
+	        return "null";
+	    }
 
-		// loop through all entries
-		// subtract from base
-		long rdate = entryTimes.get(0).getTime(); // date to be returned
-		long max = 0;	// stores max value found
-		long entries = 0;	// accumulates total entries per hour
-		long baseDate = rdate;
-			// used to subtract from proceeding dates
-		long now;	// the current date in the list
-		for (Date date : entryTimes) {
-			now = date.getTime();
-			if ((now - baseDate)/3600000 >= 1) {
-				// change base date
-				// check for maximum
-				if (entries > max) {
-					max = entries;
-					rdate = baseDate;
-				}
+	    long rdate = entryTimes.get(0).getTime();
+	    long max = 0;
+	    long entries = 0;
+	    long baseDate = rdate;
+	    long now;
 
-				// resest accumulating variable
-				entries = 1; // count the current time
-				baseDate = now;
-			} else {
-				entries++;
-			}
-		}
-		return "" + rdate; // return casted date to String
+	    for (Date date : entryTimes) {
+	        now = date.getTime();
+	        if ((now - baseDate)/3600000 >= 1) {
+	            if (entries > max) {
+	                max = entries;
+	                rdate = baseDate;
+	            }
+	            entries = 1;
+	            baseDate = now;
+	        } else {
+	            entries++;
+	        }
+	    }
+	    
+	    // Check one last time in case the max was at the end
+	    if (entries > max) {
+	        rdate = baseDate;
+	    }
+	    
+	    return "" + rdate;
 	}
 
 	public String toString() {
@@ -171,17 +173,21 @@ public class Report implements ReportInterface {
 	
 	// helper methods
 	private double accumulate(long ms) {
-		double revenue = 0;
+	    double revenue = 0;
+	    long now = System.currentTimeMillis();
 
-		int i = earnings.size() - 1;
-		long now = (new Date()).getTime();
-
-		while (now - earnings.get(i).getDate().getTime() <= ms
-				&& i >= 0) {
-			revenue += earnings.get(i).getRevenue();
-			i--;
-		}
-		
-		return revenue;
+	    for (Earning earning : earnings) {
+	        Date exitDate = earning.getDate();
+	        if (exitDate != null && (now - exitDate.getTime()) <= ms) {
+	            revenue += earning.getRevenue();
+	        }
+	    }
+	    
+	    return revenue;
+	}
+	public void clearData() {
+	    entryTimes.clear();
+	    earnings.clear();
+	    currentlyParked = 0;
 	}
 }

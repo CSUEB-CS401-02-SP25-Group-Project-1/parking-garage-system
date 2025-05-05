@@ -505,13 +505,13 @@ public class ClientHandler implements Runnable {
 	private void viewReport() {
 	    try {
 	        Report report = garage.viewReport();
-	        if (report == null || report.getEntryTimes().isEmpty()) {
-	            sendMessage(MessageType.Success, "vr:0.00,0.00,0.00,0.00,0.00,0.00,0,0");
+	        if (report == null || (report.getEntryTimes().isEmpty() && report.getEarnings().isEmpty())) {
+	            sendMessage(MessageType.Success, "vr:0.00,0.00,0.00,0.00,0.00,0.00,null,0");
 	            return;
 	        }
 
 	        String peakHour = report.getPeakHour();
-	        long peakTime = peakHour.equals("No peak hour") ? 0 : Long.parseLong(peakHour);
+	        long peakTime = peakHour.equals("null") ? 0 : Long.parseLong(peakHour);
 
 	        String payload = String.format("vr:%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%d,%d",
 	            report.getRevenueThisHour(),
