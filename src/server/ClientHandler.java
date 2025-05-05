@@ -502,16 +502,32 @@ public class ClientHandler implements Runnable {
 		log.append(LogType.ACTION, employee.getUsername()+" has overridden ticket "+ticket.getID(), garage);
 	}
 	
-	private void viewReport() { // vr
-		Report report = garage.viewReport();
-		serverData.saveReport(report); // save newly-updated report
-		// return report as string
-		sendMessage(MessageType.Success, 
-					"vr:"+report.getRevenueThisHour()+","+report.getRevenueToday()+","+
-					report.getRevenueThisWeek()+","+report.getRevenueThisMonth()+","+
-					report.getRevenueThisYear()+","+report.getTotalRevenue()+","+
-					report.getPeakHour()+","+report.getCurrentlyParkedNum());
-		log.append(LogType.ACTION, "Generated garage report for employee "+employee.getUsername(), garage);
+	private void viewReport() {
+	    try {
+	        Report report = garage.viewReport();
+	        if (report == null || report.getEntryTimes().isEmpty()) {
+	            sendMessage(MessageType.Success, "vr:0.00,0.00,0.00,0.00,0.00,0.00,0,0");
+	            return;
+	        }
+
+	        String peakHour = report.getPeakHour();
+	        long peakTime = peakHour.equals("No peak hour") ? 0 : Long.parseLong(peakHour);
+
+	        String payload = String.format("vr:%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%d,%d",
+	            report.getRevenueThisHour(),
+	            report.getRevenueToday(),
+	            report.getRevenueThisWeek(),
+	            report.getRevenueThisMonth(),
+	            report.getRevenueThisYear(),
+	            report.getTotalRevenue(),
+	            peakTime,
+	            report.getCurrentlyParkedNum());
+
+	        sendMessage(MessageType.Success, payload);
+	    } catch (Exception e) {
+	        sendMessage(MessageType.Fail, "vr:error");
+	        log.append(LogType.ERROR, "Report failed: " + e.getMessage());
+	    }
 	}
 	
 	private void modifyRate(double newRate) { // mr

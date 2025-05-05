@@ -114,14 +114,35 @@ public class Garage implements GarageInterface {
 	}
 
 	public Report viewReport() {
-		return this.report;
+	    if (this.report == null) {
+	        this.report = new Report(this);
+	    }
+	    
+	    // Reset and rebuild report data
+	    report = new Report(this); // Fresh report
+	    
+	    // Add all active ticket entries
+	    for (Ticket ticket : activeTickets) {
+	        if (ticket.getEntryTime() != null) {
+	            report.addEntryTime(ticket.getEntryTime());
+	        }
+	    }
+	    
+	    // Add all earnings from paid tickets
+	    for (Ticket ticket : allTickets) {
+	        if (ticket.isPaid() && ticket.getExitTime() != null) {
+	            report.addExit(new Earning(ticket.getExitTime(), ticket.getFee()));
+	        }
+	    }
+	    
+	    return report;
 	}
 
 	@Override
 	public boolean addCamera(SecurityCamera newCamera) {
 		// Check if camera has been added yet and return false if so
 		for(int i = 0; i < this.cameras.size(); i++) {
-			if(this.cameras.get(i).getID().equals(newCamera.getID()))
+			if(this.cameras.get(i).getID() == newCamera.getID())
 				return false;
 		}
 		
@@ -144,11 +165,10 @@ public class Garage implements GarageInterface {
 		return false;
 	}
 	
-	@Override
 	public SecurityCamera getCamera(String cameraID) {
 		// Find security camera matching the given Camera ID and return it
 		for(int i = 0; i < this.cameras.size(); i++) {
-			if(this.cameras.get(i).getID().equals(cameraID))
+			if(this.cameras.get(i).getID() == cameraID)
 				return this.cameras.get(i);
 		}
 		//Return null if not found
