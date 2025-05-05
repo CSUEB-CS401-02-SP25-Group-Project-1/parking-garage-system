@@ -129,7 +129,8 @@ public class Ticket implements TicketInterface{
 
 		if (paymentAmount < fee) {return false;} // payment validation
 		isPaid = true;
-
+		
+		exitTime = new Date();
 		// not overridden
 		// don't change fee
 		return true;
