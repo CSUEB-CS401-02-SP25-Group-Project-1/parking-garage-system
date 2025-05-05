@@ -4,6 +4,7 @@ import interfaces.ReportInterface;
 
 import java.util.Date;
 import java.util.ArrayList;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Report implements ReportInterface {
 	private ArrayList<Date> entryTimes;
@@ -16,28 +17,7 @@ public class Report implements ReportInterface {
 	private int currentlyParked;
 
 	private final int ms_p_h = 3600000;
-	// needs:
-		// addEntryTime(Date entryTime) // for ServerData loading
-		// addExit(Date exitTime, double amount)
-		// addExit(Earning earning) // what is an Earning?
-		// getters:
-			// getRevenueThisHour()
-			// getRevenueToday()
-			// getRevenueThisMonth()
-			// getRevenueThisYear()
-			// getTotalRevenue()
-			// getGarage()
-			// getID()
-			// getCurrentlyParkedNum()
-			// getPeakHour()
-			// toString()
-				// 3 lines:
-				// Garage ID
-				// Entries (comma-separated longs)
-				// Earnings
-				  // "exitTime,revenue\\|exitTime,revenue"
 	
-	// constructors
 	public Report(Garage garage) {
 		// new report created
 		id = "R" + (count++);
@@ -118,34 +98,20 @@ public class Report implements ReportInterface {
 	}
 
 	public String getPeakHour() {
-		// how to distinguish hours?
-
-		// loop through all entries
-		// subtract from base
-		long rdate = entryTimes.get(0).getTime(); // date to be returned
-		long max = 0;	// stores max value found
-		long entries = 0;	// accumulates total entries per hour
-		long baseDate = rdate;
-			// used to subtract from proceeding dates
-		long now;	// the current date in the list
-		for (Date date : entryTimes) {
-			now = date.getTime();
-			if ((now - baseDate)/3600000 >= 1) {
-				// change base date
-				// check for maximum
-				if (entries > max) {
-					max = entries;
-					rdate = baseDate;
-				}
-
-				// resest accumulating variable
-				entries = 1; // count the current time
-				baseDate = now;
-			} else {
-				entries++;
+		ConcurrentHashMap<int, int> entries_per_hour
+			= new ConcurrentHashMap<>();
+		for (Date d : entryTimes) {
+			entries_per_hour[d.getHours()]++;
+		}
+		int max_hour;
+		int max_entries = 0;
+		for (int key : entries_per_hour) {
+			if (entries_per_hour[key] > max_entries) {
+				max_entries = entries_per_hour[key];
+				max_hour = key;
 			}
 		}
-		return "" + rdate; // return casted date to String
+		return "" + max_hour;
 	}
 
 	public String toString() {
