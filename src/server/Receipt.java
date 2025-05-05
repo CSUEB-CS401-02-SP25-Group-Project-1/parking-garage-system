@@ -4,7 +4,8 @@ import java.util.Date;
 
 import interfaces.ReceiptInterface;
 
-public class Receipt implements ReceiptInterface {
+public class Receipt implements ReceiptInterface 
+{
 	private String ticketID;
 	private String garageName;
 	private Date entryTime;
@@ -28,11 +29,11 @@ public class Receipt implements ReceiptInterface {
 	}
 	
 	public String toString() {
-		return "RECEIPT FOR "+ticketID // dummy value
-				+ "garage name"
-				+ "ticket id"
-				+ "entry time"
-				+ "exit time"
-				+ "payment amount";
+		return "RECEIPT FOR " + ticketID + "\n" + 
+		"Garage: " + garageName + "\n" +
+		"Ticket ID: " + ticketID + "\n" +
+		"Entry Time: " + entryTime + "\n" +
+		"Exit Time: " + exitTime + "\n" +
+		"Payment Amount: $" + String.format("%2f",paymentAmount); 
 	}
 }

@@ -20,4 +20,5 @@ public interface EmployeeInterface {
 	ArrayList<String> viewCameraIDs(); // for vc:<cameraIDs>
 	ImageIcon viewCameraFeed(String cameraID); // for vf:<cameraID>
 	ArrayList<String> viewGarageLogs(); // for vl:<logText>
+	double getGarageRate(); // for gr
 }

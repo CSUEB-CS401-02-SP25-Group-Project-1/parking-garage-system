@@ -8,10 +8,10 @@ import java.util.Scanner;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
-import mock.Employee;
-import mock.Garage;
-import mock.Report;
-import mock.Ticket;
+import server.Employee;
+import server.Garage;
+import server.Report;
+import server.Ticket;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
@@ -133,8 +133,8 @@ public class ServerSaveTest {
         report.addExit(new Date(121314), 10.0);
         assertTrue(serverData.saveReport(report));
         String expected = "GA0\n" +
-                          "1234,5678,\n" +
-                          "91011,5.0\\|121314,10.0\\|";
+                          "1234,5678\n" +
+                          "91011,5.0\\|121314,10.0";
         assertEquals(expected, getReportDataFromFile(Paths.get(DATA_DIR, "reports", "RE0.txt").toString()));
         assertNotNull(serverData.getReport("RE0")); // ensure report is added to database after saving
     }

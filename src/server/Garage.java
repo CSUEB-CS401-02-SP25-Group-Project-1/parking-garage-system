@@ -70,6 +70,8 @@ public class Garage implements GarageInterface {
 			Ticket ticket = new Ticket(this);
 			allTickets.add(ticket);
 			activeTickets.add(ticket);
+			if (report == null) report = new Report(this);
+			report.addEntryTime(new Date());
 			return ticket.getID();
 		}
 		return null;
@@ -95,6 +97,8 @@ public class Garage implements GarageInterface {
 		//Find ticket by ID
 		Ticket ticket = getTicket(ticketID);
 		
+		if (ticket == null) return null;
+		
 		//Return null if the ticket is already paid
 		if(ticket.isPaid()) {
 			return null;
@@ -103,6 +107,8 @@ public class Garage implements GarageInterface {
 		//Mark ticket paid and remove from active tickets list
 		ticket.pay(paymentAmount);
 		this.activeTickets.remove(ticket);
+		
+		report.addExit(new Date(), paymentAmount);
 		
 		//Create and return new receipt of ticket payment
 		return new Receipt(ticket);
@@ -119,16 +125,15 @@ public class Garage implements GarageInterface {
 
 	@Override
 	public boolean addCamera(SecurityCamera newCamera) {
-		// add camera to garage's camera list if camera hasn't been added yet
-		int camCount = this.cameras.size();
+		// Check if camera has been added yet and return false if so
+		for(int i = 0; i < this.cameras.size(); i++) {
+			if(this.cameras.get(i).getID().equals(newCamera.getID()))
+				return false;
+		}
+		
+		// Add camera and return true if not found
 		cameras.add(newCamera);
-		
-		// return true if added successfully
-		if(cameras.size() > camCount)
-			return true;
-		
-		// return false if camera couldn't be added (duplicate cameras)
-		return false;
+		return true;
 	}
 
 	public boolean removeCamera(String cameraID) {
@@ -142,13 +147,14 @@ public class Garage implements GarageInterface {
 		}
 	
 		// return false if no camera with such ID was found
-		return true; // dummy value
+		return false;
 	}
 	
+	@Override
 	public SecurityCamera getCamera(String cameraID) {
 		// Find security camera matching the given Camera ID and return it
 		for(int i = 0; i < this.cameras.size(); i++) {
-			if(this.cameras.get(i).getID() == cameraID)
+			if(this.cameras.get(i).getID().equals(cameraID))
 				return this.cameras.get(i);
 		}
 		//Return null if not found

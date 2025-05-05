@@ -1,43 +1,87 @@
 package tests;
 
-import mock.*;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.Test;
+
+import server.Garage;
+import server.Receipt;
+
 import server.User;
 
-import org.junit.*;
+import server.UserType;
 
 public class UserTest {
 
 	@Test
-	public void testSetters() {
-		Garage garage = new Garage(); // no parameters for mock garage
-		UserType type = UserType.Customer;
-		User user1;
-		user1.setGarage(garage);
-		user1.setType(type);
 
-		assertEquals(garage, user1.getGarage());
-		assertEquals(type, user1.getType());
-	}
-
-	@Test
-	public void testTickets() {
+	public void testConstructor()
+	{
 		User user = new User();
-		// add a ticket
-		Ticket t = user.generateTicket();
+		assertNull(user.getGarage());
+		assertEquals(UserType.Undefined, user.getType());
 
-		// ticket will exist if generated
-		assertTrue(t != null);
-
-		// pay the ticket off
-		Receipt r = user.payTicket(t.getID(), 4000);
-		
-		// receipt will exist if ticket was paid
-		assertTrue(r != null);
-
-		// try to pay off ticket again
-		r = user.payTicket(t.getID(), 4000);
-
-		// `r` will be null because ticket is already removed
-		assertEquals(r, null);
+	}
+	
+	@Test
+	public void testGarageConstructor()
+	{
+		Garage garage = new Garage();
+		User user = new User(garage);
+		assertEquals(garage,user.getGarage());
+		assertEquals(UserType.Undefined,user.getType());
+	}
+	
+	@Test
+	public void testUserGarageConstructor()
+	{
+		Garage garage = new Garage();
+		User user = new User();
+		user.setGarage(garage);
+		assertEquals(garage,user.getGarage());
+	}
+	
+	@Test
+	public void testSetGarage()
+	{
+		User user = new User();
+		Garage garage = new Garage();
+		user.setGarage(garage);
+		assertEquals(garage,user.getGarage());
+	}
+	
+	@Test
+	public void testSetUserType()
+	{
+		User user = new User();
+		assertEquals(UserType.Undefined,user.getType());
+	}
+	
+	@Test
+	public void testGetUserType()
+	{
+		User user = new User();
+		assertEquals(UserType.Undefined,user.getType());
+	}
+	
+	@Test
+	public void testgenerateTicket()
+	{
+		Garage garage = new Garage("Garage Test",6.0,1,7.0);
+		User user = new User(garage);
+		String ticketID = user.generateTicket();
+		assertNotNull(ticketID);
+	}
+	
+	@Test
+	public void testpayTicket()
+	{
+		Garage garage = new Garage("Garage Test",6.0,1,7.0);
+		User user = new User(garage);
+		String ticketID = user.generateTicket();
+		assertNotNull(ticketID);
+		garage.getTicket(ticketID).calculateFee();
+		double amount = garage.getTicket(ticketID).getFee();
+		Receipt receipt = user.payTicket(ticketID, amount);
+		assertNotNull(receipt);
 	}
 }

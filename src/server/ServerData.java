@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Scanner;
@@ -247,7 +248,9 @@ public class ServerData {
 	private void loadAllGarages() {
 		String dir = getFullSubdir(GARAGE_SUBDIR);
 		File folder = new File(dir);
-		for (File garageFile : folder.listFiles()) {
+		File[] files = folder.listFiles();
+		Arrays.sort(files);
+		for (File garageFile : files) {
 			loadGarage(garageFile);
 		}
 	}
@@ -255,7 +258,9 @@ public class ServerData {
 	private void loadAllTickets() {
 		String dir = getFullSubdir(TICKET_SUBDIR);
 		File folder = new File(dir);
-		for (File ticketFile : folder.listFiles()) {
+		File[] files = folder.listFiles();
+		Arrays.sort(files);
+		for (File ticketFile : files) {
 			loadTicket(ticketFile);
 		}
 	}
@@ -263,7 +268,9 @@ public class ServerData {
 	private void loadAllReports() {
 		String dir = getFullSubdir(REPORT_SUBDIR);
 		File folder = new File(dir);
-		for (File reportFile : folder.listFiles()) {
+		File[] files = folder.listFiles();
+		Arrays.sort(files);
+		for (File reportFile : files) {
 			loadReport(reportFile);
 		}
 	}
@@ -271,7 +278,9 @@ public class ServerData {
 	private void loadAllCameras() {
 		String dir = getFullSubdir(CAMERA_SUBDIR);
 		File folder = new File(dir);
-		for (File cameraFile : folder.listFiles()) {
+		File[] files = folder.listFiles();
+		Arrays.sort(files);
+		for (File cameraFile : files) {
 			loadCamera(cameraFile);
 		}
 	}
@@ -279,7 +288,9 @@ public class ServerData {
 	private void loadAllEmployees() {
 		String dir = getFullSubdir(EMPLOYEE_SUBDIR);
 		File folder = new File(dir);
-		for (File employeeFile : folder.listFiles()) {
+		File[] files = folder.listFiles();
+		Arrays.sort(files);
+		for (File employeeFile : files) {
 			loadEmployee(employeeFile);
 		}
 	}
@@ -324,13 +335,13 @@ public class ServerData {
 	        Boolean paid = Boolean.parseBoolean(split[4]);
 	        String feeStr = split[5];
 	        // null string check
-	        Long entryTime = null;
+	        Date entryDate = null;
 	        if (!entryTimeStr.equals("null")) {
-	            entryTime = Long.parseLong(entryTimeStr);
+	            entryDate = new Date(Long.parseLong(entryTimeStr));
 	        }
-	        Long exitTime = null;
+	        Date exitDate = null;
 	        if (!exitTimeStr.equals("null")) {
-	            exitTime = Long.parseLong(exitTimeStr);
+	            exitDate = new Date(Long.parseLong(exitTimeStr));
 	        }
 	        Double fee = null;
 	        if (!feeStr.equals("null")) {
@@ -343,7 +354,7 @@ public class ServerData {
 	            return;
 	        }
 	        // assemble object
-	        Ticket ticket = new Ticket(garage, new Date(entryTime), new Date(exitTime), overridden, paid, fee);
+	        Ticket ticket = new Ticket(garage, entryDate, exitDate, overridden, paid, fee);
 	        // add ticket to database
 	        tickets.put(ticket.getID(), ticket);
 	        // add ticket to associated garage
@@ -356,9 +367,21 @@ public class ServerData {
 	private void loadReport(File reportFile) {
 	    try (Scanner lineScanner = new Scanner(reportFile)) {
 	        // load from file
-	        String garageID = lineScanner.nextLine();
-	        String entriesStr = lineScanner.nextLine();
-	        String earningsStr = lineScanner.nextLine();
+	    	String reportIDtxt = reportFile.getName();
+	    	String reportID = reportIDtxt.substring(0, reportIDtxt.length() - 4); // cutting off the .txt
+			String garageID = "";
+			if (lineScanner.hasNextLine()) {
+				garageID = lineScanner.nextLine();
+			}
+			String entriesStr = "";
+			if (lineScanner.hasNextLine()) {
+				entriesStr = lineScanner.nextLine();
+			}
+	        String earningsStr = "";
+			if (lineScanner.hasNextLine()) {
+				earningsStr = lineScanner.nextLine();
+			}
+			
 	        // find associated garage from id
 	        Garage garage = garages.get(garageID);
 	        if (garage == null) {
@@ -368,8 +391,9 @@ public class ServerData {
 	        // get entries and earnings from strings
 	        ArrayList<Date> entryTimes = getEntryTimesFromString(entriesStr);
 	        ArrayList<Earning> earnings = getEarningsFromString(earningsStr);
+	        
 	        // assemble object
-	        Report report = new Report(garage);
+	        Report report = new Report(reportID,garage);
 	        for (Date entryTime : entryTimes) {
 	            report.addEntryTime(entryTime);
 	        }
@@ -457,6 +481,9 @@ public class ServerData {
 		String splitData[] = reportEarningsStr.split("\\|");
 		for (String earning : splitData) {
 			try {
+				if (earning.charAt(earning.length() - 1) == '\\') { // sometimes earnings have a trailing backslash
+					earning = earning.substring(0, earning.length() - 1);
+				}
 				String splitEarning[] = earning.split(",");
 				Long exitTime = Long.parseLong(splitEarning[0]);
 				double revenue = Double.parseDouble(splitEarning[1]);

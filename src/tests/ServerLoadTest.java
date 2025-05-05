@@ -1,11 +1,14 @@
 package tests;
 
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Date;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import mock.Report;
+import server.Report;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import server.Earning;
 import server.Server;
 import server.ServerData;
 import static org.junit.jupiter.api.Assertions.*;
@@ -45,7 +48,8 @@ public class ServerLoadTest {
     @Test
     public void testLoadedTickets() {
         assertNotNull(serverData.getTicket("TI0")); // TI0 is valid
-        assertNull(serverData.getTicket("TI1")); // TI1 is invalid (shouldn't have loaded)
+        assertNotNull(serverData.getTicket("TI1")); // TI1 is valid (null values are accepted for date times and final fee)
+        assertNull(serverData.getTicket("TI2")); // TI2 is invalid (shouldn't have loaded)
     }
 
     @Test
@@ -59,6 +63,23 @@ public class ServerLoadTest {
         assertNotNull(invalidReport); // RE1 is invalid (object will still be created by design but is supposed to be empty)
         assertTrue(invalidReport.getEntryTimes().size() == 0); // entries list should be empty
         assertTrue(invalidReport.getEarnings().size() == 0); // earnings list should be empty
+
+        Report validReportWithInvalidData = serverData.getReport("RE2");
+        assertNotNull(validReportWithInvalidData); // RE2 should load
+        int validTimes[] = {0, 1, 2, 3, 5}; // entry times that should have loaded
+        ArrayList<Date> loadedTimes = validReportWithInvalidData.getEntryTimes();
+        for (int i = 0; i < validTimes.length; i++) {
+            assertEquals(validTimes[i], loadedTimes.get(i).getTime());
+        }
+        Earning validEarnings[] = {new Earning(new Date(0), 0.0), 
+                                   new Earning(new Date(1), 1.1),
+                                   new Earning(new Date(4), 4.4),
+                                   new Earning(new Date(5), 5.5),
+                                   new Earning(new Date(6), 6.6)};
+        ArrayList<Earning> loadedEarnings = validReportWithInvalidData.getEarnings();
+        for (int i = 0; i < validEarnings.length; i++) {
+            assertEquals(validEarnings[i].toString(), loadedEarnings.get(i).toString());
+        }
     }
 
     @Test
