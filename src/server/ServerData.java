@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Scanner;
@@ -247,7 +248,9 @@ public class ServerData {
 	private void loadAllGarages() {
 		String dir = getFullSubdir(GARAGE_SUBDIR);
 		File folder = new File(dir);
-		for (File garageFile : folder.listFiles()) {
+		File[] files = folder.listFiles();
+		Arrays.sort(files);
+		for (File garageFile : files) {
 			loadGarage(garageFile);
 		}
 	}
@@ -255,7 +258,9 @@ public class ServerData {
 	private void loadAllTickets() {
 		String dir = getFullSubdir(TICKET_SUBDIR);
 		File folder = new File(dir);
-		for (File ticketFile : folder.listFiles()) {
+		File[] files = folder.listFiles();
+		Arrays.sort(files);
+		for (File ticketFile : files) {
 			loadTicket(ticketFile);
 		}
 	}
@@ -263,7 +268,9 @@ public class ServerData {
 	private void loadAllReports() {
 		String dir = getFullSubdir(REPORT_SUBDIR);
 		File folder = new File(dir);
-		for (File reportFile : folder.listFiles()) {
+		File[] files = folder.listFiles();
+		Arrays.sort(files);
+		for (File reportFile : files) {
 			loadReport(reportFile);
 		}
 	}
@@ -271,7 +278,9 @@ public class ServerData {
 	private void loadAllCameras() {
 		String dir = getFullSubdir(CAMERA_SUBDIR);
 		File folder = new File(dir);
-		for (File cameraFile : folder.listFiles()) {
+		File[] files = folder.listFiles();
+		Arrays.sort(files);
+		for (File cameraFile : files) {
 			loadCamera(cameraFile);
 		}
 	}
@@ -279,7 +288,9 @@ public class ServerData {
 	private void loadAllEmployees() {
 		String dir = getFullSubdir(EMPLOYEE_SUBDIR);
 		File folder = new File(dir);
-		for (File employeeFile : folder.listFiles()) {
+		File[] files = folder.listFiles();
+		Arrays.sort(files);
+		for (File employeeFile : files) {
 			loadEmployee(employeeFile);
 		}
 	}
