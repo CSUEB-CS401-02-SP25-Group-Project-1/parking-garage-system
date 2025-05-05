@@ -356,8 +356,6 @@ public class ServerData {
 	private void loadReport(File reportFile) {
 	    try (Scanner lineScanner = new Scanner(reportFile)) {
 	        // load from file
-	    	String reportIDtxt = reportFile.getName();
-	    	String reportID = reportIDtxt.substring(0, reportIDtxt.length() - 4); // cutting off the .txt
 			String garageID = "";
 			if (lineScanner.hasNextLine()) {
 				garageID = lineScanner.nextLine();
@@ -382,7 +380,7 @@ public class ServerData {
 	        ArrayList<Earning> earnings = getEarningsFromString(earningsStr);
 	        
 	        // assemble object
-	        Report report = new Report(reportID,garage);
+	        Report report = new Report(garage);
 	        for (Date entryTime : entryTimes) {
 	            report.addEntryTime(entryTime);
 	        }
