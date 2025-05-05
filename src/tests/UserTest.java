@@ -1,16 +1,21 @@
 package tests;
 
-import server.User;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
 import server.Garage;
-import server.Ticket;
 import server.Receipt;
+<<<<<<< HEAD
+=======
+import server.User;
+>>>>>>> 427e3c7aa43c711fc5935e03a9f9d4428d03784b
 import server.UserType;
 
-import org.junit.*;
-
-public class UserTest {
+class UserTest {
 
 	@Test
+<<<<<<< HEAD
 	public void testSetters() {
 		Garage garage = new Garage(); // no parameters for mock garage
 		UserType type = UserType.Customer;
@@ -43,5 +48,75 @@ public class UserTest {
 
 		// `r` will be null because ticket is already removed
 		assertNull(r);
+=======
+	public void testConstructor()
+	{
+		User user = new User();
+		assertNull(user.getGarage());
+		assertEquals(UserType.Undefined, user.getType());
+	}
+	
+	@Test
+	public void testGarageConstructor()
+	{
+		Garage garage = new Garage();
+		User user = new User(garage);
+		assertEquals(garage,user.getGarage());
+		assertEquals(UserType.Undefined,user.getType());
+	}
+	
+	@Test
+	public void testUserGarageConstructor()
+	{
+		Garage garage = new Garage();
+		User user = new User();
+		user.setGarage(garage);
+		assertEquals(garage,user.getGarage());
+	}
+	
+	@Test
+	public void testSetGarage()
+	{
+		User user = new User();
+		Garage garage = new Garage();
+		user.setGarage(garage);
+		assertEquals(garage,user.getGarage());
+	}
+	
+	@Test
+	public void testSetUserType()
+	{
+		User user = new User();
+		assertEquals(UserType.Undefined,user.getType());
+	}
+	
+	@Test
+	public void testGetUserType()
+	{
+		User user = new User();
+		assertEquals(UserType.Undefined,user.getType());
+	}
+	
+	@Test
+	public void testgenerateTicket()
+	{
+		Garage garage = new Garage("Garage Test",6.0,1,7.0);
+		User user = new User(garage);
+		String ticketID = user.generateTicket();
+		assertNotNull(ticketID);
+	}
+	
+	@Test
+	public void testpayTicket()
+	{
+		Garage garage = new Garage("Garage Test",6.0,1,7.0);
+		User user = new User(garage);
+		String ticketID = user.generateTicket();
+		assertNotNull(ticketID);
+		garage.getTicket(ticketID).calculateFee();
+		double amount = garage.getTicket(ticketID).getFee();
+		Receipt receipt = user.payTicket(ticketID, amount);
+		assertNotNull(receipt);
+>>>>>>> 427e3c7aa43c711fc5935e03a9f9d4428d03784b
 	}
 }

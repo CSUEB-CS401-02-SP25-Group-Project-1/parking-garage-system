@@ -69,6 +69,7 @@ public class User implements UserInterface {
 		else
 			gate.open();
 	}
+<<<<<<< HEAD
 
 	public boolean getGateStatus() {
 		return garage.getGate().isOpen();
@@ -77,4 +78,16 @@ public class User implements UserInterface {
 	public boolean getGateOpenTime() {
 		return garage.getGate().getOpenTime();
 	}
+=======
+	
+	public boolean getGateStatus() {
+		return garage.getGate().isOpen();
+	}
+	
+	public double getGateOpenTime() {
+		return garage.getGate().getOpenTime();
+	}
+
+	
+>>>>>>> 427e3c7aa43c711fc5935e03a9f9d4428d03784b
 }
