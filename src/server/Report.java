@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Enumeration;
+import java.lang.NullPointerException;
 
 public class Report implements ReportInterface {
 	private ArrayList<Date> entryTimes;
