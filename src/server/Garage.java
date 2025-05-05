@@ -66,23 +66,6 @@ public class Garage implements GarageInterface {
 	}
 
 	public String generateTicket() { // returns ticket ID if successful
-<<<<<<< Updated upstream
-	    if (!isFull()) {
-	        Ticket ticket = new Ticket(this);
-	        allTickets.add(ticket);
-	        activeTickets.add(ticket);
-	        
-	        // Initialize report if null
-	        if (report == null) {
-	            report = new Report(this);
-	        }
-	        // Add entry to report
-	        report.addEntryTime(ticket.getEntryTime());
-	        
-	        return ticket.getID();
-	    }
-	    return null;
-=======
 		if (!isFull()) {
 			Ticket ticket = new Ticket(this);
 			allTickets.add(ticket);
@@ -94,7 +77,6 @@ public class Garage implements GarageInterface {
 			return ticket.getID();
 		}
 		return null;
->>>>>>> Stashed changes
 	}
 	
 	@Override
@@ -113,32 +95,6 @@ public class Garage implements GarageInterface {
 		return null;
 	}
 
-<<<<<<< Updated upstream
-	public Receipt payTicket(String ticketID, double paymentAmount) {
-	    Ticket ticket = getTicket(ticketID);
-	    if(ticket == null || ticket.isPaid()) {
-	        return null;
-	    }
-	    
-	    // First pay the ticket (which sets exit time)
-	    boolean paymentSuccess = ticket.pay(paymentAmount);
-	    if (!paymentSuccess) {
-	        return null;
-	    }
-	    
-	    this.activeTickets.remove(ticket);
-	    
-	    // Initialize report if null
-	    if (report == null) {
-	        report = new Report(this);
-	    }
-	    // Add exit to report with the payment amount
-	    if (ticket.getExitTime() != null) {
-	        report.addExit(ticket.getExitTime(), ticket.getFee());
-	    }
-	    
-	    return new Receipt(ticket);
-=======
 	public Receipt payTicket(String ticketID, double paymentAmount) { // returns receipt if successful
 		//Find ticket by ID
 		Ticket ticket = getTicket(ticketID);
@@ -156,7 +112,6 @@ public class Garage implements GarageInterface {
 		
 		report.addExit(ticket.getExitTime(), ticket.getFee());
 		return new Receipt(ticket);
->>>>>>> Stashed changes
 	}
 	
 	@Override
@@ -169,8 +124,8 @@ public class Garage implements GarageInterface {
 	        this.report = new Report(this);
 	    }
 	    
-	    // Clear existing data but keep the same report object
-	    this.report.clearData();
+	    // Reset and rebuild report data
+	    report = new Report(this); // Fresh report
 	    
 	    // Add all active ticket entries
 	    for (Ticket ticket : activeTickets) {
