@@ -70,6 +70,7 @@ public class Garage implements GarageInterface {
 			Ticket ticket = new Ticket(this);
 			allTickets.add(ticket);
 			activeTickets.add(ticket);
+			if (report == null) report = new Report(this);
 			report.addEntryTime(new Date());
 			return ticket.getID();
 		}
@@ -95,6 +96,8 @@ public class Garage implements GarageInterface {
 	public Receipt payTicket(String ticketID, double paymentAmount) { // returns receipt if successful
 		//Find ticket by ID
 		Ticket ticket = getTicket(ticketID);
+		
+		if (ticket == null) return null;
 		
 		//Return null if the ticket is already paid
 		if(ticket.isPaid()) {
