@@ -356,6 +356,8 @@ public class ServerData {
 	private void loadReport(File reportFile) {
 	    try (Scanner lineScanner = new Scanner(reportFile)) {
 	        // load from file
+	    	String reportIDtxt = reportFile.getName();
+	    	String reportID = reportIDtxt.substring(0, reportIDtxt.length() - 4); // cutting off the .txt
 			String garageID = "";
 			if (lineScanner.hasNextLine()) {
 				garageID = lineScanner.nextLine();
@@ -368,6 +370,7 @@ public class ServerData {
 			if (lineScanner.hasNextLine()) {
 				earningsStr = lineScanner.nextLine();
 			}
+			
 	        // find associated garage from id
 	        Garage garage = garages.get(garageID);
 	        if (garage == null) {
@@ -377,8 +380,9 @@ public class ServerData {
 	        // get entries and earnings from strings
 	        ArrayList<Date> entryTimes = getEntryTimesFromString(entriesStr);
 	        ArrayList<Earning> earnings = getEarningsFromString(earningsStr);
+	        
 	        // assemble object
-	        Report report = new Report(garage);
+	        Report report = new Report(reportID,garage);
 	        for (Date entryTime : entryTimes) {
 	            report.addEntryTime(entryTime);
 	        }
@@ -466,6 +470,9 @@ public class ServerData {
 		String splitData[] = reportEarningsStr.split("\\|");
 		for (String earning : splitData) {
 			try {
+				if (earning.charAt(earning.length() - 1) == '\\') { // sometimes earnings have a trailing backslash
+					earning = earning.substring(0, earning.length() - 1);
+				}
 				String splitEarning[] = earning.split(",");
 				Long exitTime = Long.parseLong(splitEarning[0]);
 				double revenue = Double.parseDouble(splitEarning[1]);
