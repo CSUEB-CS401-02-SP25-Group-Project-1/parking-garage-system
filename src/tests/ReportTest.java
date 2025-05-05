@@ -88,12 +88,15 @@ public class ReportTest {
 	
 		for (Date d : expectedEntries) {
 		    r.addEntryTime(d);
-		    entries_s += d.getTime() + ",";
+		    if (entries_s.length() != 0) entries_s += ",";
+		    entries_s += d.getTime();
 		}
 	
 		for (Earning e : expectedEarnings) {
 		    r.addExit(e);
-		    exits_s += e.toString() + "\\|";
+		    
+		    if (exits_s.length() != 0) exits_s += "\\|";
+		    exits_s += e.toString();
 		}
 	
 		expected = g.getID() + "\n" + entries_s + "\n" + exits_s + "\n";

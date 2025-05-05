@@ -583,8 +583,9 @@ public class EmployeeGUI {
     // more helper methods
 
     private static String assembleReport(String reportData) { // assembles a human-readable report from server response data
-        String split[] = reportData.split(",");
-        if (split.length != 8) { // server should have returned 8 parameters
+        System.out.println(reportData);
+    	String split[] = reportData.split(",");
+        if (split.length != 9) { // server should have returned 9 parameters (one more)
             return null;
         }
         String revenueThisHour = formatAmountString(split[0]);
@@ -593,15 +594,32 @@ public class EmployeeGUI {
         String revenueThisMonth = formatAmountString(split[3]);
         String revenueThisYear = formatAmountString(split[4]);
         String revenueAllTime = formatAmountString(split[5]);
-        String peakHour = split[6];
-        String currentlyParkedVehicles = split[7];
+        
+        int peakHour = Integer.parseInt(split[6]);
+        String peakHourStr = "";
+        // if == 0
+        // if == 12
+        // else if < 12
+        if (peakHour == 0) {
+        	peakHourStr = "12 am";
+        } else if (peakHour == 12) {
+        	peakHourStr = "12 pm";
+        } else if (peakHour < 12) {
+        	peakHourStr += peakHour + " am";
+        } else {
+        	peakHourStr += (peakHour-12) + " pm";
+        }
+        String totalParkedEver = split[7];
+        String currentlyParkedVehicles = split[8];
+        
         String report = "Revenue generated this hour: "+revenueThisHour+"\n"+
                         "Revenue generated today: "+revenueToday+"\n"+
                         "Revenue generated this week: "+revenueThisWeek+"\n"+
                         "Revenue generated this month: "+revenueThisMonth+"\n"+
                         "Revenue generated this year: "+revenueThisYear+"\n"+
                         "All-time revenue generated: "+revenueAllTime+"\n"+
-                        "Peak parking hour: "+peakHour+"\n"+
+                        "Peak parking hour: "+peakHourStr+"\n"+
+                        "Total cars entered: "+totalParkedEver+"\n"+
                         "Currently parked vehicles: "+currentlyParkedVehicles;
         return report;
     }
