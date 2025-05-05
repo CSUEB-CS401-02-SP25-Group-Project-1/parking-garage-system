@@ -88,8 +88,17 @@ public class Report implements ReportInterface {
 	}
 
 	public double getRevenueThisYear() {
-		long ms = ms_p_h * 24 * 365; // 365 days a year
-		return accumulate(ms);
+		if (earnings.size() == 0) return 0;
+		int year = (new Date()).getYear();
+		double result = 0;
+		int i = earnings.size()-1;
+		while (i >= 0) {
+			if (year - earnings.get(i).getDate().getYear() >= 1) break;
+			result += earnings.get(i).getRevenue();
+			i--;
+		}
+		
+		return result;
 	}
 
 	public double getTotalRevenue() {
