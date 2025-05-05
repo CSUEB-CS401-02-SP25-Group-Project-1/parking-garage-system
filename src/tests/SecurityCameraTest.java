@@ -1,9 +1,5 @@
 package tests;
 
-import static org.junit.jupiter.api.Assertions.*;
-import org.junit.Test;
-
-
 import server.Garage;
 import server.SecurityCamera;
 import static org.junit.Assert.*;
