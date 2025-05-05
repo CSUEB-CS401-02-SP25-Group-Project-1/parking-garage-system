@@ -126,7 +126,7 @@ public class Report implements ReportInterface {
 		for (Date d : entryTimes) {
 			try {
 				int count = entries_per_hour.get(d.getHours());
-			} catch (NullPointerExcpetion n) {
+			} catch (NullPointerException n) {
 				entries_per_hour.put(d.getHours(), 1);
 				continue;
 			}
@@ -176,8 +176,10 @@ public class Report implements ReportInterface {
 		int i = earnings.size() - 1;
 		long now = (new Date()).getTime();
 
-		while (now - earnings.get(i).getDate().getTime() <= ms
-				&& i >= 0) {
+		while (i >= 0) {
+			if (now - earnings.get(i).getDate().getTime() > ms) {
+				break;
+			}
 			revenue += earnings.get(i).getRevenue();
 			i--;
 		}
