@@ -510,7 +510,8 @@ public class ClientHandler implements Runnable {
 					"vr:"+report.getRevenueThisHour()+","+report.getRevenueToday()+","+
 					report.getRevenueThisWeek()+","+report.getRevenueThisMonth()+","+
 					report.getRevenueThisYear()+","+report.getTotalRevenue()+","+
-					report.getPeakHour()+","+report.getCurrentlyParkedNum());
+					report.getPeakHour()+","+report.getTotalParkedEver()+","
+					+report.getCurrentlyParkedNum());
 		log.append(LogType.ACTION, "Generated garage report for employee "+employee.getUsername(), garage);
 	}
 	
