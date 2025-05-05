@@ -1,6 +1,7 @@
 package tests;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.Test;
 
@@ -17,6 +18,18 @@ import java.io.IOException;
 =======
 import java.util.Date;
 >>>>>>> 427e3c7aa43c711fc5935e03a9f9d4428d03784b
+=======
+
+import static org.junit.Assert.*;
+
+import org.junit.*;
+
+import server.Ticket;
+import server.Garage;
+import java.lang.Thread;
+
+import java.util.Date;
+>>>>>>> 11d5627c5926daed229aa1060fae152b4efe490f
 
 public class TicketTest {
 	
@@ -44,6 +57,7 @@ public class TicketTest {
 
 	@Test
 <<<<<<< HEAD
+<<<<<<< HEAD
 	public void testPay() {
 		Ticket t = new Ticket(new Garage());
 		
@@ -56,6 +70,9 @@ public class TicketTest {
 		boolean success = t.pay(0); // fail payment
 		assertFalse(success);
 =======
+=======
+
+>>>>>>> 11d5627c5926daed229aa1060fae152b4efe490f
 	public void testPay() throws InterruptedException {
 		Garage garage = new Garage("Test_Garage", 50000, 30, 1);
 		Ticket ticket = new Ticket(garage);
@@ -76,7 +93,10 @@ public class TicketTest {
 		
 		//Confirm that the ticket still has NOT been overridden
 		assertFalse(ticket.isOverridden());
+<<<<<<< HEAD
 >>>>>>> 427e3c7aa43c711fc5935e03a9f9d4428d03784b
+=======
+>>>>>>> 11d5627c5926daed229aa1060fae152b4efe490f
 
 		//Confirm that the ticket's exit time is NOT still null after payment
 		assertNotNull(ticket.getExitTime());

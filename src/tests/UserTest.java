@@ -7,14 +7,21 @@ import org.junit.jupiter.api.Test;
 import server.Garage;
 import server.Receipt;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 import server.User;
 >>>>>>> 427e3c7aa43c711fc5935e03a9f9d4428d03784b
+=======
+
+import server.User;
+
+>>>>>>> 11d5627c5926daed229aa1060fae152b4efe490f
 import server.UserType;
 
 class UserTest {
 
 	@Test
+<<<<<<< HEAD
 <<<<<<< HEAD
 	public void testSetters() {
 		Garage garage = new Garage(); // no parameters for mock garage
@@ -49,11 +56,15 @@ class UserTest {
 		// `r` will be null because ticket is already removed
 		assertNull(r);
 =======
+=======
+
+>>>>>>> 11d5627c5926daed229aa1060fae152b4efe490f
 	public void testConstructor()
 	{
 		User user = new User();
 		assertNull(user.getGarage());
 		assertEquals(UserType.Undefined, user.getType());
+
 	}
 	
 	@Test
@@ -117,6 +128,9 @@ class UserTest {
 		double amount = garage.getTicket(ticketID).getFee();
 		Receipt receipt = user.payTicket(ticketID, amount);
 		assertNotNull(receipt);
+<<<<<<< HEAD
 >>>>>>> 427e3c7aa43c711fc5935e03a9f9d4428d03784b
+=======
+>>>>>>> 11d5627c5926daed229aa1060fae152b4efe490f
 	}
 }

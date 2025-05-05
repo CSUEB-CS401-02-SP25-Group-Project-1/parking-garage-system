@@ -70,6 +70,7 @@ public class User implements UserInterface {
 			gate.open();
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	public boolean getGateStatus() {
 		return garage.getGate().isOpen();
@@ -79,6 +80,8 @@ public class User implements UserInterface {
 		return garage.getGate().getOpenTime();
 	}
 =======
+=======
+>>>>>>> 11d5627c5926daed229aa1060fae152b4efe490f
 	
 	public boolean getGateStatus() {
 		return garage.getGate().isOpen();
@@ -88,6 +91,9 @@ public class User implements UserInterface {
 		return garage.getGate().getOpenTime();
 	}
 
+<<<<<<< HEAD
 	
 >>>>>>> 427e3c7aa43c711fc5935e03a9f9d4428d03784b
+=======
+>>>>>>> 11d5627c5926daed229aa1060fae152b4efe490f
 }
