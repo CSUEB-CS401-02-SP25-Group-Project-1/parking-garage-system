@@ -1,3 +1,4 @@
+
 package server;
 
 import interfaces.ReportInterface;
@@ -19,28 +20,7 @@ public class Report implements ReportInterface {
 	private int currentlyParked;
 
 	private final int ms_p_h = 3600000;
-	// needs:
-		// addEntryTime(Date entryTime) // for ServerData loading
-		// addExit(Date exitTime, double amount)
-		// addExit(Earning earning) // what is an Earning?
-		// getters:
-			// getRevenueThisHour()
-			// getRevenueToday()
-			// getRevenueThisMonth()
-			// getRevenueThisYear()
-			// getTotalRevenue()
-			// getGarage()
-			// getID()
-			// getCurrentlyParkedNum()
-			// getPeakHour()
-			// toString()
-				// 3 lines:
-				// Garage ID
-				// Entries (comma-separated longs)
-				// Earnings
-				  // "exitTime,revenue\\|exitTime,revenue"
 	
-	// constructors
 	public Report(Garage garage) {
 		// new report created
 		id = "R" + (count++);
@@ -121,6 +101,7 @@ public class Report implements ReportInterface {
 	}
 
 	public String getPeakHour() {
+
 		ConcurrentHashMap<Integer, Integer> entries_per_hour
 			= new ConcurrentHashMap<>();
 		for (Date d : entryTimes) {
@@ -153,20 +134,22 @@ public class Report implements ReportInterface {
 		// Garage ID
 		// Entries (comma-separated longs)
 		// Earnings
-			// "exitTime,revenue\\|exitTime,revenue"
-		String garageID = garage.getID();
+	    String garageID = garage.getID();
 
-		String entries_s = "";
-		String earnings_s = "";
-
-		for (Date entry : entryTimes) {
-			entries_s += entry.getTime() + ",";
-		}
-
-		for (Earning earning : earnings) {
-			earnings_s += earning.toString() + "\\|";
-		}
-		return garageID + "\n" + entries_s + "\n" + earnings_s + "\n";
+	    
+	    String entries_s = "";
+	    for (Date entry : entryTimes) {
+	        if (!entries_s.isEmpty()) entries_s += ",";
+	        entries_s += entry.getTime();
+	    }
+	    
+	    String earnings_s = "";
+	    
+	    for (Earning earning : earnings) {
+	        if (!earnings_s.isEmpty()) earnings_s += "|";
+	        earnings_s += earning.toString();
+	    }
+	    return garageID + "\n" + entries_s + "\n" + earnings_s;
 	}
 	
 	// helper methods

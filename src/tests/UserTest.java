@@ -5,17 +5,21 @@ import org.junit.Test;
 
 import server.Garage;
 import server.Receipt;
+
 import server.User;
+
 import server.UserType;
 
 public class UserTest {
 
 	@Test
+
 	public void testConstructor()
 	{
 		User user = new User();
 		assertNull(user.getGarage());
 		assertEquals(UserType.Undefined, user.getType());
+
 	}
 	
 	@Test

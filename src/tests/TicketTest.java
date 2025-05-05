@@ -1,11 +1,14 @@
 package tests;
 
+
 import static org.junit.Assert.*;
 
 import org.junit.*;
+
 import server.Ticket;
 import server.Garage;
 import java.lang.Thread;
+
 import java.util.Date;
 
 public class TicketTest {
@@ -33,6 +36,7 @@ public class TicketTest {
 	}
 
 	@Test
+
 	public void testPay() throws InterruptedException {
 		Garage garage = new Garage("Test_Garage", 50000, 30, 1);
 		Ticket ticket = new Ticket(garage);
