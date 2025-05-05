@@ -21,6 +21,15 @@ public class Report implements ReportInterface {
 
 	private final int ms_p_h = 3600000;
 	
+	public Report(String id, Garage garage) {
+		// constructor for server so that each garage only has one report
+		this.id = id;
+		this.garage = garage;
+		entryTimes = new ArrayList<>();
+		earnings = new ArrayList<>();
+		currentlyParked = 0;
+	}
+	
 	public Report(Garage garage) {
 		// new report created
 		id = "RE" + (count++);
@@ -45,8 +54,8 @@ public class Report implements ReportInterface {
 	}
 
 	public void addExit(Earning earning) {	
-		if (currentlyParked == 0) {return;}
 		earnings.add(earning);
+		if (currentlyParked == 0) {return;}
 		currentlyParked--;
 	}
 
@@ -65,6 +74,7 @@ public class Report implements ReportInterface {
 	public Garage getGarage() {return garage;}
 	public String getID() {return id;}
 	public int getCurrentlyParkedNum() {return currentlyParked;}
+	public long getTotalParkedEver() {return entryTimes.size();}
 
 	// methods
 	public double getRevenueThisHour() {
@@ -158,7 +168,7 @@ public class Report implements ReportInterface {
 	        if (!earnings_s.isEmpty()) earnings_s += "\\|";
 	        earnings_s += earning.toString();
 	    }
-	    return garageID + "\n" + entries_s + "\n" + earnings_s;
+	    return garageID + "\n" + entries_s + "\n" + earnings_s + "\n";
 	}
 	
 	// helper methods
