@@ -39,7 +39,7 @@ public class Ticket implements TicketInterface{
 	//constructors
 	public Ticket() {
 		// no arguments constructor
-		id = "T" + (count++);
+		id = "TI" + (count++);
 		entryTime = new Date();
 		exitTime = null;
 		isPaid = false;
@@ -57,7 +57,7 @@ public class Ticket implements TicketInterface{
 		// isPaid is false
 		// isOverridden is false
 		// garage reference is passed
-		id = "T" + (count++);
+		id = "TI" + (count++);
 
 		entryTime = new Date();
 
@@ -70,15 +70,16 @@ public class Ticket implements TicketInterface{
 	}
 
 	public Ticket(Garage garage, Date entryTime, Date exitTime,
-			boolean isOverridden, boolean isPaid, double fee) {
+			boolean isOverridden, boolean isPaid, Double fee) {
 		// many-arguments constructor for ServerData
-		id = "T" + (count++);
+		id = "TI" + (count++);
 		this.garage = garage;
 		this.entryTime = entryTime;
 		this.exitTime = exitTime;
 		this.isOverridden = isOverridden;
 		this.isPaid = isPaid;
-		this.fee = fee;
+		if (fee == null) this.fee = 0;
+		else this.fee = fee;
 	}
 
 	//getters

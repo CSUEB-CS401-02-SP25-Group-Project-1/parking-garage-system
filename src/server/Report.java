@@ -21,9 +21,18 @@ public class Report implements ReportInterface {
 
 	private final int ms_p_h = 3600000;
 	
+	public Report(String id, Garage garage) {
+		// constructor for server so that each garage only has one report
+		this.id = id;
+		this.garage = garage;
+		entryTimes = new ArrayList<>();
+		earnings = new ArrayList<>();
+		currentlyParked = 0;
+	}
+	
 	public Report(Garage garage) {
 		// new report created
-		id = "R" + (count++);
+		id = "RE" + (count++);
 		this.garage = garage;
 		entryTimes = new ArrayList<>();
 		earnings = new ArrayList<>();
@@ -32,7 +41,7 @@ public class Report implements ReportInterface {
 
 	public Report() {
 		// no arguments constructor
-		id = "R" + (count++);
+		id = "RE" + (count++);
 		this.garage = new Garage();
 		entryTimes = new ArrayList<>();
 		earnings = new ArrayList<>();
@@ -45,8 +54,8 @@ public class Report implements ReportInterface {
 	}
 
 	public void addExit(Earning earning) {	
-		if (currentlyParked == 0) {return;}
 		earnings.add(earning);
+		if (currentlyParked == 0) {return;}
 		currentlyParked--;
 	}
 
@@ -65,6 +74,7 @@ public class Report implements ReportInterface {
 	public Garage getGarage() {return garage;}
 	public String getID() {return id;}
 	public int getCurrentlyParkedNum() {return currentlyParked;}
+	public long getTotalParkedEver() {return entryTimes.size();}
 
 	// methods
 	public double getRevenueThisHour() {
@@ -88,8 +98,17 @@ public class Report implements ReportInterface {
 	}
 
 	public double getRevenueThisYear() {
-		long ms = ms_p_h * 24 * 365; // 365 days a year
-		return accumulate(ms);
+		if (earnings.size() == 0) return 0;
+		int year = (new Date()).getYear();
+		double result = 0;
+		int i = earnings.size()-1;
+		while (i >= 0) {
+			if (year - earnings.get(i).getDate().getYear() >= 1) break;
+			result += earnings.get(i).getRevenue();
+			i--;
+		}
+		
+		return result;
 	}
 
 	public double getTotalRevenue() {
@@ -146,10 +165,10 @@ public class Report implements ReportInterface {
 	    String earnings_s = "";
 	    
 	    for (Earning earning : earnings) {
-	        if (!earnings_s.isEmpty()) earnings_s += "|";
+	        if (!earnings_s.isEmpty()) earnings_s += "\\|";
 	        earnings_s += earning.toString();
 	    }
-	    return garageID + "\n" + entries_s + "\n" + earnings_s;
+	    return garageID + "\n" + entries_s + "\n" + earnings_s + "\n";
 	}
 	
 	// helper methods
