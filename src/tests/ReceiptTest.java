@@ -1,5 +1,9 @@
 package tests;
 
+import server.Receipt;
+import server.Garage;
+import server.Ticket;
+
 import static org.junit.Assert.*;
 import org.junit.Test;
 import java.util.Date;
@@ -51,6 +55,6 @@ public class ReceiptTest {
         String receiptText = receipt.toString();
         assertTrue(receiptText.contains(ticket.getID()));
         assertTrue(receiptText.contains(garage.getName()));
-        assertTrue(receiptText.contains(String.valueOf(ticket.getFee())));
+        assertTrue(receiptText.contains(String.format("%2f", ticket.getFee())));
     }
 }
