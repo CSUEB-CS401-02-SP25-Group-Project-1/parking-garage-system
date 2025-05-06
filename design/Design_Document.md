@@ -342,6 +342,7 @@ Upon successful implementation of the Parking Garage System (PGS), the following
 - Garage aggregates this class since new security cameras can be added to a garage by the system
 - Each ticket has a unique string ID (e.g., "SC0", "SC1") generated on initialization
 - Has a method to return its live security feed (since this is a simulation, have it return a static image of a real-life parking garage)
+
 ## Command Protocols
 ### Customer Commands
 - `gt`: Generate ticket
@@ -382,18 +383,22 @@ Upon successful implementation of the Parking Garage System (PGS), the following
 ## Final Implementation Timeline
 ### Server (+ ServerData)
 **By Brandon | April 23 – April 30**
+
 Brandon single-handedly constructed the core server module, coordinating integration across all classes. After a team meeting on April 23, he took ownership of the `Server` and `ServerData` classes, creating interfaces and mockups to ensure everyone’s classes could interact with the server properly. He enforced branch rules to prevent direct commits to `main` and integrated file input and output and serialization logic. He completed the server by April 30 and later supported testing and debugging.
 
 ### User Classes (User, Customer, Employee)
 **By Paul | April 15 – April 23**
+
 Paul began implementation shortly after the planning phase and took responsibility for the `User`, `Customer`, and `Employee` classes. By April 22, he was close to completion, even though some methods depended on other classes like `Garage`. He later adjusted `Customer` to match updated mockups and design doc expectations, especially around garage availability and ticket handling.
 
 ### Ticket
 **By Riley | April 18 – May 4**
+
 Riley initially began working on the `Ticket` class and contributed early drafts. Throughout the sprint, he continually refactored it to comply with the evolving server interface. By May 3–4, he had implemented `TicketTest` and resolved bugs involving fee calculation, null exit times, and override behaviors. His contributions included both functionality and test coverage.
 
 ### Garage
 **By Isaiah | April 25 – April 30**
+
 Isaiah took full charge of the `Garage` class. After some coordination with Brandon on April 25, he removed outdated fields like IPs, refined method signatures, and shifted to `ArrayList` for flexibility. He also made the class compatible with server integration based on interface updates from Brandon. Isaiah completed testing shortly after.
 
 ### Report
@@ -402,22 +407,27 @@ Riley also implemented the `Report` class early on. After finishing the core log
 
 ### EmployeeGUI
 **By Brandon | May 2 – May 4**
+
 Brandon created the Employee GUI interface right after the server was stable. He implemented login, ticket viewing, and server communication based on the messaging protocol. Bug fixes continued through May 3, including fixes for exit time display and null tickets.
 
 ### CustomerGUI
 **By Andrew | May 2 – May 4**
+
 Andrew handled the Customer GUI, creating it from scratch and wiring it to server commands. His implementation followed the finalized messaging protocol shared by Brandon. The CustomerGUI was completed alongside Employee GUI development.
 
 ### Receipt
 **By Prinay | May 2 – May 4**
+
 Prinay focused on the `Receipt` class and later added test coverage for it. He ensured receipts were generated dynamically rather than stored and formatted the output based on ticket data. Multiple commits reflect iteration and refinement until the class passed all tests.
 
 ### Security Camera
 **By Brandon | May 2 – May 4**
+
 Brandon integrated security camera functionality into `Garage`. Isaiah identified and fixed a key bug with `.equals()` vs `==` in `Garage.getCamera()` on May 4. Testing followed immediately afterward.
 
 ### Testing & Bugfixes
 **By All Members | May 2 – May 5**
+
 The final push involved everyone writing JUnit tests and fixing edge cases. Riley made the test suite classes, Isaiah and Andrew contributed test files, and Paul and Prinay validated others’ code. The team created a shared testing document and followed a checklist format to document results. Major bug fixes included overriding ticket fees, exit time handling, and data loading logic in `ServerData`.
 
 <img src="schedule.png" alt="Implementation Schedule" width="800"/>
