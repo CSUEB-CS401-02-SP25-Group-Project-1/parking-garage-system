@@ -403,6 +403,7 @@ Isaiah took full charge of the `Garage` class. After some coordination with Bran
 
 ### Report
 **By Riley | April 15 – May 5**
+
 Riley also implemented the `Report` class early on. After finishing the core logic, he later returned to refactor it to use `ArrayList` and ensure compatibility with the server’s expectations. He created relevant methods like `.loadEntries()` and `.loadEarnings()` to support `ServerData`. He finalized testing and compatibility updates in early May.
 
 ### EmployeeGUI
@@ -428,6 +429,6 @@ Brandon integrated security camera functionality into `Garage`. Isaiah identifie
 ### Testing & Bugfixes
 **By All Members | May 2 – May 5**
 
-The final push involved everyone writing JUnit tests and fixing edge cases. Riley made the test suite classes, Isaiah and Andrew contributed test files, and Paul and Prinay validated others’ code. The team created a shared testing document and followed a checklist format to document results. Major bug fixes included overriding ticket fees, exit time handling, and data loading logic in `ServerData`.
+The final push involved everyone writing JUnit tests and fixing edge cases. Riley made the test suite classes, Isaiah and Andrew contributed test files, and Paul and Prinay validated others' code. The team created a shared testing document and followed a checklist format to document results. Major bug fixes included overriding ticket fees, exit time handling, and data loading logic in `ServerData`.
 
 <img src="schedule.png" alt="Implementation Schedule" width="800"/>
