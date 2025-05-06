@@ -30,7 +30,7 @@
     - [**SecurityCamera Class**](#securitycamera-class)
 - [**Command Protocols**](#command-protocols)
     - [**Customer Commands**](#customer-commands)
-    - [**Employee Commands**](#employee-commands--inherits-customer-commands-)
+    - [**Employee Commands**](#employee-commands-inherits-customer-commands)
 - [**Design Diagrams**](#design-diagrams)
     - [**Server Class Diagram**](#server-class-diagram)
 	- [**Client Class Diagram**](#client-class-diagram)
@@ -272,7 +272,7 @@ Upon successful implementation of the Parking Garage System (PGS), the following
     - As the gate is opening, GUI displays a message for the user to pass through the gate
 - All server communication is handled using the `Message` class, and responses are parsed and interpreted by the GUI for user display
 ### EmployeeGUI Class
-- **See ["Employee Commands"](#employee-commands--inherits-customer-commands-) for list of command codes**
+- **See ["Employee Commands"](#employee-commands-inherits-customer-commands) for list of command codes**
 #### Login Screen
 - Upon launching, displays a login screen with input fields for username and password
 - When the employee clicks "Submit", the GUI sends credentials to the server for authentication:
@@ -353,7 +353,7 @@ Upon successful implementation of the Parking Garage System (PGS), the following
 - `gn`: Get garage name
 - `go`: Get gate open time
 
-## Employee Commands (inherits Customer Commands)
+### Employee Commands (inherits Customer Commands)
 - `li:<username>:<password>`: Login
 - `mp:<newPassword>`: Modify password (must include special characters)
 - `mg:<gateTime>`: Modify gate duration
