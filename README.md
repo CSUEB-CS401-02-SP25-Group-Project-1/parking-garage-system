@@ -3,6 +3,7 @@
 ## Implementation Stuff
 - [Class Interfaces](src/interfaces)
 - [Class Mockups](src/mock)
+- [Component Tests (JUnit)](src/tests)
 
 ## Design References
 - [Design Document](design/Design_Document.md)
