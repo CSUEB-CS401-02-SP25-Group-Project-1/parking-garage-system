@@ -18,6 +18,7 @@
     - [**Earning Class**](#earning-class)
     - [**Message Class**](#message-class)
     - [**MessageType Enum**](#messagetype-enum)
+    - [**ImageMessage Class**](#imagemessage-class)
     - [**Server Class**](#server-class)
     - [**ServerData Class**](#serverdata-class)
     - [**ClientHandler Class**](#clienthandler-class)
@@ -204,6 +205,12 @@ Upon successful implementation of the Parking Garage System (PGS), the following
 - `Success`: Indicates that the user's action was successfully completed (e.g., payment processed, ticket generated)
 - `Fail`: Indicates that the user's action could not be completed (e.g., garage full, invalid ticket ID)
 - `Request`: Requests a specific action from Server (meant for the GUIs)
+### ImageMessage Class
+- A child class of `Message` used to encapsulate and transmit images between the server and GUI clients
+- Specifically designed to deliver security camera feeds in the form of static images (simulated using `ImageIcon`)
+- Contains an additional attribute to store an image alongside the standard message text, type, and sender information
+- Allows the Employee GUI to request and display visual feeds from the garage's security cameras
+- Provides a getter method to retrieve the image payload when the message is received on the client side
 ### Server Class
 - Acts as the central controller of the system, receiving and processing all commands sent by the `CustomerGUI` and `EmployeeGUI`
 - Authenticates user input, delegates requests to the appropriate objects (e.g., `Customer`, `Employee`, `Garage`), and returns an appropriate `Message` in response
